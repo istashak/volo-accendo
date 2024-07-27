@@ -59,3 +59,5 @@ resource "aws_route_table_association" "app_subnets" {
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.vpc_routing_table.id
 }
+
+

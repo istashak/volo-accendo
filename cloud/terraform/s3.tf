@@ -1,10 +1,10 @@
 # S3 Bucket config#
 resource "aws_s3_bucket" "web_app_bucket" {
-  bucket        = local.s3_bucket_name
+  bucket        = local.s3_web_app_bucket_name
   force_destroy = true
 
   tags = merge(local.common_tags, {
-    resource_name = "${local.naming_prefix}-s3-bucket"
+    resource_name = "${local.naming_prefix}-s3-web-app-bucket"
   })
 }
 
@@ -24,10 +24,10 @@ resource "aws_s3_bucket_policy" "web_app_bucket_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid = "AllowCloudFrontAccess",
+        Sid    = "AllowCloudFrontAccess",
         Effect = "Allow",
         Principal = {
-          "AWS": "${aws_cloudfront_origin_access_identity.web_app_oai.iam_arn}"
+          "AWS" : "${aws_cloudfront_origin_access_identity.web_app_oai.iam_arn}"
         },
         Action   = "s3:GetObject",
         Resource = "${aws_s3_bucket.web_app_bucket.arn}/*"
@@ -35,3 +35,4 @@ resource "aws_s3_bucket_policy" "web_app_bucket_policy" {
     ]
   })
 }
+

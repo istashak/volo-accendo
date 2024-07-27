@@ -12,6 +12,8 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
+  aliases = [ "voloaccendo.com", "www.voloaccendo.com" ]
+
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Distribution for Volo Accendo's web app"
@@ -37,7 +39,9 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = aws_acm_certificate_validation.cert_validation.certificate_arn
+    minimum_protocol_version = "TLSv1"
+    ssl_support_method       = "sni-only"
   }
 
   restrictions {
@@ -49,4 +53,32 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   tags = merge(local.common_tags, {
     resource_name = "${local.naming_prefix}-cloud-front-distribution"
   })
+}
+
+resource "aws_route53_record" "domain_name" {
+  zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
+  name    = ""
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.web_app_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.web_app_distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+
+  depends_on = [aws_acm_certificate_validation.cert_validation]
+}
+
+resource "aws_route53_record" "www_domain_name" {
+  zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
+  name    = "www"
+  type    = "A"
+  # ttl     = "172800"
+  alias {
+    name                   = aws_cloudfront_distribution.web_app_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.web_app_distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+
+  depends_on = [aws_acm_certificate_validation.cert_validation]
 }

@@ -1,4 +1,4 @@
-output "s3_bucket_name" {
+output "s3_web_app_bucket_name" {
   value = aws_s3_bucket.web_app_bucket.bucket
 }
 
