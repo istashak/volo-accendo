@@ -1,3 +1,6 @@
+# inspired by: https://prashant-48386.medium.com/terraform-aws-certificate-manager-dns-validation-54a62b6ed26f
+#
+# Creates a certificate for the domain name specified by var.domain_name
 resource "aws_acm_certificate" "cert" {
   domain_name = var.domain_name
   subject_alternative_names = ["*.${var.domain_name}"]
@@ -12,11 +15,13 @@ resource "aws_acm_certificate" "cert" {
   })
 }
 
+# References the existing zone specified by var.domain_name 
 data "aws_route53_zone" "volo_accendo_domain" {
   name         = var.domain_name
   private_zone = false
 }
 
+# Validates the certificate created above
 resource "aws_route53_record" "cert_validation" {
   for_each = {
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {

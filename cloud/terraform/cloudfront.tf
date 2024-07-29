@@ -55,6 +55,8 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   })
 }
 
+# Creates the zone record that enables the domain name root (i.e. voloaccendo.com) to be an alias for the
+# CloudFront hosted website.
 resource "aws_route53_record" "domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
   name    = ""
@@ -69,6 +71,8 @@ resource "aws_route53_record" "domain_name" {
   depends_on = [aws_acm_certificate_validation.cert_validation]
 }
 
+# Creates the zone record that enables the subdomain "www" of a domain (i.e. www.voloaccendo.com) to be an alias for the
+# CloudFront hosted website.
 resource "aws_route53_record" "www_domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
   name    = "www"
