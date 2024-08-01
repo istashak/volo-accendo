@@ -37,7 +37,7 @@ resource "aws_s3_bucket_acl" "lambda_bucket" {
 
 resource "aws_s3_object" "lambda_source" {
   bucket = aws_s3_bucket.lambda_bucket.id
-  key    = "putTaxiRequest/v${var.contacts_api_version}/lambda.zip"
+  key    = "putContact/v${var.contacts_api_version}/lambda.zip"
   source = data.archive_file.lambda_source_package.output_path
   etag   = filemd5(data.archive_file.lambda_source_package.output_path)
 }
@@ -47,17 +47,19 @@ resource "aws_lambda_function" "put_contact" {
   function_name = "${local.naming_prefix}-putContact"
   role          = aws_iam_role.lambda_role.arn
   handler       = "put-contact.handler"
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs20.x"
   timeout       = 60
 
   # The bucket name as created earlier with "aws s3api create-bucket"
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_object.lambda_source.key
+  s3_bucket        = aws_s3_bucket.lambda_bucket.id
+  s3_key           = aws_s3_object.lambda_source.key
+  source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
   environment {
     variables = {
-      NODE_ENV   = var.environment
-      TABLE_NAME = aws_dynamodb_table.contact_table.name
+      REGION              = var.region
+      NODE_ENV            = var.environment
+      CONTACTS_TABLE_NAME = aws_dynamodb_table.contacts_table.name
     }
   }
 
@@ -106,7 +108,7 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem"
         ],
-        Resource = "${aws_dynamodb_table.contact_table.arn}"
+        Resource = "${aws_dynamodb_table.contacts_table.arn}"
       },
       {
         Effect = "Allow",
@@ -122,11 +124,22 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
   })
 }
 
-# API Gateway v2 code inspired by: https://antonputra.com/amazon/aws-api-gateway-custom-domain/#create-custom-domain-using-terraform-route53
+# API Gateway v2 code inspired by: 
+# https://antonputra.com/amazon/aws-api-gateway-custom-domain/#create-custom-domain-using-terraform-route53
 
 resource "aws_apigatewayv2_api" "contacts" {
   name          = "contacts"
   protocol_type = "HTTP"
+
+  cors_configuration {
+
+    allow_headers = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
+    allow_methods = ["*"]
+    allow_origins = ["*"]
+
+    expose_headers = ["*"]
+    max_age        = 300
+  }
 }
 
 resource "aws_cloudwatch_log_group" "contacts" {

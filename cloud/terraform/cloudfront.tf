@@ -12,7 +12,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
-  aliases = [ "voloaccendo.com", "www.voloaccendo.com" ]
+  aliases = ["voloaccendo.com", "www.voloaccendo.com"]
 
   enabled             = true
   is_ipv6_enabled     = true

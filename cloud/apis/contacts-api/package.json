@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.142",
+    "@types/node": "^22.0.2",
     "typescript": "^5.5.4"
   },
   "include": [
@@ -18,5 +20,8 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.620.1"
+  }
 }

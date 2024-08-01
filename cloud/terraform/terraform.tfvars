@@ -1,8 +1,0 @@
-company_name             = "VoloAccendo"
-naming_prefix            = "volo-accendo-aws-resource"
-project                  = "web-app"
-region                   = "us-east-1"
-environment              = "dev"
-dynamodb_table_name      = "ContactTable"
-contacts_api_version     = "1.0.0-SNAPSHOT"
-domain_name              = "voloaccendo.com"
