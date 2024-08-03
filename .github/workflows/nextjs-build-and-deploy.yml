@@ -1,0 +1,54 @@
+# name: Build and Deploy
+
+# # Define the events that trigger this workflow
+# on:
+#   push:
+#     branches:
+#       - main  # Trigger on push events to the 'main' branch
+#   pull_request:
+#     branches:
+#       - main  # Trigger on pull requests to the 'main' branch
+
+# jobs:
+#   build:
+#     # Use the latest version of Ubuntu
+#     runs-on: ubuntu-latest
+
+#     # Define the Node.js versions to use in the matrix
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
+
+#     steps:
+#       # Step 1: Check out the code from the repository
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       # Step 2: Set up Node.js environment
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: ${{ matrix.node-version }}  # Use the version defined in the matrix
+#           cache: 'pnpm'  # Cache pnpm dependencies
+
+#       # Step 3: Install pnpm (an alternative package manager)
+#       - name: Install pnpm
+#         run: npm install -g pnpm
+
+#       # Step 4: Install project dependencies using pnpm
+#       - name: Install dependencies
+#         run: pnpm install
+
+#       # Step 5: Build the project
+#       - name: Build project
+#         run: pnpm next build
+
+#       # Step 6: Upload build artifacts (for example, to use in a deployment step)
+#       - name: Upload build artifacts
+#         if: success()  # Only run this step if the previous steps were successful
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: build  # Name of the artifact
+#           path: .next  # Path to the build artifacts
+
+#   # Additional jobs for deployment can be added here
