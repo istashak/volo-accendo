@@ -33,7 +33,9 @@ jobs:
       - name: Cache pnpm modules
         uses: actions/cache@v4
         with:
-          path: ./cloud/api/contacts-api/node_modules
+          path: |
+            cloud/api/contacts-api/node_modules
+            cloud/api/contacts-api/.pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('cloud/api/contacts-api/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
