@@ -6,12 +6,12 @@ on:
     branches:
       - main
     paths:
-      - "cloud/api/contacts-api/**"
+      - "cloud/apis/contacts-api/**"
   pull_request:
     branches:
       - main
     paths:
-      - "cloud/api/contacts-api/**"
+      - "cloud/apis/contacts-api/**"
 
 jobs:
   build:
@@ -34,24 +34,23 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            cloud/api/contacts-api/node_modules
-            cloud/api/contacts-api/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('cloud/api/contacts-api/pnpm-lock.yaml') }}
+            cloud/apis/contacts-api/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('cloud/apis/contacts-api/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - uses: actions/setup-node@v4
-        name: Set up Node.js
-        with:
-          node-version: "20.x"
-          cache: "pnpm"
+      # - uses: actions/setup-node@v4
+      #   name: Set up Node.js
+      #   with:
+      #     node-version: "20.x"
+      #     cache: "pnpm"
 
       - name: Install dependencies
         run: |
-          cd cloud/api/contacts-api
+          cd cloud/apis/contacts-api
           pnpm install
 
       - name: Run tests
         run: |
-          cd cloud/api/contacts-api
+          cd cloud/apis/contacts-api
           pnpm test
