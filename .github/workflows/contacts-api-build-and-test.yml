@@ -21,15 +21,17 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout code
 
-      - name: List directory contents
-        run: |
-          ls -R
+      # Uncomment for debugging
+      # - name: List directory contents
+      #   run: |
+      #     ls -R
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 9.5.0
 
+      # An alternative method for caching pnpm dependencies
       # - name: Cache pnpm modules
       #   uses: actions/cache@v4
       #   with:

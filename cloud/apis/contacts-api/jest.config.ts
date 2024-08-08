@@ -2,6 +2,7 @@ import type { JestConfigWithTsJest } from "ts-jest";
 
 const jestConfig: JestConfigWithTsJest = {
   preset: "ts-jest",
+  setupFiles: ["<rootDir>/jest.env.ts"],
   testEnvironment: "node",
   collectCoverage: true,
   collectCoverageFrom: [
@@ -15,7 +16,7 @@ const jestConfig: JestConfigWithTsJest = {
   },
   coverageReporters: ["cobertura", "json", "html"],
   rootDir: "./tests",
-  testMatch: ["**/tests/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
+  testMatch: ["**/?(*.)+(spec|test).ts?(x)"],
 };
 
 export default jestConfig;
