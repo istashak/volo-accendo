@@ -2,7 +2,7 @@ import { Contact } from "../../../src/models";
 import { ContactsDao } from "../../../src/models/dao";
 
 describe("ContactDao", () => {
-  test("Returning a Contacts object fro the toJson function.", () => {
+  test("Returning a Contacts object from the toJson function.", () => {
     const contact: Contact = {
       email: "foo@test.com",
       phoneNumber: "(561) 867-5309",
