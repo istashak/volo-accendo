@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lambda-build
-          path: build/ # The unzipped build directory
+          path: dist/ # The unzipped build directory
   
       - name: Trigger Terraform workflow
         run: |
