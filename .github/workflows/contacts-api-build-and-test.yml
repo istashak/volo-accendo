@@ -76,10 +76,10 @@ jobs:
           name: contacts-lambda-build-${{ github.ref_name }} 
           path: cloud/apis/contacts-api/dist/ # The unzipped build directory
   
-      - name: Trigger Terraform workflow
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.WORKFLOW_TOKEN }}" \
-            https://api.github.com/repos/istashak/volo-accendo/dispatches \
-            -d '{"event_type": "trigger_terraform_workflow"}'
+      # - name: Trigger Terraform workflow
+      #   run: |
+      #     curl -X POST \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -H "Authorization: token ${{ secrets.WORKFLOW_TOKEN }}" \
+      #       https://api.github.com/repos/istashak/volo-accendo/dispatches \
+      #       -d '{"event_type": "trigger_terraform_workflow"}'

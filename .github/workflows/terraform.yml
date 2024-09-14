@@ -3,8 +3,14 @@ name: Terraform Apply
 # Trigger the workflow on push events to the main branch
 on:
   workflow_dispatch: # Enable manual triggering
-  repository_dispatch:
-    types: [trigger_terraform_workflow]
+
+  workflow_run:
+    workflows: ["Contacts Api Build and Test"]
+    types: 
+      - completed
+
+  # repository_dispatch:
+  #   types: [trigger_terraform_workflow]
   # push:
   #   branches:
   #     - main
