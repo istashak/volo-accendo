@@ -29,17 +29,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Uncomment for debugging
+      - name: List directory contents 1
+        run: |
+          ls -R
+
       # Step 2: Download the contacts api build artifact created in the contacts-api-build-and-test workflow
       - name: Download the contacts api build artifact
         uses: actions/download-artifact@v4
         with:
-          name: contacts-lambda-build-${{ github.ref_name }} 
+          name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
 
       # Uncomment for debugging
-      # - name: List directory contents
-      #   run: |
-      #     ls -R
+      - name: List directory contents 2
+        run: |
+          ls -R
 
       # Step 3: Set up Terraform
       - name: Set up Terraform
@@ -62,11 +67,6 @@ jobs:
           elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
             echo "TF_VAR_environment=dev" >> $GITHUB_ENV
           fi
-
-      # Uncomment for debugging
-      - name: List directory contents
-        run: |
-          ls -R
 
       # Step 3: Install Terraform dependencies
       - name: Install dependencies
