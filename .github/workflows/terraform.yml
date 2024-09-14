@@ -61,6 +61,7 @@ jobs:
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
           github-token: ${{ secrets.WORKFLOW_TOKEN }}
           repository: ${{ github.repository }}
+          run-id: 10865472042
 
       # Uncomment for debugging
       - name: List directory contents 2
