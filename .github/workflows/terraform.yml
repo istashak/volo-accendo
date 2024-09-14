@@ -25,6 +25,9 @@ on:
   #   paths:
   #     - "cloud/terraform/**"
 
+permissions:
+  actions: read  # Ensure the token has permission to read artifacts
+
 jobs:
   terraform:
     # Define the environment where the job will run
