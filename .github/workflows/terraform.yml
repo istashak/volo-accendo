@@ -4,11 +4,13 @@ name: Terraform Apply
 on:
   workflow_dispatch: # Enable manual triggering
   workflow_run:
-    workflows: 
+    workflows:
       - Contacts Api Build and Test
-    types: 
+    branches:
+      - develop
+    types:
       - completed
-  
+
   # repository_dispatch:
   #   types: [trigger_terraform_workflow]
 
