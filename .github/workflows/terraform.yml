@@ -36,7 +36,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch || github.event.workflow_run.head_branch }}
+          ref: develop
+          # ref: ${{ inputs.branch || github.event.workflow_run.head_branch }}
 
       # Uncomment for debugging
       - name: List directory contents 1
@@ -47,8 +48,8 @@ jobs:
       - name: Download the contacts api build artifact
         uses: actions/download-artifact@v4
         with:
-          # name: contacts-lambda-build-develop
-          name: contacts-lambda-build-${{ github.event.workflow_run.head_branch }}
+          name: contacts-lambda-build-develop
+          # name: contacts-lambda-build-${{ github.event.workflow_run.head_branch }}
           # name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
 
