@@ -26,12 +26,15 @@ on:
   #     - "cloud/terraform/**"
 
 # permissions:
-#   actions: read  # Ensure the token has permission to read artifacts
+  # actions: read  # Ensure the token has permission to read artifacts
 
 jobs:
   terraform:
     # Define the environment where the job will run
     runs-on: ubuntu-latest
+
+    permissions: 
+      actions: write
 
     steps:
       # Step 1: Check out the code from the repository
