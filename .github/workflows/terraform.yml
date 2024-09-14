@@ -34,7 +34,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: contacts-lambda-build-${{ github.ref_name }} 
-          path: dist/ # Specify the local path for the download to reside in
+          path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
 
       # Uncomment for debugging
       # - name: List directory contents

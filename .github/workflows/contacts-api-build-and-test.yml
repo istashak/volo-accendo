@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: contacts-lambda-build-${{ github.ref_name }} 
-          path: dist/ # The unzipped build directory
+          path: cloud/apis/contacts-api/dist/ # The unzipped build directory
   
       - name: Trigger Terraform workflow
         run: |
