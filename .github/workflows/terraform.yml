@@ -55,8 +55,8 @@ jobs:
       - name: Download the contacts api build artifact
         uses: actions/download-artifact@v4
         with:
-          # name: contacts-lambda-build-develop
-          name: contacts-lambda-build-${{ inputs.branch || github.event.workflow_run.head_branch }}
+          name: contacts-lambda-build-main
+          # name: contacts-lambda-build-${{ inputs.branch || github.event.workflow_run.head_branch }}
           # name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
           github-token: ${{ secrets.WORKFLOW_TOKEN }}
