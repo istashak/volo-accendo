@@ -65,6 +65,11 @@ jobs:
           cd cloud/apis/contacts-api
           pnpm build
 
+      # Uncomment for debugging
+      - name: List directory contents
+        run: |
+          ls -R
+
       - name: Upload the contacts api build directory as an artifact
         uses: actions/upload-artifact@v4
         with:

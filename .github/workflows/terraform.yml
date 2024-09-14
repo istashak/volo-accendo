@@ -63,6 +63,11 @@ jobs:
             echo "TF_VAR_environment=dev" >> $GITHUB_ENV
           fi
 
+      # Uncomment for debugging
+      - name: List directory contents
+        run: |
+          ls -R
+
       # Step 3: Install Terraform dependencies
       - name: Install dependencies
         run: |
