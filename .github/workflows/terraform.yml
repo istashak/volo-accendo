@@ -52,6 +52,7 @@ jobs:
           name: contacts-lambda-build-${{ inputs.branch || github.event.workflow_run.head_branch }}
           # name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
+          github-token: ${{ secrets.WORKFLOW_TOKEN }}
 
       # Uncomment for debugging
       - name: List directory contents 2

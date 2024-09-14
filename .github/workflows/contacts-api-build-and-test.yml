@@ -79,6 +79,7 @@ jobs:
         with:
           name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # The unzipped build directory
+          overwrite: true
 
       # - name: Trigger Terraform workflow
       #   run: |
