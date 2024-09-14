@@ -70,7 +70,7 @@ resource "aws_lambda_function" "put_contact" {
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
+  name = "${local.naming_prefix}-lambda_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -128,7 +128,7 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
 # https://antonputra.com/amazon/aws-api-gateway-custom-domain/#create-custom-domain-using-terraform-route53
 
 resource "aws_apigatewayv2_api" "contacts" {
-  name          = "contacts"
+  name          = "contacts-${var.environment}"
   protocol_type = "HTTP"
 
   cors_configuration {
@@ -149,7 +149,7 @@ resource "aws_cloudwatch_log_group" "contacts" {
 }
 
 resource "aws_apigatewayv2_stage" "contacts" {
-  name        = "contacts-staging"
+  name        = "contacts-staging-${var.environment}"
   api_id      = aws_apigatewayv2_api.contacts.id
   auto_deploy = true
 
@@ -197,7 +197,7 @@ resource "aws_lambda_permission" "put_contact" {
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${var.domain_name}"
+  domain_name = "api.${var.environment}.${var.domain_name}"
 
   domain_name_configuration {
     certificate_arn = aws_acm_certificate.cert.arn

@@ -4,6 +4,7 @@ resource "aws_cloudfront_origin_access_identity" "web_app_oai" {
 
 resource "aws_cloudfront_distribution" "web_app_distribution" {
   origin {
+    # domain_name = "${var.environment == "prod" ? "" : "dev."}${aws_s3_bucket.web_app_bucket.bucket_regional_domain_name}"
     domain_name = aws_s3_bucket.web_app_bucket.bucket_regional_domain_name
     origin_id   = aws_s3_bucket.web_app_bucket.id
 
@@ -12,7 +13,9 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
-  aliases = ["voloaccendo.com", "www.voloaccendo.com"]
+  # aliases = ["voloaccendo.com", "www.voloaccendo.com"]
+  # Conditionally set aliases based on the environment
+  aliases = var.environment == "prod" ? ["voloaccendo.com", "www.voloaccendo.com"] : ["dev.voloaccendo.com", "www.dev.voloaccendo.com"]
 
   enabled             = true
   is_ipv6_enabled     = true
@@ -59,7 +62,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 # CloudFront hosted website.
 resource "aws_route53_record" "domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
-  name    = ""
+  name    = "${var.environment == "prod" ? "" : "dev."}"
   type    = "A"
 
   alias {
@@ -75,7 +78,7 @@ resource "aws_route53_record" "domain_name" {
 # CloudFront hosted website.
 resource "aws_route53_record" "www_domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
-  name    = "www"
+  name    = "www${var.environment == "prod" ? "" : ".dev"}"
   type    = "A"
   # ttl     = "172800"
   alias {

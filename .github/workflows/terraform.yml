@@ -5,18 +5,18 @@ on:
   workflow_dispatch: # Enable manual triggering
   repository_dispatch:
     types: [trigger_terraform_workflow]
-  push:
-    branches:
-      - main
-      - develop
-    paths:
-      - "cloud/terraform/**"
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths:
-      - "cloud/terraform/**"
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #   paths:
+  #     - "cloud/terraform/**"
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - develop
+  #   paths:
+  #     - "cloud/terraform/**"
 
 jobs:
   terraform:
@@ -25,15 +25,23 @@ jobs:
 
     steps:
       # Step 1: Check out the code from the repository
+      # This step clones the repository into the runner's workspace, making the code available for subsequent steps.
       - name: Checkout code
         uses: actions/checkout@v4
-        # This step clones the repository into the runner's workspace, making the code available for subsequent steps.
+
+      # Step 2: Download the contacts api build artifact created in the contacts-api-build-and-test workflow
+      - name: Download the contacts api build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: contacts-lambda-build-${{ github.ref_name }} 
+          path: dist/ # Specify the local path for the download to reside in
 
       # Uncomment for debugging
       # - name: List directory contents
       #   run: |
       #     ls -R
-      # Step 2: Set up Terraform
+
+      # Step 3: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -47,10 +55,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Set Environment Variables
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
+          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            echo "TF_VAR_environment=dev" >> $GITHUB_ENV
+          fi
+
       # Step 3: Install Terraform dependencies
       - name: Install dependencies
         run: |
-          cd cloud/terraform
+          cd cloud/terraform/${{ env.TF_VAR_environment }}
           terraform init
         # This step initializes the Terraform configuration directory.
         # It installs the required provider plugins and sets up the workspace.
@@ -58,7 +74,7 @@ jobs:
       # Step 4: Validate Terraform Scripts
       - name: Terraform Validate
         run: |
-          cd cloud/terraform
+          cd cloud/terraform/${{ env.TF_VAR_environment }}
           terraform validate -no-color
 
       # - name: Set Environment Variables
@@ -72,25 +88,17 @@ jobs:
       #   echo "TF_VAR_contacts_api_version=${{ secrets['${{ github.event.inputs.environment | upper }}_CONTACTS_API_VERSION'] }}" >> $GITHUB_ENV
       #   echo "TF_VAR_domain_name=${{ secrets['${{ github.event.inputs.environment | upper }}_DOMAIN_NAME'] }}" >> $GITHUB_ENV
 
-      - name: Set Environment Variables
-        run: |
-          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
-          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            echo "TF_VAR_environment=dev" >> $GITHUB_ENV
-          fi
-
       # Step 5: Run Terraform Plan
       - name: Terraform Plan
         id: Plan
         run: |
-          cd cloud/terraform
+          cd cloud/terraform/${{ env.TF_VAR_environment }}
           terraform plan -var-file="${TF_VAR_environment}.tfvars"
 
       # Step ?: Run Terraform to apply changes
       - name: Run Terraform
         run: |
-          cd cloud/terraform
+          cd cloud/terraform/${{ env.TF_VAR_environment }}
           terraform apply -auto-approve -var-file="${TF_VAR_environment}.tfvars"
         # This step applies the Terraform configuration.
         # The `-auto-approve` flag automatically approves any proposed changes to the infrastructure without requiring manual confirmation.

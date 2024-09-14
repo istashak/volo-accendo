@@ -59,10 +59,10 @@ jobs:
           cd cloud/apis/contacts-api
           pnpm test
 
-      - name: Upload build directory as an artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload the contacts api build directory as an artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: lambda-build
+          name: contacts-lambda-build-${{ github.ref_name }} 
           path: dist/ # The unzipped build directory
   
       - name: Trigger Terraform workflow

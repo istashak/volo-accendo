@@ -3,7 +3,7 @@
 ##################################################################################
 
 resource "aws_dynamodb_table" "contacts_table" {
-  name         = var.dynamodb_table_name
+  name         = "${var.dynamodb_table_name}-${var.environment}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "email"
 

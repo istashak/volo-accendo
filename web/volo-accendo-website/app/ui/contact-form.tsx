@@ -16,6 +16,8 @@ type ContactFormProps = {
   onSubmit: (contact: Contact) => void;
 };
 
+const apiUrl = process.env.VOLO_ACCENDO_API
+
 export const ContactForm: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
@@ -27,7 +29,7 @@ export const ContactForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log("handleSubmit called")
+    console.log("handleSubmit called");
 
     const contact: Contact = {
       email,
@@ -39,7 +41,7 @@ export const ContactForm: React.FC = () => {
     };
 
     try {
-      const res = await fetch("https://api.voloaccendo.com/contacts", {
+      const res = await fetch(`https://${apiUrl}/contacts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
