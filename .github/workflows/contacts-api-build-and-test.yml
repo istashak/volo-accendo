@@ -86,4 +86,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.WORKFLOW_TOKEN }}" \
             https://api.github.com/repos/istashak/volo-accendo/dispatches \
-            -d '{"event_type": "trigger_terraform_workflow"}, "client_payload": { "branch": "${{ github.ref_name }}" }}'
+            -d '{"event_type": "trigger_terraform_workflow"}, "client_payload": { "ref": "${{ github.ref }}" }}'
