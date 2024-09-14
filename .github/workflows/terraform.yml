@@ -9,8 +9,9 @@ on:
     types: 
       - completed
 
-  # repository_dispatch:
-  #   types: [trigger_terraform_workflow]
+  repository_dispatch:
+    types: [trigger_terraform_workflow]
+    
   # push:
   #   branches:
   #     - main
