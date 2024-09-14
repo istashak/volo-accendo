@@ -51,6 +51,16 @@ jobs:
         run: |
           ls -R
 
+      # Step 1: Call GitHub API to Get the Workflow Run ID of the Contacts API Build
+      - name: Get Contacts API Build Workflow Run ID
+        id: get_run_id
+        run: |
+          run_id=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        "https://api.github.com/repos/${{ github.repository }}/actions/workflows/contacts-api-build-and-test/runs?branch=main&status=success" \
+                        | jq '.workflow_runs[0].id')
+          echo "run_id=$run_id" >> $GITHUB_ENV
+
       # Step 2: Download the contacts api build artifact created in the contacts-api-build-and-test workflow
       - name: Download the contacts api build artifact
         uses: actions/download-artifact@v4
@@ -61,7 +71,7 @@ jobs:
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
           github-token: ${{ secrets.WORKFLOW_TOKEN }}
           repository: ${{ github.repository }}
-          run-id: 10865472042
+          run-id: ${{ env.run_id }}
 
       # Uncomment for debugging
       - name: List directory contents 2
@@ -120,13 +130,13 @@ jobs:
         id: Plan
         run: |
           cd cloud/terraform/${{ env.TF_VAR_environment }}
-          terraform plan -var-file="${TF_VAR_environment}.tfvars"
+          terraform plan -out "${{ env.TF_VAR_environment }}.tfplan"
 
       # Step ?: Run Terraform to apply changes
       - name: Run Terraform
         run: |
           cd cloud/terraform/${{ env.TF_VAR_environment }}
-          terraform apply -auto-approve -var-file="${TF_VAR_environment}.tfvars"
+          terraform apply -auto-approve "${{ env.TF_VAR_environment }}.tfplan"
         # This step applies the Terraform configuration.
         # The `-auto-approve` flag automatically approves any proposed changes to the infrastructure without requiring manual confirmation.
 
