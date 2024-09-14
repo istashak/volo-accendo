@@ -33,9 +33,9 @@ jobs:
     # Define the environment where the job will run
     runs-on: ubuntu-latest
 
-    permissions:
-      actions: read    # Ensure the token has permission to read artifacts
-      contents: read
+    # permissions:
+    #   actions: read    # Ensure the token has permission to read artifacts
+    #   contents: read
 
     steps:
       # Step 1: Check out the code from the repository
@@ -60,6 +60,7 @@ jobs:
           # name: contacts-lambda-build-${{ github.ref_name }}
           path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
           github-token: ${{ secrets.WORKFLOW_TOKEN }}
+          repository: ${{ github.repository }}
 
       # Uncomment for debugging
       - name: List directory contents 2
