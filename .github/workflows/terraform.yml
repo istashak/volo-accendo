@@ -38,9 +38,9 @@ jobs:
       # This step clones the repository into the runner's workspace, making the code available for subsequent steps.
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
+        # with:
           # ref: develop
-          ref: ${{ inputs.branch || github.event.workflow_run.head_branch }}
+          # ref: ${{ inputs.branch || github.event.workflow_run.head_branch }}
 
       # Uncomment for debugging
       - name: List directory contents 1
