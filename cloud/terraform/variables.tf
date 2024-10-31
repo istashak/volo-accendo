@@ -55,10 +55,10 @@ variable "apis_relative_path" {
   default     = "../apis"
 }
 
-variable "contacts_api_version" {
-  type        = string
-  description = "The version of the Contacts API."
-}
+# variable "contacts_api_version" {
+#   type        = string
+#   description = "The version of the Contacts API."
+# }
 
 variable "domain_name" {
   type        = string

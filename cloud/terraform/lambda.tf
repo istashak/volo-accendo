@@ -35,12 +35,12 @@ resource "aws_s3_bucket_acl" "lambda_bucket" {
   acl        = "private"
 }
 
-resource "aws_s3_object" "lambda_source" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-  key    = "putContact/v${var.contacts_api_version}/lambda.zip"
-  source = data.archive_file.lambda_source_package.output_path
-  etag   = filemd5(data.archive_file.lambda_source_package.output_path)
-}
+# resource "aws_s3_object" "lambda_source" {
+#   bucket = aws_s3_bucket.lambda_bucket.id
+#   key    = "putContact/v${var.contacts_api_version}/lambda.zip"
+#   source = data.archive_file.lambda_source_package.output_path
+#   etag   = filemd5(data.archive_file.lambda_source_package.output_path)
+# }
 
 # Lambda Function
 resource "aws_lambda_function" "put_contact" {
