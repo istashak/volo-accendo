@@ -9,6 +9,7 @@
 #   description = "The AWS secret access key associated with the access key id."
 #   sensitive   = true
 # }
+
 variable "company_name" {
   type        = string
   description = "The company name that owns the VPC."
