@@ -1,14 +1,14 @@
-variable "aws_access_key_id" {
-  type        = string
-  description = "A valid AWS access key id."
-  sensitive   = true
-}
+# variable "aws_access_key_id" {
+#   type        = string
+#   description = "A valid AWS access key id."
+#   sensitive   = true
+# }
 
-variable "aws_secret_access_key" {
-  type        = string
-  description = "The AWS secret access key associated with the access key id."
-  sensitive   = true
-}
+# variable "aws_secret_access_key" {
+#   type        = string
+#   description = "The AWS secret access key associated with the access key id."
+#   sensitive   = true
+# }
 variable "company_name" {
   type        = string
   description = "The company name that owns the VPC."
