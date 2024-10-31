@@ -14,11 +14,6 @@ variable "company_name" {
   description = "The company name that owns the VPC."
 }
 
-variable "project" {
-  type        = string
-  description = "Project name for resource tagging"
-}
-
 variable "naming_prefix" {
   type        = string
   description = "Naming prefix for all resources."
