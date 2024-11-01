@@ -15,3 +15,8 @@ output "domain_zone_id" {
   value = data.aws_route53_zone.volo_accendo_domain.zone_id
   description = "The zone id of the volo accendo domain."
 }
+
+output "domain_name" {
+  value = var.domain_name
+  description = "The configure company domain name (i.e. voloaccendo.com)"
+}

@@ -197,7 +197,7 @@ resource "aws_lambda_permission" "put_contact" {
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${var.environment}.${var.domain_name}"
+  domain_name = "api.${var.environment}.${data.tfe_outputs.networking.nonsensitive_values.domain_name}"
 
   domain_name_configuration {
     certificate_arn = data.tfe_outputs.networking.nonsensitive_values.aws_certificate_arn
