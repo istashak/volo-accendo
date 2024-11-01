@@ -43,22 +43,11 @@ variable "vpc_public_subnet_count" {
   default     = 1
 }
 
-variable "dynamodb_table_name" {
-  type        = string
-  description = "Name of the dynamo DB contact table."
-  default     = "ContactsTable"
-}
-
 variable "apis_relative_path" {
   type        = string
   description = "The relative path to the apis directory."
   default     = "../apis"
 }
-
-# variable "contacts_api_version" {
-#   type        = string
-#   description = "The version of the Contacts API."
-# }
 
 variable "domain_name" {
   type        = string
