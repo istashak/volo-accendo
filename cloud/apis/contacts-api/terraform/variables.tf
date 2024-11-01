@@ -32,11 +32,6 @@ variable "contacts_api_version" {
   default = "v1.0"
 }
 
-variable "domain_name" {
-  type        = string
-  description = "The domain name"
-}
-
 variable "tfe_organization" {
   type        = string
   description = "(Required) The terraform cloud organization"
