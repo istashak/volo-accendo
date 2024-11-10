@@ -1,4 +1,4 @@
-name: Terraform Plan and Apply
+name: Contacts API Terraform Plan and Apply
 
 on:
   workflow_dispatch: # Enable manual triggering
