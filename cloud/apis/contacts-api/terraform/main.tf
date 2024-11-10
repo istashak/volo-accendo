@@ -1,4 +1,12 @@
 ##################################################################################
+# PROVIDERS
+##################################################################################
+
+provider "aws" {
+  region = var.region
+}
+
+##################################################################################
 # LAMBDA
 ##################################################################################
 
@@ -51,8 +59,8 @@ resource "aws_lambda_function" "put_contact" {
   timeout       = 60
 
   # The bucket name as created earlier with "aws s3api create-bucket"
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
-  s3_key           = aws_s3_object.lambda_source.key
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_object.lambda_source.key
   # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
   environment {
@@ -205,8 +213,8 @@ resource "aws_apigatewayv2_domain_name" "api" {
     security_policy = "TLS_1_2"
   }
 
-    # TODO: Decide if this is necessary
-    # depends_on = [aws_acm_certificate_validation.cert_validation]
+  # TODO: Decide if this is necessary
+  # depends_on = [aws_acm_certificate_validation.cert_validation]
 }
 
 resource "aws_route53_record" "api" {

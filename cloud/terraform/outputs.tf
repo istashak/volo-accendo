@@ -7,16 +7,16 @@ output "cloudfront_distribution_domain_name" {
 }
 
 output "aws_acm_certificate_arn" {
-  value = aws_acm_certificate.cert.arn
+  value       = aws_acm_certificate.cert.arn
   description = "The arn of the aws certificate used for the domain name."
 }
 
 output "domain_zone_id" {
-  value = data.aws_route53_zone.volo_accendo_domain.zone_id
+  value       = data.aws_route53_zone.volo_accendo_domain.zone_id
   description = "The zone id of the volo accendo domain."
 }
 
 output "domain_name" {
-  value = var.domain_name
+  value       = var.domain_name
   description = "The configure company domain name (i.e. voloaccendo.com)"
 }

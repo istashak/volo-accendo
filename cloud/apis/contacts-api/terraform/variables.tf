@@ -19,7 +19,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-
 variable "dynamodb_table_name" {
   type        = string
   description = "Name of the dynamo DB contact table."
@@ -29,7 +28,7 @@ variable "dynamodb_table_name" {
 variable "contacts_api_version" {
   type        = string
   description = "The version of the Contacts API."
-  default = "v1.0"
+  default     = "v1.0"
 }
 
 variable "tfe_organization" {
