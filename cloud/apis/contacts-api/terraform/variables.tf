@@ -36,7 +36,13 @@ variable "tfe_organization" {
   description = "(Required) The terraform cloud organization"
 }
 
-variable "tfe_workspace" {
+variable "tfe_networking_workspace" {
   type        = string
-  description = "(Required) The terraform cloud workspace"
+  description = "(Required) The terraform cloud workspace for the networking configuration"
+}
+
+variable "tfe_deployment_workspace" {
+  type        = string
+  description = "(Required) The terraform cloud workspace for the deployment S3 bucket"
+
 }
