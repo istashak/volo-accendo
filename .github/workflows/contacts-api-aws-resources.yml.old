@@ -76,6 +76,4 @@ jobs:
           fi
         done
 
-    - name: Run Completion Notice
-      if: steps.poll_run.outcome == 'success'
-      run: echo "Terraform Plan and Apply has completed successfully!"
+    
