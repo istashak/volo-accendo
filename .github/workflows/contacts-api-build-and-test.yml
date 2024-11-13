@@ -126,7 +126,7 @@ jobs:
                           https://app.terraform.io/api/v2/organizations/$TF_ORG/workspaces/$TF_WORKSPACE | jq -r .data.id)
           s3_bucket_name=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
                           "https://app.terraform.io/api/v2/workspaces/$workspace_id/outputs" | \
-                          jq -r '.data[] | select(.attributes.name=="s3_bucket_name") | .attributes.value')
+                          jq -r '.data[] | select(.attributes.name=="contacts_api_lambda_bucket_name") | .attributes.value')
           
           if [[ -z "$s3_bucket_name" ]]; then
             echo "Error: S3 bucket name output not found." >&2
