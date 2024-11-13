@@ -1,4 +1,4 @@
-name: Cname: Contacts API Deployment
+name: Contacts API Deployment
 
 on:
   workflow_dispatch: # Enable manual triggering
