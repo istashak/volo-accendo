@@ -72,6 +72,11 @@ jobs:
           cd web/volo-accendo-website
           pnpm install
 
+      # Comment/Uncomment for debugging
+      - name: List directory contents I
+        run: |
+          ls -R
+
       # Step 5: Build the project
       - name: Build project
         run: |
@@ -79,7 +84,7 @@ jobs:
           pnpm next build:$ENV
 
       # Comment/Uncomment for debugging
-      - name: List directory contents
+      - name: List directory contents II
         run: |
           ls -R
 
