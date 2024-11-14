@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "clean": "rm -rf .next node_modules",
+    "clean": "rm -rf .next node_modules out",
     "dev": "next dev",
     "build": "cp .env.production .env.local && next build",
     "build:dev": "cp .env.dev .env.local && next build",
+    "build:prod": "pnpm build",
     "start": "next start",
     "lint": "next lint"
   },

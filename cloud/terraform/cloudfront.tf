@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 # CloudFront hosted website.
 resource "aws_route53_record" "domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
-  name    = "${var.environment == "prod" ? "" : "dev."}"
+  name    = var.environment == "prod" ? "" : "dev."
   type    = "A"
 
   alias {

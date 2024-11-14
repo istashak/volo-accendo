@@ -1,0 +1,86 @@
+name: Contacts API Build, Text & Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "cloud/apis/contacts-api/src/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "cloud/apis/contacts-api/src/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+      contents: read
+    
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout code
+
+      # Uncomment for debugging
+      # - name: List directory contents
+      #   run: |
+      #     ls -R
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9.5.0
+
+      - uses: actions/setup-node@v4
+        name: Set up Node.js
+        with:
+          node-version: "20.x"
+          cache: "pnpm"
+          cache-dependency-path: cloud/apis/contacts-api/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          cd cloud/apis/contacts-api
+          pnpm install
+
+      - name: Run tests
+        run: |
+          cd cloud/apis/contacts-api
+          pnpm test
+
+      - name: Build
+        run: |
+          cd cloud/apis/contacts-api
+          pnpm build
+
+      - name: Set Environment Variables
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+             echo "S3_BUCKET_NAME=volo-accendo-contacts-api-prod-lambda-function-bucket" >> $GITHUB_ENV
+          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+             echo "S3_BUCKET_NAME=volo-accendo-contacts-api-dev-lambda-function-bucket" >> $GITHUB_ENV
+          fi
+
+      - name: Archive dist directory
+        run: |
+          cd cloud/apis/contacts-api/
+          zip -r lambda.zip dist
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"  # Adjust if necessary
+        run: |
+          aws s3 cp cloud/apis/contacts-api/lambda.zip s3://$S3_BUCKET_NAME/lambda.zip

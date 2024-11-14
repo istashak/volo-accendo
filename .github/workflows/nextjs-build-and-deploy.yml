@@ -1,0 +1,101 @@
+name: Build and Deploy
+
+# Define the events that trigger this workflow
+on:
+  workflow_dispatch:  
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "web/volo-accendo-website/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "web/volo-accendo-website/**"
+
+jobs:
+  build:
+    # Use the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    # Define the Node.js versions to use in the matrix
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}  # Use the version defined in the matrix
+          cache: 'pnpm'  # Cache pnpm dependencies
+
+      - name: Set Environment Variables
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+              echo "ENV=prod" >> $GITHUB_ENV
+              echo "S3_BUCKET_NAME=volo-accendo-vpc-prod-web-app-bucket" >> $GITHUB_ENV
+          elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+              echo "ENV=dev" >> $GITHUB_ENV
+              echo "S3_BUCKET_NAME=volo-accendo-vpc-dev-web-app-bucket" >> $GITHUB_ENV
+          fi
+
+      # Step 3: Install pnpm (an alternative package manager)
+      - name: Install pnpm
+        run: |
+          cd cloud/web/volo-accendo-website
+          npm install -g pnpm
+
+      # Step 4: Install project dependencies using pnpm
+      - name: Install dependencies
+        run: |
+          cd cloud/web/volo-accendo-website
+          pnpm install
+
+      # Step 5: Build the project
+      - name: Build project
+        run: |
+          cd cloud/web/volo-accendo-website
+          pnpm next build:$ENV
+
+      # Comment/Uncomment for debugging
+      - name: List directory contents
+        run: |
+          ls -R
+
+      # - name: Archive dist directory
+      #   run: |
+      #     cd cloud/web/volo-accendo-website/
+      #     zip -r build.zip .next
+
+      # Step 6: Upload build artifacts (for example, to use in a deployment step)
+      # - name: Upload build artifacts
+      #   if: success()  # Only run this step if the previous steps were successful
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: build  # Name of the artifact
+      #     path: .next  # Path to the build artifacts
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"  # Adjust if necessary
+        run: |
+          cd cloud/web/volo-accendo-website
+          aws s3 cp out s3://$S3_BUCKET_NAME
+
+  # Additional jobs for deployment can be added here

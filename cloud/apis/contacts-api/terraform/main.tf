@@ -1,14 +1,22 @@
 ##################################################################################
+# PROVIDERS
+##################################################################################
+
+provider "aws" {
+  region = var.region
+}
+
+##################################################################################
 # LAMBDA
 ##################################################################################
 
 # Archive source
 
-data "archive_file" "lambda_source_package" {
-  type        = "zip"
-  source_dir  = "${local.contacts_api_local_path}/dist"
-  output_path = "${local.contacts_api_local_path}/.tmp/lambda.zip"
-}
+# data "archive_file" "lambda_source_package" {
+#   type        = "zip"
+#   source_dir  = "/dist"
+#   output_path = "/.tmp/lambda.zip"
+# }
 
 # S3 bucket for lambda
 
@@ -37,9 +45,10 @@ resource "aws_s3_bucket_acl" "lambda_bucket" {
 
 resource "aws_s3_object" "lambda_source" {
   bucket = aws_s3_bucket.lambda_bucket.id
-  key    = "putContact/v${var.contacts_api_version}/lambda.zip"
-  source = data.archive_file.lambda_source_package.output_path
-  etag   = filemd5(data.archive_file.lambda_source_package.output_path)
+  key    = "lambda.zip"
+  # key    = "putContact/v${var.contacts_api_version}/lambda.zip"
+  # source = data.archive_file.lambda_source_package.output_path
+  # etag   = filemd5(data.archive_file.lambda_source_package.output_path)
 }
 
 # Lambda Function
@@ -51,9 +60,9 @@ resource "aws_lambda_function" "put_contact" {
   timeout       = 60
 
   # The bucket name as created earlier with "aws s3api create-bucket"
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
-  s3_key           = aws_s3_object.lambda_source.key
-  source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_object.lambda_source.key
+  # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
   environment {
     variables = {
@@ -197,21 +206,22 @@ resource "aws_lambda_permission" "put_contact" {
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${var.environment}.${var.domain_name}"
+  domain_name = "api.${var.environment}.${data.tfe_outputs.networking.nonsensitive_values.domain_name}"
 
   domain_name_configuration {
-    certificate_arn = aws_acm_certificate.cert.arn
+    certificate_arn = data.tfe_outputs.networking.nonsensitive_values.aws_acm_certificate_arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
 
-  depends_on = [aws_acm_certificate_validation.cert_validation]
+  # TODO: Decide if this is necessary
+  # depends_on = [aws_acm_certificate_validation.cert_validation]
 }
 
 resource "aws_route53_record" "api" {
   name    = aws_apigatewayv2_domain_name.api.domain_name
   type    = "A"
-  zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
+  zone_id = data.tfe_outputs.networking.nonsensitive_values.domain_zone_id
 
   alias {
     name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
