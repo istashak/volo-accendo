@@ -1,4 +1,4 @@
-name: Contacts API Deployment
+name: Contacts API Build, Text & Deploy
 
 on:
   workflow_dispatch:

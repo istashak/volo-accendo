@@ -7,7 +7,7 @@ locals {
 
   s3_web_app_bucket_name         = "${lower(local.naming_prefix)}-web-app-bucket"
 
-  naming_prefix = "${var.naming_prefix}-${var.environment}-${local.deploy_id}"
+  naming_prefix = "${var.naming_prefix}-${var.environment}"
   deploy_id     = random_id.deploy_id.hex
 }
 

@@ -9,9 +9,6 @@ on:
     types:
       - completed
 
-  # repository_dispatch:
-  #   types: [trigger_terraform_workflow]
-
   # push:
   #   branches:
   #     - main
@@ -43,15 +40,6 @@ jobs:
       - name: List directory contents 1
         run: |
           ls -R
-
-      # Step 2: Download the contacts api build artifact created in the contacts-api-build-and-test workflow
-      - name: Download the contacts api build artifact
-        uses: actions/download-artifact@v4
-        with:
-          # name: contacts-lambda-build-develop
-          name: contacts-lambda-build-${{ inputs.branch || github.event.workflow_run.head_branch }}
-          # name: contacts-lambda-build-${{ github.ref_name }}
-          path: cloud/apis/contacts-api/dist/ # Specify the local path for the download to reside in
 
       # Uncomment for debugging
       - name: List directory contents 2
@@ -89,46 +77,8 @@ jobs:
         # It installs the required provider plugins and sets up the workspace.
 
       # Step 4: Validate Terraform Scripts
-      - name: Terraform Validate
+      - name: Terraform Format and Validate
         run: |
           cd cloud/terraform/${{ env.TF_VAR_environment }}
+          terraform fmt
           terraform validate -no-color
-
-      # - name: Set Environment Variables
-      # run: |
-      #   echo "TF_VAR_company_name=${{ secrets['${{ github.event.inputs.environment | upper }}_COMPANY_NAME'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_naming_prefix=${{ secrets['${{ github.event.inputs.environment | upper }}_NAMING_PREFIX'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_project=${{ secrets['${{ github.event.inputs.environment | upper }}_PROJECT'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_region=${{ secrets['${{ github.event.inputs.environment | upper }}_REGION'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_environment=${{ secrets['${{ github.event.inputs.environment | upper }}_ENVIRONMENT'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_dynamodb_table_name=${{ secrets['${{ github.event.inputs.environment | upper }}_DYNAMODB_TABLE_NAME'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_contacts_api_version=${{ secrets['${{ github.event.inputs.environment | upper }}_CONTACTS_API_VERSION'] }}" >> $GITHUB_ENV
-      #   echo "TF_VAR_domain_name=${{ secrets['${{ github.event.inputs.environment | upper }}_DOMAIN_NAME'] }}" >> $GITHUB_ENV
-
-      # Step 5: Run Terraform Plan
-      - name: Terraform Plan
-        id: Plan
-        run: |
-          cd cloud/terraform/${{ env.TF_VAR_environment }}
-          terraform plan -var-file="${TF_VAR_environment}.tfvars"
-
-      # Step ?: Run Terraform to apply changes
-      - name: Run Terraform
-        run: |
-          cd cloud/terraform/${{ env.TF_VAR_environment }}
-          terraform apply -auto-approve -var-file="${TF_VAR_environment}.tfvars"
-        # This step applies the Terraform configuration.
-        # The `-auto-approve` flag automatically approves any proposed changes to the infrastructure without requiring manual confirmation.
-
-      # # Extract Terraform outputs and set as environment variables
-      # - name: Get Terraform Outputs
-      #   id: terraform_outputs
-      #   run: |
-      #     echo "API_URL=$(terraform output -raw api_url)" >> $GITHUB_ENV
-      #     echo "DB_ENDPOINT=$(terraform output -raw db_endpoint)" >> $GITHUB_ENV
-
-      # # Use the environment variables in subsequent steps
-      # - name: Use Environment Variables
-      #   run: |
-      #     echo "API URL: $API_URL"
-      #     echo "DB Endpoint: $DB_ENDPOINT"
