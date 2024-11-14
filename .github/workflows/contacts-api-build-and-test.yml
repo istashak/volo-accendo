@@ -22,10 +22,6 @@ jobs:
     permissions:
       actions: write
       contents: read
-
-    env:
-      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-      TF_ORG: "volo-accendo"
     
     steps:
       - uses: actions/checkout@v4
@@ -66,80 +62,15 @@ jobs:
       - name: Set Environment Variables
         run: |
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            echo "TF_VAR_environment=prod" >> $GITHUB_ENV
+             echo "S3_BUCKET_NAME=volo-accendo-contacts-api-prod-lambda-function-bucket" >> $GITHUB_ENV
           elif [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            echo "TF_VAR_environment=dev" >> $GITHUB_ENV
+             echo "S3_BUCKET_NAME=volo-accendo-contacts-api-dev-lambda-function-bucket" >> $GITHUB_ENV
           fi
-
-      - name: Start HCP Terraform Plan and Apply Run
-        id: start_run
-        run: |
-          TF_WORKSPACE="volo-accendo-contacts-api-deployment-${TF_VAR_environment}"
-          response=$(curl -s -X POST \
-            -H "Authorization: Bearer $TF_API_TOKEN" \
-            -H "Content-Type: application/vnd.api+json" \
-            https://app.terraform.io/api/v2/runs \
-            -d '{
-                  "data": {
-                    "attributes": {
-                      "is-destroy": false
-                    },
-                    "type": "runs",
-                    "relationships": {
-                      "workspace": {
-                        "data": {
-                          "type": "workspaces",
-                          "id": "'$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-                                     https://app.terraform.io/api/v2/organizations/$TF_ORG/workspaces/$TF_WORKSPACE | jq -r .data.id)'"
-                        }
-                      }
-                    }
-                  }
-                }')
-          echo "RUN_ID=$(echo $response | jq -r .data.id)" >> $GITHUB_ENV
-
-      - name: Poll HCP Terraform Run Status
-        id: poll_run
-        run: |
-          while true; do
-            status=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-                            https://app.terraform.io/api/v2/runs/$RUN_ID | jq -r .data.attributes.status)
-            echo "Current status: $status"
-            
-            if [ "$status" == "applied" ]; then
-              echo "Terraform run completed successfully."
-              break
-            elif [[ "$status" == "errored" || "$status" == "canceled" ]]; then
-              echo "Terraform run failed or was canceled."
-              exit 1
-            else
-              echo "Run is still in progress. Checking again in 30 seconds..."
-              sleep 30
-            fi
-          done
-
-      - name: Retrieve S3 Bucket Name from HCP Terraform Output
-        id: get_s3_bucket_name
-        if: success()
-        run: |
-          workspace_id=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-                          https://app.terraform.io/api/v2/organizations/$TF_ORG/workspaces/$TF_WORKSPACE | jq -r .data.id)
-          s3_bucket_name=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-                          "https://app.terraform.io/api/v2/workspaces/$workspace_id/outputs" | \
-                          jq -r '.data[] | select(.attributes.name=="contacts_api_lambda_bucket_name") | .attributes.value')
-          
-          if [[ -z "$s3_bucket_name" ]]; then
-            echo "Error: S3 bucket name output not found." >&2
-            exit 1
-          fi
-
-          echo "S3_BUCKET_NAME=$s3_bucket_name" >> $GITHUB_ENV
-          echo "Retrieved S3 bucket name: $s3_bucket_name"
 
       - name: Archive dist directory
         run: |
-          cd cloud/apis/contacts-api/dist
-          zip -r dist.zip .
+          cd cloud/apis/contacts-api/
+          zip -r lambda.zip dist
 
       - name: Install AWS CLI
         run: |
@@ -152,4 +83,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"  # Adjust if necessary
         run: |
-          aws s3 cp cloud/apis/contacts-api/dist/dist.zip s3://$S3_BUCKET_NAME/path/to/archive/dist.zip
+          aws s3 cp cloud/apis/contacts-api/lambda.zip s3://$S3_BUCKET_NAME/lambda.zip

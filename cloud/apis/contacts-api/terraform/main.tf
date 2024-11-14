@@ -20,18 +20,18 @@ provider "aws" {
 
 # S3 bucket for lambda
 
-# resource "aws_s3_bucket" "lambda_bucket" {
-#   bucket        = local.s3_lambda_function_bucket_name
-#   force_destroy = true
+resource "aws_s3_bucket" "lambda_bucket" {
+  bucket        = local.s3_lambda_function_bucket_name
+  force_destroy = true
 
-#   tags = merge(local.common_tags, {
-#     resource_name = "${local.naming_prefix}-s3-lambda-function-bucket"
-#   })
-# }
+  tags = merge(local.common_tags, {
+    resource_name = "${local.naming_prefix}-s3-lambda-function-bucket"
+  })
+}
 
 # This ownership control seems to be necessary for the private aws_s3_bucket_acl to work.
 resource "aws_s3_bucket_ownership_controls" "lambda_bucket" {
-  bucket = data.tfe_outputs.deployment.nonsensitive_values.contacts_api_lambda_bucket_id
+  bucket = aws_s3_bucket.lambda_bucket.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -39,13 +39,14 @@ resource "aws_s3_bucket_ownership_controls" "lambda_bucket" {
 
 resource "aws_s3_bucket_acl" "lambda_bucket" {
   depends_on = [aws_s3_bucket_ownership_controls.lambda_bucket]
-  bucket     = data.tfe_outputs.deployment.nonsensitive_values.contacts_api_lambda_bucket_id
+  bucket     = aws_s3_bucket.lambda_bucket.id
   acl        = "private"
 }
 
 resource "aws_s3_object" "lambda_source" {
-  bucket = data.tfe_outputs.deployment.nonsensitive_values.contacts_api_lambda_bucket_id
-  key    = "putContact/v${var.contacts_api_version}/lambda.zip"
+  bucket = aws_s3_bucket.lambda_bucket.id
+  key    = "lambda.zip"
+  # key    = "putContact/v${var.contacts_api_version}/lambda.zip"
   # source = data.archive_file.lambda_source_package.output_path
   # etag   = filemd5(data.archive_file.lambda_source_package.output_path)
 }
@@ -59,7 +60,7 @@ resource "aws_lambda_function" "put_contact" {
   timeout       = 60
 
   # The bucket name as created earlier with "aws s3api create-bucket"
-  s3_bucket = data.tfe_outputs.deployment.nonsensitive_values.contacts_api_lambda_bucket_id
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.lambda_source.key
   # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
