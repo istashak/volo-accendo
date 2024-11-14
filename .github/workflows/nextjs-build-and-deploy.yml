@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: "20.x"
           cache: "pnpm"
-          cache-dependency-path: cloud/apis/contacts-api/pnpm-lock.yaml
+          cache-dependency-path: web/volo-accendo-website/pnpm-lock.yaml
 
       - name: Set Environment Variables
         run: |
@@ -69,13 +69,13 @@ jobs:
       # Step 4: Install project dependencies using pnpm
       - name: Install dependencies
         run: |
-          cd cloud/web/volo-accendo-website
+          cd web/volo-accendo-website
           pnpm install
 
       # Step 5: Build the project
       - name: Build project
         run: |
-          cd cloud/web/volo-accendo-website
+          cd web/volo-accendo-website
           pnpm next build:$ENV
 
       # Comment/Uncomment for debugging
@@ -107,7 +107,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1" # Adjust if necessary
         run: |
-          cd cloud/web/volo-accendo-website
+          cd web/volo-accendo-website
           aws s3 cp out s3://$S3_BUCKET_NAME
 
   # Additional jobs for deployment can be added here
