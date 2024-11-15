@@ -26,7 +26,7 @@ resource "aws_s3_bucket_policy" "web_app_bucket_policy" {
       {
         Sid    = "AllowCloudFrontAccess",
         Effect = "Allow",
-        Principal = {x
+        Principal = {
           "AWS" : "${aws_cloudfront_origin_access_identity.web_app_oai.iam_arn}"
         },
         Action   = "s3:GetObject",
