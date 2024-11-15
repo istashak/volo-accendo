@@ -1,4 +1,4 @@
-# S3 Bucket config#
+# S3 Bucket config
 resource "aws_s3_bucket" "web_app_bucket" {
   bucket        = local.s3_web_app_bucket_name
   force_destroy = true
