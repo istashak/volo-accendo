@@ -10,7 +10,7 @@ locals {
     deploy_id   = local.deploy_id
   }
 
-  s3_lambda_function_bucket_name = "${lower(local.naming_prefix)}-lambda-fuction-bucket"
+  s3_lambda_function_bucket_name = "${lower(local.naming_prefix)}-lambda-function-bucket"
 
   naming_prefix = "${var.naming_prefix}-${var.environment}"
   deploy_id     = random_id.deploy_id.hex
