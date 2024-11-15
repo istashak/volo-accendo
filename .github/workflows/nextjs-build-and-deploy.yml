@@ -113,6 +113,6 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1" # Adjust if necessary
         run: |
           cd web/volo-accendo-website
-          aws s3 sync out s3://$S3_BUCKET_NAME --delete
+          aws s3 sync out s3://$S3_BUCKET_NAME/out --delete
 
   # Additional jobs for deployment can be added here
