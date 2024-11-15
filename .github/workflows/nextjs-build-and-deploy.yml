@@ -81,7 +81,7 @@ jobs:
       - name: Build project
         run: |
           cd web/volo-accendo-website
-          pnpm next build:$ENV
+          pnpm build:$ENV
 
       # Comment/Uncomment for debugging
       - name: List directory contents II
