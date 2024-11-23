@@ -1,3 +1,3 @@
 export * from "./contact-form";
-export * from "./header";
-export * from "./button";
+export * from "../components/header";
+export * from "../components/button";

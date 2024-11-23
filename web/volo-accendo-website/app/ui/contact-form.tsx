@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from ".";
 
 export type Contact = {
   email: string;
@@ -16,7 +15,7 @@ type ContactFormProps = {
   onSubmit: (contact: Contact) => void;
 };
 
-const apiUrl = process.env.VOLO_ACCENDO_API
+const apiUrl = process.env.VOLO_ACCENDO_API;
 
 export const ContactForm: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -41,6 +40,7 @@ export const ContactForm: React.FC = () => {
     };
 
     try {
+      console.log(`https://${apiUrl}/contacts`)
       const res = await fetch(`https://${apiUrl}/contacts`, {
         method: "POST",
         headers: {
@@ -65,15 +65,12 @@ export const ContactForm: React.FC = () => {
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <div className="w-full">
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="relative">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Email</span>
+              </div>
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
+                className="input input-bordered w-full max-w-xs"
                 id="email"
                 type="email"
                 name="email"
@@ -82,18 +79,15 @@ export const ContactForm: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
+            </label>
           </div>
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="phone-number"
-            >
-              Phone Number
-            </label>
-            <div className="relative">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Phone Number</span>
+              </div>
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
+                className="input input-bordered w-full max-w-xs"
                 id="phone-number"
                 type="tel"
                 name="phone-number"
@@ -102,18 +96,15 @@ export const ContactForm: React.FC = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
-            </div>
+            </label>
           </div>
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="first-name"
-            >
-              First Name
-            </label>
-            <div className="relative">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">First Name</span>
+              </div>
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
+                className="input input-bordered w-full max-w-xs"
                 id="first-name"
                 type="text"
                 name="first-name"
@@ -122,18 +113,15 @@ export const ContactForm: React.FC = () => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="last-name"
-            >
-              Last Name
             </label>
-            <div className="relative">
+          </div>
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Last Name</span>
+              </div>
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
+                className="input input-bordered w-full max-w-xs"
                 id="last-name"
                 type="text"
                 name="last-name"
@@ -142,18 +130,15 @@ export const ContactForm: React.FC = () => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
-            </div>
+            </label>
           </div>
           <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="company-name"
-            >
-              Company Name (Optional)
-            </label>
-            <div className="relative">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Company Name (Optional)</span>
+              </div>
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
+                className="input input-bordered w-full max-w-xs"
                 id="company-name"
                 type="text"
                 name="company-name"
@@ -161,32 +146,25 @@ export const ContactForm: React.FC = () => {
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
               />
-            </div>
+            </label>
           </div>
           <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="message"
-            >
-              Message
-            </label>
-            <div className="relative">
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Message</span>
+              </div>
               <textarea
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm text-black outline-2 placeholder:text-gray-500"
-                id="message"
-                name="message"
+                className="textarea textarea-bordered h-32 w-1/4"
                 placeholder="What are you looking for?"
-                required
-                rows={10}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-              />
-            </div>
+              ></textarea>
+            </label>
           </div>
         </div>
-        <Button className="mt-4 w-full" type="submit">
+        <button className="btn btn-primary mt-4 w-1/6" type="submit">
           Submit
-        </Button>
+        </button>
         <div className="flex h-8 items-end space-x-1">
           {/* Add form errors here */}
         </div>
