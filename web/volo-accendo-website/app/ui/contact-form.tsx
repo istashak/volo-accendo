@@ -15,9 +15,7 @@ type ContactFormProps = {
   onSubmit: (contact: Contact) => void;
 };
 
-const apiUrl = process.env.VOLO_ACCENDO_API;
-
-export const ContactForm: React.FC = () => {
+export function ContactForm({ onSubmit }: ContactFormProps) {
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -25,7 +23,7 @@ export const ContactForm: React.FC = () => {
   const [companyName, setCompanyName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     console.log("handleSubmit called");
@@ -39,25 +37,7 @@ export const ContactForm: React.FC = () => {
       message,
     };
 
-    try {
-      console.log(`https://${process.env.VOLO_ACCENDO_API}/contacts`)
-      const res = await fetch(`https://${apiUrl}/contacts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(contact),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to submit contact");
-      }
-
-      const data = await res.json();
-      console.log("Contact submitted successfully:", data);
-    } catch (error) {
-      console.error("Error submitting contact:", error);
-    }
+    onSubmit(contact)
   };
 
   return (
@@ -171,4 +151,4 @@ export const ContactForm: React.FC = () => {
       </div>
     </form>
   );
-};
+}
