@@ -40,7 +40,7 @@ export const ContactForm: React.FC = () => {
     };
 
     try {
-      console.log(`https://${apiUrl}/contacts`)
+      console.log(`https://${process.env.VOLO_ACCENDO_API}/contacts`)
       const res = await fetch(`https://${apiUrl}/contacts`, {
         method: "POST",
         headers: {

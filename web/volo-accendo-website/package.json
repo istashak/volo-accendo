@@ -5,8 +5,8 @@
   "scripts": {
     "clean": "rm -rf .next node_modules out",
     "dev": "next dev",
-    "build": "cp .env.production .env.local && next build",
-    "build:dev": "cp .env.dev .env.local && next build",
+    "build": "cp .env.prod .env && next build",
+    "build:dev": "cp .env.dev .env && next build",
     "build:prod": "pnpm build",
     "start": "next start",
     "lint": "next lint"

@@ -1,3 +1,8 @@
 export default function Home() {
-  return <div>Home</div>;
+  return (
+    <div>
+      <div>Home</div>
+      <div>{process.env.VOLO_ACCENDO_API}</div>
+    </div>
+  );
 }
