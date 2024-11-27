@@ -58,7 +58,7 @@ resource "aws_s3_object" "lambda_source" {
 resource "aws_lambda_function" "put_contact" {
   function_name = "${local.naming_prefix}-putContact"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "put-contact.handler"
+  handler       = "src/put-contact.handler"
   runtime       = "nodejs20.x"
   timeout       = 60
 

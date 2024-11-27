@@ -1,57 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { z } from "zod";
+import { useFormState, useFormStatus } from "react-dom";
+import { createContact } from "../lib/actions";
 
-export type Contact = {
-  email: string;
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  companyName: string | null;
-  message: string;
-};
-
-export const ContactValidationSchema = z.object({
-  email: z.string().min(1),
-  phoneNumber: z.string().min(10),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  companyName: z.string().min(0),
-  message: z.string().min(20),
-});
-
-type ContactFormProps = {
-  onSubmit: (contact: Contact) => void;
-};
-
-export function ContactForm({ onSubmit }: ContactFormProps) {
-  const [email, setEmail] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [companyName, setCompanyName] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    console.log("handleSubmit called");
-
-    const contact: Contact = {
-      email,
-      phoneNumber,
-      firstName,
-      lastName,
-      companyName: companyName.trim() ? companyName : null,
-      message,
-    };
-
-    onSubmit(contact);
-  };
+export function ContactFormII() {
+  const [state, formAction] = useFormState(createContact, {
+    message: "pending",
+  });
+  const { pending } = useFormStatus();
 
   return (
-    <form className="space-y-3 flex-1" onSubmit={handleSubmit}>
+    <form className="space-y-3 flex-1" action={formAction}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <div className="w-full">
           <div>
@@ -66,8 +26,6 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
                 name="email"
                 placeholder="Email"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
           </div>
@@ -78,13 +36,11 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
               </div>
               <input
                 className="input input-bordered w-full max-w-xs"
-                id="phone-number"
+                id="phoneNumber"
                 type="tel"
-                name="phone-number"
+                name="phoneNumber"
                 placeholder="Phone Number"
                 required
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </label>
           </div>
@@ -95,13 +51,11 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
               </div>
               <input
                 className="input input-bordered w-full max-w-xs"
-                id="first-name"
+                id="firstName"
                 type="text"
-                name="first-name"
+                name="firstName"
                 placeholder="First Name"
                 required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
               />
             </label>
           </div>
@@ -112,13 +66,11 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
               </div>
               <input
                 className="input input-bordered w-full max-w-xs"
-                id="last-name"
+                id="lastName"
                 type="text"
-                name="last-name"
+                name="lastName"
                 placeholder="Last Name"
                 required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
               />
             </label>
           </div>
@@ -129,12 +81,10 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
               </div>
               <input
                 className="input input-bordered w-full max-w-xs"
-                id="company-name"
+                id="companyName"
                 type="text"
-                name="company-name"
+                name="companyName"
                 placeholder="Company Name"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
               />
             </label>
           </div>
@@ -146,13 +96,13 @@ export function ContactForm({ onSubmit }: ContactFormProps) {
               <textarea
                 className="textarea textarea-bordered h-32 w-1/4"
                 placeholder="What are you looking for?"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                id="contactMessage"
+                name="contactMessage"
               ></textarea>
             </label>
           </div>
         </div>
-        <button className="btn btn-primary mt-4 w-1/6" type="submit">
+        <button className="btn btn-primary mt-4 w-1/6" type="submit" aria-disabled={pending}>
           Submit
         </button>
         <div className="flex h-8 items-end space-x-1">
