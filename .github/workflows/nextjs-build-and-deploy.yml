@@ -72,19 +72,6 @@ jobs:
         run: |
           ls -R
 
-      # - name: Archive dist directory
-      #   run: |
-      #     cd cloud/web/volo-accendo-website/
-      #     zip -r build.zip .next
-
-      # Step 6: Upload build artifacts (for example, to use in a deployment step)
-      # - name: Upload build artifacts
-      #   if: success()  # Only run this step if the previous steps were successful
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: build  # Name of the artifact
-      #     path: .next  # Path to the build artifacts
-
       - name: Install AWS CLI
         run: |
           sudo apt-get update
