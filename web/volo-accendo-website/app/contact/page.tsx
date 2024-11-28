@@ -1,14 +1,10 @@
-import { Contact, ContactForm } from "../ui";
-import { ContactFormII } from "../ui/contact-form-ii";
-import useContactViewController from "./contact-view-controller";
+import { ContactForm } from "../components/contact-form"
 
 export default async function ContactPage() {
-  // const { handleSubmitContact, status } = useContactViewController();
-
   return (
     <div className="">
-      <p>{`If you're interesting in hearing more we'd love to connect...`}</p>
-      <ContactFormII />
+      <p>{`If you're interesting in hearing more about our services, let's connect...`}</p>
+      <ContactForm />
     </div>
   );
 }

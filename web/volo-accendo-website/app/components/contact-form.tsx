@@ -3,8 +3,27 @@
 import React, { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { createContact } from "../lib/actions";
+import { z } from "zod";
 
-export function ContactFormII() {
+export type Contact = {
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  companyName: string | null;
+  message: string;
+};
+
+export const ContactValidationSchema = z.object({
+  email: z.string().min(1),
+  phoneNumber: z.string().min(10),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  companyName: z.string().min(0),
+  message: z.string().min(20),
+});
+
+export function ContactForm() {
   const [state, formAction] = useFormState(createContact, {
     message: "pending",
   });
@@ -102,7 +121,19 @@ export function ContactFormII() {
             </label>
           </div>
         </div>
-        <button className="btn btn-primary mt-4 w-1/6" type="submit" aria-disabled={pending}>
+        <div className="mt-4 flex space-x-2">
+          <input type="checkbox" id="policyAgreed" name="policyAgreed" />
+          <label className="label">
+            <span className="label-text">
+              Accept our Terms of Service and Privacy Policy
+            </span>
+          </label>
+        </div>
+        <button
+          className="btn btn-primary mt-4 w-1/6"
+          type="submit"
+          aria-disabled={pending}
+        >
           Submit
         </button>
         <div className="flex h-8 items-end space-x-1">

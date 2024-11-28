@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="winter">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased mx-auto w-4/5`}>
         <Header headerItems={routes} />
         <main className="p-4">{children}</main>
       </body>

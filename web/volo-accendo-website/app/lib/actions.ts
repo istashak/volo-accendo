@@ -5,23 +5,32 @@ import { Contact, ContactValidationSchema } from "../ui";
 export async function createContact(prevState: any, formData: FormData) {
   const apiUrl = process.env.VOLO_ACCENDO_API || "";
 
-  //   const contact: Contact = ContactValidationSchema.parse({
-  //     email: formData.get("email"),
-  //     phoneNumber: formData.get("phoneNumber"),
-  //     firstName: formData.get("firstName"),
-  //     lastName: formData.get("lastName"),
-  //     companyName: formData.get("companyName"),
-  //     message: formData.get("message"),
-  //   });
+  // Check if the Terms of Service checkbox is checked
+  const isPolicyAgreed = formData.get("policyAgree")?.toString() === "on";
+  if (!isPolicyAgreed) {
+    return {
+      message: "error",
+      error: "You must agree to the Terms of Service before submitting.",
+    };
+  }
 
-  const contact: Contact = {
-    email: formData.get("email")?.toString() || "",
-    phoneNumber: formData.get("phoneNumber")?.toString() || "",
-    firstName: formData.get("firstName")?.toString() || "",
-    lastName: formData.get("lastName")?.toString() || "",
-    companyName: formData.get("companyName")?.toString() || null,
-    message: formData.get("contactMessage")?.toString() || "",
-  };
+  // const contact: Contact = {
+  //   email: formData.get("email")?.toString() || "",
+  //   phoneNumber: formData.get("phoneNumber")?.toString() || "",
+  //   firstName: formData.get("firstName")?.toString() || "",
+  //   lastName: formData.get("lastName")?.toString() || "",
+  //   companyName: formData.get("companyName")?.toString() || null,
+  //   message: formData.get("contactMessage")?.toString() || "",
+  // };
+
+  const contact: Contact = ContactValidationSchema.parse({
+    email: formData.get("email"),
+    phoneNumber: formData.get("phoneNumber"),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
+    companyName: formData.get("companyName"),
+    message: formData.get("message"),
+  });
 
   try {
     console.log("Attempting to create contact:", contact);
@@ -35,7 +44,6 @@ export async function createContact(prevState: any, formData: FormData) {
     });
 
     if (!res.ok) {
-        
       throw new Error(`Failed to submit contact. Status: ${res.status}`);
     }
 
