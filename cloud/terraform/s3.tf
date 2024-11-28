@@ -8,6 +8,13 @@ resource "aws_s3_bucket" "web_app_bucket" {
   })
 }
 
+resource "aws_s3_bucket_versioning" "web_bucket_versioning" {
+  bucket = aws_s3_bucket.web_app_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 # resource "aws_s3_bucket_public_access_block" "web_app_s3_access_block" {
