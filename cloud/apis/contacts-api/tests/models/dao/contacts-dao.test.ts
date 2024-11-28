@@ -10,6 +10,7 @@ describe("ContactDao", () => {
       lastName: "Somegal",
       companyName: "Acme Inc.",
       message: "Jannie don't you lose that number!",
+      verificationStatus: "pending",
     };
     const contactsDao = new ContactsDao(contact);
     expect(contactsDao.toJson()).toStrictEqual(contact);

@@ -1,6 +1,6 @@
 "use server";
 
-import { Contact, ContactValidationSchema } from "../ui";
+import { Contact, ContactValidationSchema } from "../models/domain/contact";
 
 export async function createContact(prevState: any, formData: FormData) {
   const apiUrl = process.env.VOLO_ACCENDO_API || "";
@@ -14,15 +14,6 @@ export async function createContact(prevState: any, formData: FormData) {
     };
   }
 
-  // const contact: Contact = {
-  //   email: formData.get("email")?.toString() || "",
-  //   phoneNumber: formData.get("phoneNumber")?.toString() || "",
-  //   firstName: formData.get("firstName")?.toString() || "",
-  //   lastName: formData.get("lastName")?.toString() || "",
-  //   companyName: formData.get("companyName")?.toString() || null,
-  //   message: formData.get("contactMessage")?.toString() || "",
-  // };
-
   const contact: Contact = ContactValidationSchema.parse({
     email: formData.get("email"),
     phoneNumber: formData.get("phoneNumber"),
@@ -30,6 +21,7 @@ export async function createContact(prevState: any, formData: FormData) {
     lastName: formData.get("lastName"),
     companyName: formData.get("companyName"),
     message: formData.get("message"),
+    verificationStatus: "pending"
   });
 
   try {

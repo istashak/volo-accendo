@@ -31,7 +31,7 @@ export const handler: APIGatewayProxyHandler = async (
   console.log("putContact received body:", body);
 
   // Destructure the fields from the body
-  let { email, phoneNumber, firstName, lastName, companyName, message } = body;
+  let { email, phoneNumber, firstName, lastName, companyName, message, verificationStatus } = body;
 
   // Ensure companyName is set to null if it is undefined
   if (companyName === undefined) {
@@ -45,6 +45,7 @@ export const handler: APIGatewayProxyHandler = async (
     lastName,
     companyName,
     message,
+    verificationStatus
   });
 
   let response: PutItemCommandOutput | null = null;

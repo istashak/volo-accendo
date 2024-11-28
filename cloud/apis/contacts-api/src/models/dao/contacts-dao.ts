@@ -1,6 +1,6 @@
 import { PutItemCommand, PutItemCommandOutput } from "@aws-sdk/client-dynamodb";
 import { getDynamoDBClient } from "../../";
-import { Contact } from "../";
+import { Contact, ContactVerificationStatus } from "../";
 import { BaseDao } from "./base-dao";
 import { LambdaDynamoDBError } from "../errors";
 
@@ -11,6 +11,7 @@ export class ContactsDao extends BaseDao {
   readonly lastName: string;
   readonly companyName: string | null;
   readonly message: string;
+  readonly verificationStatus: ContactVerificationStatus;
 
   constructor(contact: Contact) {
     super();
@@ -20,6 +21,7 @@ export class ContactsDao extends BaseDao {
     this.lastName = contact.lastName;
     this.companyName = contact.companyName ?? null;
     this.message = contact.message;
+    this.verificationStatus = contact.verificationStatus;
   }
 
   public async putContact(): Promise<PutItemCommandOutput> {
@@ -33,11 +35,12 @@ export class ContactsDao extends BaseDao {
         companyName: this.companyName
           ? { S: this.companyName }
           : { NULL: true },
-        verified: { S: "pending" },
+        verificationStatus: { S: this.verificationStatus },
       },
     };
 
     try {
+      console.log("DynamoDB PutItemCommand Params", params);
       const data = await getDynamoDBClient().send(new PutItemCommand(params));
       console.log("Success - item added or updated", data);
       return data;
@@ -60,6 +63,7 @@ export class ContactsDao extends BaseDao {
       lastName: this.lastName,
       companyName: this.companyName,
       message: this.message,
+      verificationStatus: this.verificationStatus,
     };
   }
 }

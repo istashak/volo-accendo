@@ -1,3 +1,5 @@
+export type ContactVerificationStatus = "pending" | "verified";
+
 export type Contact = {
   email: string;
   phoneNumber: string;
@@ -5,4 +7,5 @@ export type Contact = {
   lastName: string;
   companyName: string | null;
   message: string;
+  verificationStatus: ContactVerificationStatus;
 };
