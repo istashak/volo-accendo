@@ -33,7 +33,7 @@ export class ContactsDao extends BaseDao {
         companyName: this.companyName
           ? { S: this.companyName }
           : { NULL: true },
-        verified: { B: false },
+        verified: { S: "pending" },
       },
     };
 
