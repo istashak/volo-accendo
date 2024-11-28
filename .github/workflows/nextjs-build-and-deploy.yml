@@ -21,28 +21,18 @@ jobs:
     # Use the latest version of Ubuntu
     runs-on: ubuntu-latest
 
-    # Define the Node.js versions to use in the matrix
-    # strategy:
-    #   matrix:
-    #     node-version: [20.x]
-
     steps:
       # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # # Step 2: Set up Node.js environment
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: ${{ matrix.node-version }}  # Use the version defined in the matrix
-      #     cache: 'pnpm'  # Cache pnpm dependencies
-
+      
+      # Step 2: Install pnpm
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 9.5.0
 
+      # Step 3: Set up Node.js environment
       - uses: actions/setup-node@v4
         name: Set up Node.js
         with:
@@ -59,12 +49,6 @@ jobs:
               echo "ENV=dev" >> $GITHUB_ENV
               echo "S3_BUCKET_NAME=volo-accendo-vpc-dev-web-app-bucket" >> $GITHUB_ENV
           fi
-
-      # Step 3: Install pnpm (an alternative package manager)
-      # - name: Install pnpm
-      #   run: |
-      #     cd cloud/web/volo-accendo-website
-      #     npm install -g pnpm
 
       # Step 4: Install project dependencies using pnpm
       - name: Install dependencies
@@ -115,4 +99,3 @@ jobs:
           cd web/volo-accendo-website
           aws s3 sync out/$ENV s3://$S3_BUCKET_NAME --delete
 
-  # Additional jobs for deployment can be added here

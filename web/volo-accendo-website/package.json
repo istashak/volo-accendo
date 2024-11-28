@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf .next node_modules out",
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "cp .env.prod .env && next build",
     "build:dev": "cp .env.dev .env && next build",
     "build:prod": "pnpm build",
