@@ -40,6 +40,7 @@ export class ContactsDao extends BaseDao {
     };
 
     try {
+      console.log("Hopefully the update is working now");
       console.log("DynamoDB PutItemCommand Params", params);
       const data = await getDynamoDBClient().send(new PutItemCommand(params));
       console.log("Success - item added or updated", data);

@@ -66,6 +66,7 @@ resource "aws_lambda_function" "put_contact" {
   # s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_bucket = local.s3_lambda_function_bucket_name
   s3_key    = aws_s3_object.lambda_source.key
+  s3_object_version = aws_s3_object.lambda_source.version_id
   # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
   environment {
