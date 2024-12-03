@@ -19,7 +19,7 @@ export class ContactsDao extends BaseDao {
     this.phoneNumber = contact.phoneNumber;
     this.firstName = contact.firstName;
     this.lastName = contact.lastName;
-    this.companyName = contact.companyName ?? null;
+    this.companyName = contact.companyName;
     this.message = contact.message;
     this.verificationStatus = contact.verificationStatus;
   }

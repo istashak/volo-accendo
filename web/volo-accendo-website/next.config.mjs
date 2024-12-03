@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "export",
+  output: "export",
   distDir: process.env.NEXT_ENV === "prod" ? "out/prod" : "out/dev",
   images: {
     unoptimized: true,
