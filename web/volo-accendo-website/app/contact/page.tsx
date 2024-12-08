@@ -1,6 +1,6 @@
 import { ContactForm } from "../components/contact-form";
 
-export default async function ContactPage() {
+export default function ContactPage() {
   return (
     <div className="">
       <p>{`If you're interested in hearing more about our services, let's connect...`}</p>

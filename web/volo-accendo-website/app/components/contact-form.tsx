@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Contact,
-  ContactValidationSchema,
-  ContactVerificationStatus,
-} from "../models/domain/contact";
+import { ContactValidationSchema } from "../models/domain/contact";
 import { z } from "zod";
+import { useContactStore } from "../stores/contact-store";
+import { useRouter } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
 
-type ContactFormData = {
+export type ContactFormData = {
   email: string;
   phoneNumber: string;
   firstName: string;
@@ -18,50 +17,37 @@ type ContactFormData = {
   policyAgreed: boolean;
 };
 
-const initialState: ContactFormData = {
-  email: "",
-  phoneNumber: "",
-  firstName: "",
-  lastName: "",
-  companyName: null,
-  message: "",
-  policyAgreed: false,
-};
-
 export function ContactForm() {
-  const [formData, setFormData] = useState<ContactFormData>(initialState);
-  const [validatedContact, setValidatedContact] = useState<Contact | null>(
-    null
+  const [contactFormData, setContactFormData, setNewContact] = useContactStore(
+    useShallow((state) => [
+      state.contactFormData,
+      state.setContactFormData,
+      state.setNewContact,
+    ])
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLFormElement>) => {
     const { name, value, type, checked } = event.target;
-    setFormData((prev) => ({
-      ...prev,
+    setContactFormData({
+      ...contactFormData,
       [name]: type === "checkbox" ? checked : value,
-    }));
+    });
     setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error when user starts typing
   };
 
   const validateForm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // if (!formData.policyAgreed) {
-    //   setErrors({
-    //     policyAgreed:
-    //       "You must agree to the Terms of Service and Privacy Policy.",
-    //   });
-    //   return false;
-    // }
 
     try {
-      setValidatedContact(
+      setNewContact(
         ContactValidationSchema.parse({
-          ...formData,
+          ...contactFormData,
           verificationStatus: "pending",
         })
       );
-      return true;
+      router.push("/contact/confirm");
     } catch (e) {
       if (e instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
@@ -72,205 +58,159 @@ export function ContactForm() {
         });
         setErrors(newErrors);
       }
-      return false;
-    }
-  };
-
-  const createContact = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const apiUrl = process.env.NEXT_PUBLIC_VOLO_ACCENDO_API || "";
-
-    event.preventDefault();
-
-    try {
-      console.log("Attempting to create contact:", validatedContact);
-      console.log(`https://${apiUrl}/contacts`);
-      const res = await fetch(`https://${apiUrl}/contacts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validatedContact),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to submit contact. Status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      console.log("Contact submitted successfully:", data);
-      //   return { message: "success" };
-    } catch (error) {
-      console.error("Error submitting contact:", error);
-      //   return { message: "error" };
     }
   };
 
   return (
-    <>
-      {!validatedContact && (
-        <form className="space-y-3 flex-1" onChange={handleInputChange}>
-          <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-            <div className="w-full">
-              <div>
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">Email</span>
-                  </div>
-                  <input
-                    className={`input w-full max-w-xs ${
-                      errors.email ? "border-red-500" : "input-bordered"
-                    }`}
-                    id="email"
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    required
-                  />
-                </label>
-                {errors.email && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.email}</p>
-                )}
+    <form className="space-y-3 flex-1" onChange={handleInputChange}>
+      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
+        <div className="w-full">
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Email</span>
               </div>
-              <div>
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">Phone Number</span>
-                  </div>
-                  <input
-                    className={`input w-full max-w-xs ${
-                      errors.phoneNumber ? "border-red-500" : "input-bordered"
-                    }`}
-                    id="phoneNumber"
-                    type="tel"
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    required
-                  />
-                </label>
-                {errors.phoneNumber && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.phoneNumber}</p>
-                )}
-              </div>
-              <div>
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">First Name</span>
-                  </div>
-                  <input
-                    className={`input w-full max-w-xs ${
-                      errors.firstName ? "border-red-500" : "input-bordered"
-                    }`}
-                    id="firstName"
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    required
-                  />
-                </label>
-                {errors.firstName && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.firstName}</p>
-                )}
-              </div>
-              <div>
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">Last Name</span>
-                  </div>
-                  <input
-                    className={`input w-full max-w-xs ${
-                      errors.lastName ? "border-red-500" : "input-bordered"
-                    }`}
-                    id="lastName"
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    required
-                  />
-                </label>
-                {errors.lastName && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.lastName}</p>
-                )}
-              </div>
-              <div className="mt-4">
-                <label className="form-control w-full max-w-xs">
-                  <div className="label">
-                    <span className="label-text">Company Name (Optional)</span>
-                  </div>
-                  <input
-                    className={`input w-full max-w-xs ${
-                      errors.companyName ? "border-red-500" : "input-bordered"
-                    }`}
-                    id="companyName"
-                    type="text"
-                    name="companyName"
-                    placeholder="Company Name"
-                  />
-                </label>
-                {errors.companyName && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.companyName}</p>
-                )}
-              </div>
-              <div className="mt-4">
-                <label className="form-control">
-                  <div className="label">
-                    <span className="label-text">Message</span>
-                  </div>
-                  <textarea
-                    className={`textarea  h-32 w-1/4 ${
-                      errors.message ? "border-red-500" : "textarea-bordered"
-                    }`}
-                    placeholder="What are you looking for?"
-                    id="message"
-                    name="message"
-                  ></textarea>
-                </label>
-                {errors.message && (
-                  <p className="mt-2 text-red-500 text-sm">{errors.message}</p>
-                )}
-              </div>
-            </div>
-            <div>
-              <div className="mt-4 flex space-x-2">
-                <input type="checkbox" id="policyAgreed" name="policyAgreed" />
-                <label className="label">
-                  <span className="label-text">
-                    Accept our Terms of Service and Privacy Policy
-                  </span>
-                </label>
-              </div>
-              {errors.policyAgreed && (
-                <p className="text-red-500 text-sm">{errors.policyAgreed}</p>
-              )}
-            </div>
-            <button
-              className="btn btn-primary mt-4 w-1/6"
-              onClick={validateForm}
-            >
-              Done
-            </button>
-            <div className="flex h-8 items-end space-x-1">
-              {/* Add form errors here */}
-            </div>
+              <input
+                className={`input w-full max-w-xs ${
+                  errors.email ? "border-red-500" : "input-bordered"
+                }`}
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={contactFormData.email}
+                required
+              />
+            </label>
+            {errors.email && (
+              <p className="mt-2 text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
-        </form>
-      )}
-      {validatedContact && (
-        <div>
-          <h2>Review Your Data</h2>
-          <p>Email: {formData.email}</p>
-          <p>Phone Number: {formData.phoneNumber}</p>
-          <p>First Name: {formData.firstName}</p>
-          <p>Last Name: {formData.lastName}</p>
-          <p>Company Name: {formData.companyName || "N/A"}</p>
-          <p>Message: {formData.message}</p>
-          <button
-            className="btn btn-primary mt-4 w-1/6"
-            onClick={createContact}
-          >
-            Confirm
-          </button>
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Phone Number</span>
+              </div>
+              <input
+                className={`input w-full max-w-xs ${
+                  errors.phoneNumber ? "border-red-500" : "input-bordered"
+                }`}
+                id="phoneNumber"
+                type="tel"
+                name="phoneNumber"
+                placeholder="Phone Number"
+                value={contactFormData.phoneNumber}
+                required
+              />
+            </label>
+            {errors.phoneNumber && (
+              <p className="mt-2 text-red-500 text-sm">{errors.phoneNumber}</p>
+            )}
+          </div>
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">First Name</span>
+              </div>
+              <input
+                className={`input w-full max-w-xs ${
+                  errors.firstName ? "border-red-500" : "input-bordered"
+                }`}
+                id="firstName"
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={contactFormData.firstName}
+                required
+              />
+            </label>
+            {errors.firstName && (
+              <p className="mt-2 text-red-500 text-sm">{errors.firstName}</p>
+            )}
+          </div>
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Last Name</span>
+              </div>
+              <input
+                className={`input w-full max-w-xs ${
+                  errors.lastName ? "border-red-500" : "input-bordered"
+                }`}
+                id="lastName"
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={contactFormData.lastName}
+                required
+              />
+            </label>
+            {errors.lastName && (
+              <p className="mt-2 text-red-500 text-sm">{errors.lastName}</p>
+            )}
+          </div>
+          <div>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Company Name (Optional)</span>
+              </div>
+              <input
+                className={`input w-full max-w-xs ${
+                  errors.companyName ? "border-red-500" : "input-bordered"
+                }`}
+                id="companyName"
+                type="text"
+                name="companyName"
+                placeholder="Company Name"
+                value={contactFormData?.companyName ?? ""}
+              />
+            </label>
+            {errors.companyName && (
+              <p className="mt-2 text-red-500 text-sm">{errors.companyName}</p>
+            )}
+          </div>
+          <div>
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Message</span>
+              </div>
+              <textarea
+                className={`textarea h-80 w-3/4 ${
+                  errors.message ? "border-red-500" : "textarea-bordered"
+                }`}
+                id="message"
+                name="message"
+                placeholder="What are you looking for?"
+                value={contactFormData.message}
+              ></textarea>
+            </label>
+            {errors.message && (
+              <p className="mt-2 text-red-500 text-sm">{errors.message}</p>
+            )}
+          </div>
         </div>
-      )}
-    </>
+        <div>
+          <div className="mt-4 flex space-x-2">
+            <input
+              type="checkbox"
+              id="policyAgreed"
+              name="policyAgreed"
+              checked={contactFormData.policyAgreed}
+            />
+            <label className="label">
+              <span className="label-text">
+                Accept our Terms of Service and Privacy Policy
+              </span>
+            </label>
+          </div>
+          {errors.policyAgreed && (
+            <p className="text-red-500 text-sm">{errors.policyAgreed}</p>
+          )}
+        </div>
+        <button className="btn btn-primary mt-4 w-1/6" onClick={validateForm}>
+          Next
+        </button>
+      </div>
+    </form>
   );
 }

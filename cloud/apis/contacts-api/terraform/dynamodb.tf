@@ -23,25 +23,6 @@ resource "aws_dynamodb_table" "contacts_table" {
     projection_type = "ALL"
   }
 
-  #   attribute {
-  #     name = "first_name"
-  #     type = "S"
-  #   }
-
-  #   attribute {
-  #     name = "last_name"
-  #     type = "S"
-  #   }
-
-  #   attribute {
-  #     name = "company_name"
-  #     type = "S"
-  #   }
-  #   attribute {
-  #     name = "message"
-  #     type = "S"
-  #   }
-
   tags = merge(local.common_tags, {
     resource_name = "${local.naming_prefix}-dynamodb-table"
   })
