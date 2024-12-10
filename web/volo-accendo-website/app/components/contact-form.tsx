@@ -63,7 +63,7 @@ export function ContactForm() {
 
   return (
     <form className="space-y-3 flex-1" onChange={handleInputChange}>
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
+      <div className="flex-1 rounded-lg bg-gray-50 p-6">
         <div className="w-full">
           <div>
             <label className="form-control w-full max-w-xs">

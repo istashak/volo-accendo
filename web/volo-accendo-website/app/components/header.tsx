@@ -16,7 +16,13 @@ interface HeaderProps {
 export function Header({ headerItems }: HeaderProps) {
   const pathName = usePathname();
 
-  const isActive = (path: string) => pathName === path;
+  const isActive = (path: string) => {
+    console.log(`pathName: "${pathName}" path: "${path}"`);
+    return (
+      (pathName === "/" && path === "/") ||
+      (path.length > 1 && pathName.includes(path))
+    );
+  };
 
   return (
     <header className="flex items-center p-4 bg-white shadow-md">
@@ -27,22 +33,25 @@ export function Header({ headerItems }: HeaderProps) {
         alt="Volo Accendo insignia"
       />
       <div className="p-4">
-        <Image src="volo_logo.png" 
-        width={400}
-        height={80}
-        alt="Volo Accendo logo full text." />
+        <Image
+          src="volo_logo.png"
+          width={400}
+          height={80}
+          alt="Volo Accendo logo full text."
+        />
         <div className="navbar">
-          {headerItems.map((item) => (
-            <Link
-              key={item.route}
-              className={`btn ${
-                isActive(item.route) ? "btn-active" : "btn-ghost"
-              }`}
-              href={item.route}
-            >
-              {item.title}
-            </Link>
-          ))}
+          {headerItems.map((item) => {
+            const active = isActive(item.route);
+            return (
+              <Link
+                key={item.route}
+                className={`btn ${active ? "btn-active" : "btn-ghost"}`}
+                href={active? "#" : item.route}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </header>

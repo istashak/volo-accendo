@@ -5,25 +5,31 @@ import { ContactFormData } from "../components/contact-form";
 interface ContactStore {
   contactFormData: ContactFormData;
   setContactFormData: (contactFormData: ContactFormData) => void;
+  resetContactFormData: () => void;
   newContact: Contact | null;
   setNewContact: (newContact: Contact) => void;
   clearNewContact: () => void;
+  focusedContact: Contact | null;
+  setFocusedContact: (focusedContact: Contact) => void;
 }
 
 const initialState: ContactFormData = {
-    email: "",
-    phoneNumber: "",
-    firstName: "",
-    lastName: "",
-    companyName: null,
-    message: "",
-    policyAgreed: false,
-  };
+  email: "",
+  phoneNumber: "",
+  firstName: "",
+  lastName: "",
+  companyName: null,
+  message: "",
+  policyAgreed: false,
+};
 
 export const useContactStore = create<ContactStore>((set) => ({
   contactFormData: initialState,
   setContactFormData: (contactFormData) => set({ contactFormData }),
+  resetContactFormData: () => set({ contactFormData: initialState }),
   newContact: null,
   setNewContact: (newContact) => set({ newContact }),
   clearNewContact: () => set({ newContact: null }),
+  focusedContact: null,
+  setFocusedContact: (focusedContact) => set({ focusedContact }),
 }));

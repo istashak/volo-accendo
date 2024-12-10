@@ -2,6 +2,7 @@ import { Contact } from "@/app/models/domain/contact";
 import { useContactStore } from "@/app/stores/contact-store";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useShallow } from "zustand/shallow";
 
 export type ContactCreationStatus =
   | "pending"
@@ -18,8 +19,9 @@ const useContactConfirmationController = () => {
   const [contactCreationState, setContactCreationState] =
     useState<ContactCreationState>({ status: "pending", message: "" });
   const router = useRouter();
-  const newContact = useContactStore((state) => state.newContact);
-  const clearNewContact = useContactStore((state) => state.clearNewContact);
+  const [newContact, clearNewContact, resetContactFormData, setFocusedContact] = useContactStore(
+    useShallow((state) => [state.newContact, state.clearNewContact, state.resetContactFormData, state.setFocusedContact])
+  );
 
   const onContactCreateConfirm = useCallback(async (newContact: Contact) => {
     setContactCreationState({ status: "creating", message: "Processing..." });
@@ -42,9 +44,13 @@ const useContactConfirmationController = () => {
 
       const data = await res.json();
       console.log("Contact submitted successfully:", data);
+      router.replace("/contact/success");
+      resetContactFormData();
+      setFocusedContact(newContact);
+      clearNewContact();
       setContactCreationState({
         status: "success",
-        message: "You've successfully received your contact message.",
+        message: "You've successfully sent your contact message.",
       });
     } catch (error) {
       console.error("Error submitting contact:", error);
@@ -54,14 +60,13 @@ const useContactConfirmationController = () => {
 
   const goBack = () => {
     router.back();
-    clearNewContact();
   };
 
   return {
     newContact,
     contactCreationState,
     onContactCreateConfirm,
-    goBack
+    goBack,
   };
 };
 
