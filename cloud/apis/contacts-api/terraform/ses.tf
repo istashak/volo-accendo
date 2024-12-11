@@ -18,13 +18,10 @@ resource "aws_ses_domain_dkim" "contact_verification_dkim" {
   domain = aws_ses_domain_identity.contact_verification_domain.domain
 }
 
-resource "null_resource" "wait_for_dkim" {
-  depends_on = [aws_ses_domain_dkim.contact_verification_dkim]
-}
-
 resource "aws_route53_record" "dkim" {
+  depends_on = [aws_ses_domain_dkim.contact_verification_dkim]
   #   count   = length(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens)
-  for_each = local.ses_dkim_tokens_set
+  for_each = toset(try(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens))
   zone_id  = data.tfe_outputs.networking.nonsensitive_values.domain_zone_id
   #   name     = "${aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens[count.index]}._domainkey.${local.domain_name}"
   name = "${each.value}._domainkey.${local.domain_name}"

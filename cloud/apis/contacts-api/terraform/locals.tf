@@ -13,8 +13,6 @@ locals {
   domain_name                    = "${var.environment}.${data.tfe_outputs.networking.nonsensitive_values.domain_name}"
   s3_lambda_function_bucket_name = "${lower(local.naming_prefix)}-lambda-function-bucket"
 
-  ses_dkim_tokens_set = toset(try(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens, []))
-
   naming_prefix = "${var.naming_prefix}-${var.environment}"
   deploy_id     = random_id.deploy_id.hex
 }
