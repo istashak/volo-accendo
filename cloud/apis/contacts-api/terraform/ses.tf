@@ -31,3 +31,11 @@ resource "aws_route53_record" "dkim" {
   ttl  = 300
   records = ["${each.value}.amazonses.com"]
 }
+
+resource "aws_route53_record" "ses_domain_verification" {
+  zone_id = data.tfe_outputs.networking.nonsensitive_values.domain_zone_id
+  name    = aws_ses_domain_identity.contact_verification_domain.domain
+  type    = "TXT"
+  ttl     = 300
+  records = [aws_ses_domain_identity.contact_verification_domain.verification_token]
+}
