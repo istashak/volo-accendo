@@ -7,6 +7,7 @@ import {
 import { ContactsDao } from "./models/dao";
 import { PutItemCommandOutput } from "@aws-sdk/client-dynamodb";
 import { LambdaDynamoDBError } from "./models/errors";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
@@ -64,6 +65,41 @@ export const handler: APIGatewayProxyHandler = async (
   }
 
   if (response && response.$metadata.httpStatusCode) {
+    // Send an email via SES
+    try {
+      const sesClient = new SESClient({ region: process.env.AWS_REGION });
+      const verificationLink = `https://${process.env.DOMAIN}/verify?email=${encodeURIComponent(email)}`;
+      const emailParams = {
+        Destination: {
+          ToAddresses: [email],
+        },
+        Message: {
+          Body: {
+            Text: {
+              Data: `Hi ${firstName},\n\nThank you for submitting your contact information.\nPlease verify your email address by clicking the link below:\n${verificationLink}\n\nBest Regards,\nYour Company`,
+            },
+          },
+          Subject: {
+            Data: "Please Verify Your Email Address",
+          },
+        },
+        Source: process.env.SES_EMAIL_SOURCE,
+      };
+
+      const sendEmailCommand = new SendEmailCommand(emailParams);
+      // const sendEmailCommand = new CloneReceiptRuleSetCommand(emailParams); ?
+      await sesClient.send(sendEmailCommand);
+      console.log("Verification email sent successfully.");
+    } catch (sesError) {
+      console.error("Error sending email:", sesError);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          message: "Error sending verification email.",
+        }),
+      };
+    }
+    
     if (response.$metadata.httpStatusCode == 200)
       return {
         statusCode: 200,

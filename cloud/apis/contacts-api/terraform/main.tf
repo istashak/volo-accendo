@@ -49,7 +49,7 @@ resource "aws_s3_bucket_acl" "lambda_bucket" {
   depends_on = [aws_s3_bucket_ownership_controls.lambda_bucket]
   # bucket     = aws_s3_bucket.lambda_bucket.id
   bucket = local.s3_lambda_function_bucket_name
-  acl        = "private"
+  acl    = "private"
 }
 
 resource "aws_s3_object" "lambda_source" {
@@ -71,8 +71,8 @@ resource "aws_lambda_function" "put_contact" {
 
   # The bucket name as created earlier with "aws s3api create-bucket"
   # s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_bucket = local.s3_lambda_function_bucket_name
-  s3_key    = aws_s3_object.lambda_source.key
+  s3_bucket         = local.s3_lambda_function_bucket_name
+  s3_key            = aws_s3_object.lambda_source.key
   s3_object_version = aws_s3_object.lambda_source.version_id
   # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
 
@@ -81,6 +81,8 @@ resource "aws_lambda_function" "put_contact" {
       REGION              = var.region
       NODE_ENV            = var.environment
       CONTACTS_TABLE_NAME = aws_dynamodb_table.contacts_table.name
+      DOMAIN              = local.domain_name
+      SES_EMAIL_SOURCE    = aws_ses_email_identity.contact_verification_email.email
     }
   }
 
@@ -218,7 +220,7 @@ resource "aws_lambda_permission" "put_contact" {
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${var.environment}.${data.tfe_outputs.networking.nonsensitive_values.domain_name}"
+  domain_name = "api.${local.domain_name}"
 
   domain_name_configuration {
     certificate_arn = data.tfe_outputs.networking.nonsensitive_values.aws_acm_certificate_arn
