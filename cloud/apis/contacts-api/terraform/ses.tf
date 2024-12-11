@@ -19,10 +19,13 @@ resource "aws_ses_domain_dkim" "contact_verification_dkim" {
 }
 
 resource "aws_route53_record" "dkim" {
-  count   = length(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens)
-  zone_id = "Z123456789EXAMPLE"
-  name    = "${aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens[count.index]}._domainkey.${local.domain_name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["${aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens[count.index]}.amazonses.com"]
+  #   count   = length(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens)
+  for_each = toset(try(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens, []))
+  zone_id  = data.tfe_outputs.networking.nonsensitive_values.domain_zone_id
+  #   name     = "${aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens[count.index]}._domainkey.${local.domain_name}"
+  name = "${each.value}._domainkey.${local.domain_name}"
+  type = "CNAME"
+  ttl  = 300
+  #   records = ["${aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens[count.index]}.amazonses.com"]
+  records = ["${each.value}.amazonses.com"]
 }
