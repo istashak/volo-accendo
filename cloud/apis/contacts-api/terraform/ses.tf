@@ -1,5 +1,5 @@
 resource "aws_ses_email_identity" "contact_verification_email" {
-  email = "no-reply@${local.domain_name}"
+  email = "istashak@gmail.com"
 }
 
 resource "aws_ses_domain_identity" "contact_verification_domain" {
