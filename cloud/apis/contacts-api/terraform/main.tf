@@ -39,13 +39,13 @@ provider "aws" {
 variable "lambda_functions" {
   default = {
     putContact = {
-      handler      = "dist/src/lambdas/put-contact/put-contact.handler"
+      handler      = "src/lambdas/put-contact/put-contact.handler"
       zip_key      = "put-contact-lambda.zip"
       route_method = "POST"
       route_path   = "/contacts"
     }
     verifyContact = {
-      handler      = "dist/src/lambdas/verify-contact/verify-contact.handler"
+      handler      = "src/lambdas/verify-contact/verify-contact.handler"
       zip_key      = "verify-contact-lambda.zip"
       route_method = "GET"
       route_path   = "/contacts/verify"
