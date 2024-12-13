@@ -67,8 +67,8 @@ export class ContactsDao extends BaseDao {
     const params: UpdateItemCommandInput = {
       TableName: process.env.CONTACTS_TABLE_NAME, // Replace with your actual table name
       Key: {
-        PrimaryKeyName: { S: this.email },
-      }, // Use email as the primary key
+        email: { S: this.email },
+      },
       UpdateExpression: "SET verificationStatus = :verificationStatus",
       ExpressionAttributeValues: {
         ":verificationStatus": { S: this.verificationStatus },
