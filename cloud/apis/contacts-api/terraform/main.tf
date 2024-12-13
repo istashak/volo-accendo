@@ -78,11 +78,12 @@ resource "aws_lambda_function" "put_contact" {
 
   environment {
     variables = {
-      REGION              = var.region
-      NODE_ENV            = var.environment
-      CONTACTS_TABLE_NAME = aws_dynamodb_table.contacts_table.name
-      DOMAIN              = local.domain_name
-      SES_EMAIL_SOURCE    = aws_ses_email_identity.contact_verification_email.email
+      REGION                 = var.region
+      NODE_ENV               = var.environment
+      CONTACTS_TABLE_NAME    = aws_dynamodb_table.contacts_table.name
+      DOMAIN                 = local.domain_name
+      ENVIRONMENT_AND_DOMAIN = local.environment_and_domain_name
+      SES_EMAIL_SOURCE       = aws_ses_email_identity.contact_verification_email.email
     }
   }
 

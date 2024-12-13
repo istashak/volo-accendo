@@ -4,10 +4,14 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
-import { ContactsDao } from "./models/dao";
+import { ContactsDao } from "../../shared/models/dao";
 import { PutItemCommandOutput } from "@aws-sdk/client-dynamodb";
-import { LambdaDynamoDBError } from "./models/errors";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { LambdaDynamoDBError } from "@shared/models/errors";
+import {
+  SESClient,
+  SendBounceCommandOutput,
+  SendEmailCommand,
+} from "@aws-sdk/client-ses";
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
@@ -32,7 +36,15 @@ export const handler: APIGatewayProxyHandler = async (
   console.log("putContact received body:", body);
 
   // Destructure the fields from the body
-  let { email, phoneNumber, firstName, lastName, companyName, message, verificationStatus } = body;
+  let {
+    email,
+    phoneNumber,
+    firstName,
+    lastName,
+    companyName,
+    message,
+    verificationStatus,
+  } = body;
 
   // Ensure companyName is set to null if it is undefined
   if (companyName === undefined) {
@@ -46,12 +58,13 @@ export const handler: APIGatewayProxyHandler = async (
     lastName,
     companyName,
     message,
-    verificationStatus
+    verificationStatus,
   });
 
-  let response: PutItemCommandOutput | null = null;
+  let databaseResponse: PutItemCommandOutput | null = null;
+  let emailResponse: SendBounceCommandOutput | null = null;
   try {
-    response = await contact.putContact();
+    databaseResponse = await contact.putContact();
   } catch (error) {
     console.error(error);
     if (error instanceof LambdaDynamoDBError) {
@@ -64,11 +77,15 @@ export const handler: APIGatewayProxyHandler = async (
     }
   }
 
-  if (response && response.$metadata.httpStatusCode) {
+  if (databaseResponse?.$metadata.httpStatusCode == 200) {
     // Send an email via SES
     try {
       const sesClient = new SESClient({ region: process.env.AWS_REGION });
-      const verificationLink = `https://${process.env.DOMAIN}/verify?email=${encodeURIComponent(email)}`;
+      const verificationLink = `https://${
+        process.env.ENVIRONMENT_AND_DOMAIN
+      }/verifyContact?email=${encodeURIComponent(
+        email
+      )}&firstName=${firstName}`;
       const emailParams = {
         Destination: {
           ToAddresses: [email],
@@ -76,7 +93,7 @@ export const handler: APIGatewayProxyHandler = async (
         Message: {
           Body: {
             Text: {
-              Data: `Hi ${firstName},\n\nThank you for submitting your contact information.\nPlease verify your email address by clicking the link below:\n${verificationLink}\n\nBest Regards,\nYour Company`,
+              Data: `Hi ${firstName},\n\nThank you for submitting your contact information.\nPlease verify your email address by clicking the link below:\n${verificationLink}\n\nBest Regards,\nVolo Accendo Inc.`,
             },
           },
           Subject: {
@@ -88,8 +105,17 @@ export const handler: APIGatewayProxyHandler = async (
 
       const sendEmailCommand = new SendEmailCommand(emailParams);
       // const sendEmailCommand = new CloneReceiptRuleSetCommand(emailParams); ?
-      await sesClient.send(sendEmailCommand);
-      console.log("Verification email sent successfully.");
+      emailResponse = await sesClient.send(sendEmailCommand);
+      console.log("Verification email sent", emailResponse);
+      if (emailResponse?.$metadata.httpStatusCode == 200) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            message: "Successfully added contact.",
+            contact: contact.toJson(),
+          }),
+        };
+      }
     } catch (sesError) {
       console.error("Error sending email:", sesError);
       return {
@@ -99,21 +125,14 @@ export const handler: APIGatewayProxyHandler = async (
         }),
       };
     }
-    
-    if (response.$metadata.httpStatusCode == 200)
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: "Successfully added contact.",
-          contact: contact.toJson(),
-        }),
-      };
   }
 
   return {
     statusCode: 500,
     body: JSON.stringify({
       message: "Unknown error.",
+      databaseResponse: databaseResponse?.$metadata.httpStatusCode,
+      emailResponse: emailResponse?.$metadata.httpStatusCode,
     }),
   };
 };

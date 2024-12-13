@@ -70,7 +70,7 @@ jobs:
       - name: Archive dist directory
         run: |
           cd cloud/apis/contacts-api/
-          zip -r lambda.zip dist
+          pnpm zip
 
       - name: Install AWS CLI
         run: |
@@ -83,4 +83,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"  # Adjust if necessary
         run: |
-          aws s3 cp cloud/apis/contacts-api/lambda.zip s3://$S3_BUCKET_NAME/lambda.zip
+          aws s3 cp cloud/apis/contacts-api/put-contact-lambda.zip s3://$S3_BUCKET_NAME/put-contact-lambda.zip
+          aws s3 cp cloud/apis/contacts-api/verify-contact-lambda.zip s3://$S3_BUCKET_NAME/verify-contact-lambda.zip
