@@ -1,4 +1,3 @@
-const AWS = require("aws-sdk");
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyHandler,
