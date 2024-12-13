@@ -36,8 +36,25 @@ provider "aws" {
 #   }
 # }
 
+variable "lambda_functions" {
+  default = {
+    putContact = {
+      handler      = "dist/src/lambdas/put-contact/put-contact.handler"
+      zip_key      = "put-contact-lambda.zip"
+      route_method = "POST"
+      route_path   = "/contacts"
+    }
+    verifyContact = {
+      handler      = "dist/src/lambdas/verify-contact/verify-contact.handler"
+      zip_key      = "verify-contact-lambda.zip"
+      route_method = "GET"
+      route_path   = "/contacts/verify"
+    }
+  }
+}
+
 # This ownership control seems to be necessary for the private aws_s3_bucket_acl to work.
-resource "aws_s3_bucket_ownership_controls" "lambda_bucket" {
+resource "aws_s3_bucket_ownership_controls" "contacts_api_lambda_bucket" {
   # bucket = aws_s3_bucket.lambda_bucket.id
   bucket = local.s3_lambda_function_bucket_name
   rule {
@@ -45,36 +62,36 @@ resource "aws_s3_bucket_ownership_controls" "lambda_bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "lambda_bucket" {
-  depends_on = [aws_s3_bucket_ownership_controls.lambda_bucket]
+resource "aws_s3_bucket_acl" "contacts_api_lambda_bucket" {
+  depends_on = [aws_s3_bucket_ownership_controls.contacts_api_lambda_bucket]
   # bucket     = aws_s3_bucket.lambda_bucket.id
   bucket = local.s3_lambda_function_bucket_name
   acl    = "private"
 }
 
-resource "aws_s3_object" "lambda_source" {
-  # bucket = aws_s3_bucket.lambda_bucket.id
+resource "aws_s3_object" "contacts_api_lambda_source" {
+  for_each = var.lambda_functions
+
   bucket = local.s3_lambda_function_bucket_name
-  key    = "lambda.zip"
-  # key    = "putContact/v${var.contacts_api_version}/lambda.zip"
+  key    = each.value.zip_key
   # source = data.archive_file.lambda_source_package.output_path
-  # etag   = filemd5(data.archive_file.lambda_source_package.output_path)
+  etag = filemd5(each.value.zip_key)
 }
 
 # Lambda Function
-resource "aws_lambda_function" "put_contact" {
-  function_name = "${local.naming_prefix}-putContact"
+resource "aws_lambda_function" "contacts_api_lambda_functions" {
+  for_each = var.lambda_functions
+
+  function_name = "${local.naming_prefix}-${each.key}"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "dist/src/put-contact.handler"
+  handler       = each.value.handler
   runtime       = "nodejs20.x"
   timeout       = 60
 
-  # The bucket name as created earlier with "aws s3api create-bucket"
-  # s3_bucket = aws_s3_bucket.lambda_bucket.id
+  # S3 bucket and object info
   s3_bucket         = local.s3_lambda_function_bucket_name
-  s3_key            = aws_s3_object.lambda_source.key
-  s3_object_version = aws_s3_object.lambda_source.version_id
-  # source_code_hash = filebase64sha256(data.archive_file.lambda_source_package.output_path)
+  s3_key            = aws_s3_object.contacts_api_lambda_source[each.key].key
+  s3_object_version = aws_s3_object.contacts_api_lambda_source[each.key].version_id
 
   environment {
     variables = {
@@ -88,7 +105,7 @@ resource "aws_lambda_function" "put_contact" {
   }
 
   tags = merge(local.common_tags, {
-    resource_name = "${local.naming_prefix}-contacts-lambda"
+    resource_name = "${local.naming_prefix}-${each.key}-lambda"
   })
 }
 
@@ -204,25 +221,30 @@ resource "aws_apigatewayv2_stage" "contacts" {
   }
 }
 
-resource "aws_apigatewayv2_integration" "put_contact" {
-  api_id = aws_apigatewayv2_api.contacts.id
+resource "aws_apigatewayv2_integration" "contacts" {
+  for_each = var.lambda_functions
 
-  integration_uri    = aws_lambda_function.put_contact.invoke_arn
+  api_id             = aws_apigatewayv2_api.contacts.id
+  integration_uri    = aws_lambda_function.contacts_api_lambda_functions[each.key].invoke_arn
   integration_type   = "AWS_PROXY"
-  integration_method = "POST"
+  integration_method = each.value.route_method
 }
 
-resource "aws_apigatewayv2_route" "put_contact" {
+resource "aws_apigatewayv2_route" "contacts" {
+  for_each = var.lambda_functions
+
   api_id = aws_apigatewayv2_api.contacts.id
 
-  route_key = "POST /contacts"
-  target    = "integrations/${aws_apigatewayv2_integration.put_contact.id}"
+  route_key = "${each.value.route_method} ${each.value.route_path}"
+  target    = "integrations/${aws_apigatewayv2_integration.contacts[each.key].id}"
 }
 
-resource "aws_lambda_permission" "put_contact" {
-  statement_id  = "AllowExecutionFromAPIGateway"
+resource "aws_lambda_permission" "contacts" {
+  for_each = var.lambda_functions
+
+  statement_id  = "AllowExecutionFromAPIGateway-${each.key}"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.put_contact.function_name
+  function_name = aws_lambda_function.contacts_api_lambda_functions[each.key].function_name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.contacts.execution_arn}/*/*"
@@ -236,9 +258,6 @@ resource "aws_apigatewayv2_domain_name" "api" {
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
-
-  # TODO: Decide if this is necessary
-  # depends_on = [aws_acm_certificate_validation.cert_validation]
 }
 
 resource "aws_route53_record" "api" {
