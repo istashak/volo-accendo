@@ -83,7 +83,7 @@ export const handler: APIGatewayProxyHandler = async (
       const sesClient = new SESClient({ region: process.env.AWS_REGION });
       const verificationLink = `https://${
         process.env.ENVIRONMENT_AND_DOMAIN
-      }/verifyContact?email=${encodeURIComponent(
+      }/contacts/verify?email=${encodeURIComponent(
         email
       )}&firstName=${firstName}`;
       const emailParams = {
