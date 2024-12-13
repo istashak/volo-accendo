@@ -15,6 +15,8 @@ export const handler: APIGatewayProxyHandler = async (
   const email = decodeURIComponent(event.queryStringParameters?.email ?? "");
   const firstName = event.queryStringParameters?.firstName;
 
+  console.log("received params", { email, firstName });
+
   if (!email) {
     return {
       statusCode: 400,
@@ -38,18 +40,30 @@ export const handler: APIGatewayProxyHandler = async (
 
     response = await contact.verifyContact();
 
-    return {
-      statusCode: 302,
-      headers: {
-        Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/confirmation-success`,
-      },
-      body: JSON.stringify({}),
-    };
+    console.log("verification response", response);
+
+    if (response?.$metadata.httpStatusCode == 200) {
+      return {
+        statusCode: 302,
+        headers: {
+          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verfiy?email=${email}&${firstName}`,
+        },
+        body: JSON.stringify({}),
+      };
+    }
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to verify email." }),
+      body: JSON.stringify({ message: "Failed to verify email.", error }),
     };
   }
+
+  return {
+    statusCode: 500,
+    body: JSON.stringify({
+      message: "Unknown verification error.",
+      response: response?.$metadata.httpStatusCode,
+    }),
+  };
 };
