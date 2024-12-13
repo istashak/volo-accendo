@@ -226,7 +226,7 @@ resource "aws_apigatewayv2_integration" "contacts" {
   api_id             = aws_apigatewayv2_api.contacts.id
   integration_uri    = aws_lambda_function.contacts_api_lambda_functions[each.key].invoke_arn
   integration_type   = "AWS_PROXY"
-  integration_method = each.value.route_method
+  integration_method = "POST"
 }
 
 resource "aws_apigatewayv2_route" "contacts" {
