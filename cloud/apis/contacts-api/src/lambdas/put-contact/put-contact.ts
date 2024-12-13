@@ -4,9 +4,9 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
-import { ContactsDao } from "../../shared/models/dao";
 import { PutItemCommandOutput } from "@aws-sdk/client-dynamodb";
-import { LambdaDynamoDBError } from "@shared/models/errors";
+import { ContactsDao } from "../../shared/models/dao";
+import { LambdaDynamoDBError } from "../../shared/models/errors";
 import {
   SESClient,
   SendBounceCommandOutput,
