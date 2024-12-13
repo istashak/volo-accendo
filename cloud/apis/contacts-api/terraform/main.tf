@@ -74,8 +74,7 @@ resource "aws_s3_object" "contacts_api_lambda_source" {
 
   bucket = local.s3_lambda_function_bucket_name
   key    = each.value.zip_key
-  # source = data.archive_file.lambda_source_package.output_path
-  etag = filemd5(each.value.zip_key)
+  # etag = filemd5(each.value.zip_key)
 }
 
 # Lambda Function
