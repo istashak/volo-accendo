@@ -41,6 +41,19 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     max_ttl                = 86400
   }
 
+  # Add Custom Error Responses for 403 and 404
+  custom_error_response {
+    error_code         = 403
+    response_page_path = "/index.html"
+    response_code      = 200
+  }
+
+  custom_error_response {
+    error_code         = 404
+    response_page_path = "/index.html"
+    response_code      = 200
+  }
+
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate_validation.cert_validation.certificate_arn
     minimum_protocol_version = "TLSv1"
