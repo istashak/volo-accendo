@@ -45,7 +45,7 @@ export const handler: APIGatewayProxyHandler = async (
       return {
         statusCode: 302,
         headers: {
-          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verfiy?email=${email}&${firstName}`,
+          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification?email=${email}&${firstName}`,
         },
         body: JSON.stringify({}),
       };
