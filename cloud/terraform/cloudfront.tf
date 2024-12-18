@@ -41,19 +41,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     max_ttl                = 86400
   }
 
-  # Add Custom Error Responses for 403 and 404
-  custom_error_response {
-    error_code         = 403
-    response_page_path = "/index.html"
-    response_code      = 200
-  }
-
-  custom_error_response {
-    error_code         = 404
-    response_page_path = "/index.html"
-    response_code      = 200
-  }
-
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate_validation.cert_validation.certificate_arn
     minimum_protocol_version = "TLSv1"
@@ -93,7 +80,7 @@ resource "aws_route53_record" "www_domain_name" {
   zone_id = data.aws_route53_zone.volo_accendo_domain.zone_id
   name    = "www${var.environment == "prod" ? "" : ".dev"}"
   type    = "A"
-  # ttl     = "172800"
+
   alias {
     name                   = aws_cloudfront_distribution.web_app_distribution.domain_name
     zone_id                = aws_cloudfront_distribution.web_app_distribution.hosted_zone_id
