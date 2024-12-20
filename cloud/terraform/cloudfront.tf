@@ -13,11 +13,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
-  origin {
-    domain_name = aws_lambda_function.nextjs_ssr.qualified_arn
-    origin_id   = "${local.naming_prefix}-Lambda@Edge-SSR"
-  }
-
   # aliases = ["voloaccendo.com", "www.voloaccendo.com"]
   # Conditionally set aliases based on the environment
   aliases = var.environment == "prod" ? ["voloaccendo.com", "www.voloaccendo.com"] : ["dev.voloaccendo.com", "www.dev.voloaccendo.com"]
@@ -25,7 +20,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Distribution for Volo Accendo's web app"
-  default_root_object = "index.html"
+  # default_root_object = "index.html"
 
   default_cache_behavior {
     target_origin_id = aws_s3_bucket.web_app_bucket.id
@@ -40,6 +35,12 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       }
     }
 
+    lambda_function_association {
+      event_type   = "origin-request"
+      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+      include_body = true
+    }
+
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
@@ -48,8 +49,8 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 
   ordered_cache_behavior {
     # Dynamic SSR pages
-    path_pattern = "/*"
-    target_origin_id = "${local.naming_prefix}-Lambda@Edge-SSR"
+    path_pattern = "/dynamic/*"
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     cached_methods  = ["GET", "HEAD"]
@@ -64,7 +65,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     lambda_function_association {
       event_type   = "origin-request"
       lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
-      include_body = true
+      # include_body = true
     }
 
     viewer_protocol_policy = "redirect-to-https"
