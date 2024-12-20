@@ -13,6 +13,11 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
+  origin {
+    domain_name = aws_lambda_function.nextjs_ssr.arn
+    origin_id   = "${local.naming_prefix}-Lambda@Edge-SSR"
+  }
+
   # aliases = ["voloaccendo.com", "www.voloaccendo.com"]
   # Conditionally set aliases based on the environment
   aliases = var.environment == "prod" ? ["voloaccendo.com", "www.voloaccendo.com"] : ["dev.voloaccendo.com", "www.dev.voloaccendo.com"]
