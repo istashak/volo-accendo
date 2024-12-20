@@ -1,9 +1,10 @@
 resource "aws_lambda_function" "nextjs_ssr" {
-  function_name    = "${local.naming_prefix}-nextjs-ssr"
-  handler          = "lambdas/nextjs-ssr.handler"
-  runtime          = "nodejs20.x"
-  role             = aws_iam_role.lambda_edge_role.arn
-  publish          = true
+  function_name = "${local.naming_prefix}-nextjs-ssr"
+  handler       = "lambdas/nextjs-ssr.handler"
+  runtime       = "nodejs20.x"
+  role          = aws_iam_role.lambda_edge_role.arn
+  timeout       = 60
+  publish       = true
 
   # S3 bucket and object info
   s3_bucket         = aws_s3_bucket.web_app_bucket.id

@@ -33,16 +33,31 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 
   default_cache_behavior {
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
 
-    # forwarded_values {
-    #   query_string = false
+    forwarded_values {
+      query_string = false
 
-    #   cookies {
-    #     forward = "none"
-    #   }
-    # }
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  ordered_cache_behavior {
+    # Dynamic SSR pages
+    path_pattern     = "/*"
+    # target_origin_id = "${local.naming_prefix}-Lambda@Edge-SSR"
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    cached_methods  = ["GET", "HEAD"]
 
     forwarded_values {
       query_string = true
@@ -61,33 +76,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     default_ttl            = 3600
     max_ttl                = 86400
   }
-
-  # ordered_cache_behavior {
-  #   # Dynamic SSR pages
-  #   path_pattern     = "/*"
-  #   # target_origin_id = "${local.naming_prefix}-Lambda@Edge-SSR"
-  #   target_origin_id = aws_s3_bucket.web_app_bucket.id
-
-  #   allowed_methods = ["GET", "HEAD", "OPTIONS"]
-  #   cached_methods  = ["GET", "HEAD"]
-
-  #   forwarded_values {
-  #     query_string = true
-  #     cookies {
-  #       forward = "all"
-  #     }
-  #   }
-
-  #   lambda_function_association {
-  #     event_type = "origin-request"
-  #     lambda_arn = aws_lambda_function.nextjs_ssr.qualified_arn
-  #   }
-
-  #   viewer_protocol_policy = "redirect-to-https"
-  #   min_ttl                = 0
-  #   default_ttl            = 0
-  #   max_ttl                = 0
-  # }
 
   custom_error_response {
     error_code         = 404
