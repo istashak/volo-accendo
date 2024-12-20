@@ -20,7 +20,7 @@ resource "aws_iam_role" "lambda_edge_role" {
       {
         Action    = "sts:AssumeRole",
         Effect    = "Allow",
-        Principal = { Service = "lambda.amazonaws.com" }
+        Principal = { Service = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"] }
       }
     ]
   })
