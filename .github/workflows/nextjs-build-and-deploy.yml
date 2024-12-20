@@ -69,7 +69,7 @@ jobs:
 
       - name: Archive lambdas directory
         run: |
-          cd cloud/apis/contacts-api/
+          cd web/volo-accendo-website
           pnpm zip:lambdas:$ENV
 
       # Comment/Uncomment for debugging
