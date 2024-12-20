@@ -90,5 +90,5 @@ jobs:
         run: |
           cd web/volo-accendo-website
           aws s3 sync out/$ENV/next s3://$S3_BUCKET_NAME --delete
-          aws s3 sync out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
+          aws s3 cp out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
 
