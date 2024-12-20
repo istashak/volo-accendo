@@ -20,36 +20,58 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Distribution for Volo Accendo's web app"
-  # default_root_object = "index.html"
+  default_root_object = "index.html"
 
-  default_cache_behavior {
+  ordered_cache_behavior {
+    path_pattern     = "_next/static/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
 
     forwarded_values {
       query_string = false
+      headers      = ["Origin"]
 
       cookies {
         forward = "none"
       }
     }
 
-    lambda_function_association {
-      event_type   = "origin-request"
-      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
-      include_body = true
-    }
-
     viewer_protocol_policy = "redirect-to-https"
+    compress               = true
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
   }
 
+  # Priority 1
+  # Behaviour bypassing edge lambda
+  # Path pattern can be changed to '*' here if no dynamic routes are used
+  # This will result in a slight performance increase and decreased costs
   ordered_cache_behavior {
+    path_pattern     = "index.html"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 60
+    max_ttl                = 1200
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  default_cache_behavior {
     # Dynamic SSR pages
-    path_pattern = "/dynamic/*"
     target_origin_id = aws_s3_bucket.web_app_bucket.id
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
@@ -63,8 +85,8 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
 
     lambda_function_association {
-      event_type   = "origin-request"
-      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+      event_type = "origin-request"
+      lambda_arn = aws_lambda_function.nextjs_ssr.qualified_arn
       # include_body = true
     }
 
@@ -72,6 +94,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     min_ttl                = 0
     default_ttl            = 60
     max_ttl                = 900
+    compress               = true
   }
 
   custom_error_response {
