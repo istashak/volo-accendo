@@ -67,6 +67,11 @@ jobs:
           cd web/volo-accendo-website
           pnpm build:$ENV
 
+      - name: Archive lambdas directory
+        run: |
+          cd cloud/apis/contacts-api/
+          pnpm zip:lambdas:$ENV
+
       # Comment/Uncomment for debugging
       - name: List directory contents II
         run: |
@@ -84,5 +89,6 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1" # Adjust if necessary
         run: |
           cd web/volo-accendo-website
-          aws s3 sync out/$ENV s3://$S3_BUCKET_NAME --delete
+          aws s3 sync out/$ENV/next s3://$S3_BUCKET_NAME --delete
+          aws s3 sync out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
 

@@ -55,7 +55,6 @@ variable "lambda_functions" {
 
 # This ownership control seems to be necessary for the private aws_s3_bucket_acl to work.
 resource "aws_s3_bucket_ownership_controls" "contacts_api_lambda_bucket" {
-  # bucket = aws_s3_bucket.lambda_bucket.id
   bucket = local.s3_lambda_function_bucket_name
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -64,7 +63,6 @@ resource "aws_s3_bucket_ownership_controls" "contacts_api_lambda_bucket" {
 
 resource "aws_s3_bucket_acl" "contacts_api_lambda_bucket" {
   depends_on = [aws_s3_bucket_ownership_controls.contacts_api_lambda_bucket]
-  # bucket     = aws_s3_bucket.lambda_bucket.id
   bucket = local.s3_lambda_function_bucket_name
   acl    = "private"
 }
@@ -110,7 +108,7 @@ resource "aws_lambda_function" "contacts_api_lambda_functions" {
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "${local.naming_prefix}-lambda_role"
+  name = "${local.naming_prefix}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
