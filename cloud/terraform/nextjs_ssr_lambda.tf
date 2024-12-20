@@ -40,18 +40,6 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
       {
         Effect = "Allow",
         Action = [
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem"
-        ],
-        Resource = "${aws_dynamodb_table.contacts_table.arn}"
-      },
-      {
-        Effect = "Allow",
-        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:DescribeLogStreams",
