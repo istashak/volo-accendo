@@ -3,7 +3,7 @@ resource "aws_lambda_function" "nextjs_ssr" {
   handler       = "lambdas/nextjs-ssr.handler"
   runtime       = "nodejs20.x"
   role          = aws_iam_role.lambda_edge_role.arn
-  timeout       = 60
+  timeout       = 30
   publish       = true
 
   # S3 bucket and object info
