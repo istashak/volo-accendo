@@ -38,11 +38,6 @@ export const handler = async (
       parsedUrl.query
     );
 
-    // const html = await app.renderToHTML(
-    //   {},
-    //   { pathname: parsedUrl.pathname || "/", query: parsedUrl.query }
-    // );
-
     return {
       status: "200",
       headers: {
