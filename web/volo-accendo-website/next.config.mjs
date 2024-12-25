@@ -5,11 +5,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: "standalone",
-  trailingSlash: true,
+  // trailingSlash: true,
   distDir: process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
-  // images: {
-  //   unoptimized: true,
-  // },
+  images: {
+    unoptimized: true,
+  },
   // async redirects() {
   //   return [
   //     {

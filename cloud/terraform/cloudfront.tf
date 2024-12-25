@@ -45,7 +45,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   # Priority 1
-  # Behaviour bypassing edge lambda
+  # Behavior bypassing edge lambda
   # Path pattern can be changed to '*' here if no dynamic routes are used
   # This will result in a slight performance increase and decreased costs
   ordered_cache_behavior {
