@@ -89,6 +89,7 @@ jobs:
           AWS_DEFAULT_REGION: "us-east-1" # Adjust if necessary
         run: |
           cd web/volo-accendo-website
+          cp -r public out/dev/next/standalone/ && cp -r out/dev/next/static out/dev/next/standalone/out/dev/next/ 
           aws s3 sync out/$ENV/next/standalone s3://$S3_BUCKET_NAME --delete
           aws s3 cp out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
 
