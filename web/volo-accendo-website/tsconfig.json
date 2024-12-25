@@ -27,16 +27,17 @@
         "name": "next"
       }
     ],
-    "noEmit": true
+    "noEmit": true,
+    "target": "ES2017"
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "out/dev/types/**/*.ts",
+    "next-env.d.ts",
+    "out/prod/next/types/**/*.ts",
     "out/dev/next/types/**/*.ts"
   ]
 }

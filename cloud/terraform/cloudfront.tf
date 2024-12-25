@@ -23,7 +23,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   default_root_object = "index.html"
 
   ordered_cache_behavior {
-    path_pattern     = "_next/static/*"
+    path_pattern     = "out/${var.environment}/next/server/app/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
