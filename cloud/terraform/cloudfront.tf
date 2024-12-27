@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 
   default_cache_behavior {
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-    allowed_methods  = ["GET", "HEAD", "POST", "OPTIONS"]
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "POST"]
 
     forwarded_values {
