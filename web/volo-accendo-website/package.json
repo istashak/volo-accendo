@@ -18,7 +18,6 @@
     "build:lambdas": "pnpm clean:lambdas && pnpm build:lambdas:prod",
     "zip:lambdas:dev": "cd out/dev/lambdas && zip -r ../nextjs-lambda-edge.zip .",
     "zip:lambdas:prod": "cd out/prod/lambdas && zip -r ../nextjs-lambda-edge.zip .",
-    "zip:standalone:static:dev":
     "start": "next start",
     "lint": "next lint"
   },
