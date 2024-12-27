@@ -13,8 +13,11 @@ export const handler: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const email = decodeURIComponent(event.queryStringParameters?.email ?? "");
   const firstName = event.queryStringParameters?.firstName;
-
   console.log("received params", { email, firstName });
+
+  const base64Data = Buffer.from(`${email}|${firstName}`).toString('base64');
+
+  console.log(`base64 encoding of "email|firstName" = ${base64Data}`)
 
   if (!email) {
     return {
@@ -45,7 +48,7 @@ export const handler: APIGatewayProxyHandler = async (
       return {
         statusCode: 302,
         headers: {
-          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification?email=${email}&firstName=${firstName}`,
+          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification/${base64Data}`,
         },
         body: JSON.stringify({}),
       };

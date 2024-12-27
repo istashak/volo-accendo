@@ -13,7 +13,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
   }
 
-  # aliases = ["voloaccendo.com", "www.voloaccendo.com"]
   # Conditionally set aliases based on the environment
   aliases = var.environment == "prod" ? ["voloaccendo.com", "www.voloaccendo.com"] : ["dev.voloaccendo.com", "www.dev.voloaccendo.com"]
 
@@ -22,34 +21,9 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   comment             = "Distribution for Volo Accendo's web app"
   default_root_object = "index.html"
 
+  # Priority 0
   ordered_cache_behavior {
-    path_pattern     = "out/${var.environment}/next/server/app/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = aws_s3_bucket.web_app_bucket.id
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-  }
-
-  # Priority 1
-  # Behavior bypassing edge lambda
-  # Path pattern can be changed to '*' here if no dynamic routes are used
-  # This will result in a slight performance increase and decreased costs
-  ordered_cache_behavior {
-    path_pattern     = "index.html"
+    path_pattern     = "_next/static/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
@@ -64,37 +38,66 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
 
     min_ttl                = 0
-    default_ttl            = 60
-    max_ttl                = 1200
+    default_ttl            = 86400
+    max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
+
+  # # Priority 1
+  # ordered_cache_behavior {
+  #   path_pattern     = "/dynamic/*"
+  #   allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+  #   cached_methods   = ["GET", "HEAD", "OPTIONS"]
+  #   target_origin_id = aws_s3_bucket.web_app_bucket.id
+
+  #   forwarded_values {
+  #     query_string = true
+  #     headers      = ["Origin"]
+
+  #     cookies {
+  #       forward = "all"
+  #     }
+  #   }
+
+  #   lambda_function_association {
+  #     event_type   = "origin-request"
+  #     lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+  #     include_body = true
+  #   }
+
+  #   viewer_protocol_policy = "redirect-to-https"
+  #   compress               = true
+  #   min_ttl                = 0
+  #   default_ttl            = 0
+  #   max_ttl                = 0
+  # }
 
   default_cache_behavior {
-    # Dynamic SSR pages
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    cached_methods  = ["GET", "HEAD"]
+    allowed_methods  = ["GET", "HEAD", "POST", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "POST"]
 
     forwarded_values {
       query_string = true
+      headers      = ["Origin"]
+
       cookies {
         forward = "all"
       }
     }
 
     lambda_function_association {
-      event_type = "origin-request"
-      lambda_arn = aws_lambda_function.nextjs_ssr.qualified_arn
-      # include_body = true
+      event_type   = "origin-request"
+      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+      include_body = true
     }
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 60
-    max_ttl                = 900
     compress               = true
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
   }
 
   custom_error_response {

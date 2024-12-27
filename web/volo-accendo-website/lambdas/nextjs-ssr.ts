@@ -1,55 +1,56 @@
-import { CloudFrontRequestEvent, CloudFrontRequestResult } from "aws-lambda";
-import Server from "next/dist/server/next-server";
-import { parse } from "url";
-import loadConfig from "next/dist/server/config";
-import {
-  PHASE_DEVELOPMENT_SERVER,
-  PHASE_PRODUCTION_SERVER,
-} from "next/constants";
+import fs from 'fs';
+import path from 'path';
+import { CloudFrontRequestEvent, CloudFrontRequest, CloudFrontResultResponse } from 'aws-lambda';
 
-// Determine the phase based on the NEXT_ENV variable
-const phase =
-  process.env.NEXT_ENV === "development"
-    ? PHASE_DEVELOPMENT_SERVER
-    : PHASE_PRODUCTION_SERVER;
+// Load routes manifest
+const routesManifest: RoutesManifest = JSON.parse(
+  fs.readFileSync('./.next/routes-manifest.json', 'utf-8')
+);
 
-const app = new Server({
-  conf: loadConfig(phase, process.cwd()),
-  dir: process.cwd(),
-  minimalMode: true,
-});
+export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFrontResultResponse> => {
+  const request: CloudFrontRequest = event.Records[0].cf.request;
+  const uri: string = request.uri;
 
-export const handler = async (
-  event: CloudFrontRequestEvent
-): Promise<CloudFrontRequestResult> => {
-  const { uri, querystring } = event.Records[0].cf.request;
-
-  const parsedUrl = parse(`${uri}?${querystring}`, true);
-
-  // Create mock req and res objects
-  const req = { url: `${uri}?${querystring}` } as any; // Simplified mock request
-  const res = { write: () => {}, end: () => {} } as any; // Simplified mock response
-
-  try {
-    const html = await app.renderToHTML(
-      req, // Pass mock req
-      res, // Pass mock res
-      parsedUrl.pathname || "/",
-      parsedUrl.query
-    );
-
+  // Match dynamic routes
+  const dynamicRoute = routesManifest.dynamicRoutes.find((route) => new RegExp(route.regex).test(uri));
+  if (dynamicRoute) {
+    const params = getParamsFromRegex(uri, dynamicRoute.namedRegex);
+    const html = await renderDynamicPage(dynamicRoute.page, params);
     return {
-      status: "200",
+      status: '200',
+      body: html,
       headers: {
-        "content-type": [{ key: "Content-Type", value: "text/html" }],
+        'content-type': [{ value: 'text/html' }],
       },
-      body: html || undefined,
-    };
-  } catch (error) {
-    console.error("SSR Error:", error);
-    return {
-      status: "500",
-      body: "Internal Server Error",
     };
   }
+
+  // Default to 404 for unmatched routes
+  return {
+    status: '404',
+    body: 'Page Not Found',
+  };
 };
+
+// Extract params from named regex
+function getParamsFromRegex(uri: string, namedRegex: string): Record<string, string> {
+  const match = new RegExp(namedRegex).exec(uri);
+  if (!match || !match.groups) return {};
+  return match.groups;
+}
+
+// Render dynamic page
+async function renderDynamicPage(page: string, params: Record<string, string>): Promise<string> {
+  const pagePath = path.join('.next/server/pages', page);
+  const renderPage = require(pagePath);
+  return renderPage.render(params);
+}
+
+// Types for the routes manifest
+interface RoutesManifest {
+  dynamicRoutes: Array<{
+    page: string;
+    regex: string;
+    namedRegex: string;
+  }>;
+}

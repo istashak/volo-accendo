@@ -4,8 +4,9 @@ import path from "path";
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // output: "export",
   output: "standalone",
-  // trailingSlash: true,
+  trailingSlash: true,
   distDir: process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
   images: {
     unoptimized: true,
@@ -22,26 +23,26 @@ const nextConfig = {
   // async rewrites() {
   //   return [
   //     {
-  //       source: "/api/:path*", // Proxy dynamic API requests to the Lambda@Edge function
+  //       source: "/contact/verification/:path*", // Proxy dynamic API requests to the Lambda@Edge function
   //       destination: "/api/:path*",
   //     },
   //   ];
   // },
 
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value:
-              "public, max-age=3600, s-maxage=86400, stale-while-revalidate",
-          },
-        ],
-      },
-    ];
-  },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/(.*)",
+  //       headers: [
+  //         {
+  //           key: "Cache-Control",
+  //           value:
+  //             "public, max-age=3600, s-maxage=86400, stale-while-revalidate",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
 
   webpack(config, { dev, isServer }) {
     // Development: Enable detailed source maps for debugging
@@ -63,11 +64,6 @@ const nextConfig = {
         crypto: false,
       };
     }
-
-    // config.resolve.alias = {
-    //   ...(config.resolve.alias || {}),
-    //   "@": path.resolve("./"), // Map '@' to the root directory
-    // };
 
     return config;
   },

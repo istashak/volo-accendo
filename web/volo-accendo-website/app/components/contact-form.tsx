@@ -28,11 +28,20 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLFormElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     setContactFormData({
       ...contactFormData,
       [name]: type === "checkbox" ? checked : value,
+    });
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error when user starts typing
+  };
+
+  const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setContactFormData({
+      ...contactFormData,
+      [name]: value,
     });
     setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error when user starts typing
   };
@@ -62,7 +71,7 @@ export function ContactForm() {
   };
 
   return (
-    <form className="space-y-3 flex-1" onChange={handleInputChange}>
+    <form className="space-y-3 flex-1">
       <div className="flex-1 rounded-lg bg-gray-50 p-6">
         <div className="w-full">
           <div>
@@ -79,6 +88,7 @@ export function ContactForm() {
                 name="email"
                 placeholder="Email"
                 value={contactFormData.email}
+                onChange={handleInputChange}
                 required
               />
             </label>
@@ -100,6 +110,7 @@ export function ContactForm() {
                 name="phoneNumber"
                 placeholder="Phone Number"
                 value={contactFormData.phoneNumber}
+                onChange={handleInputChange}
                 required
               />
             </label>
@@ -121,6 +132,7 @@ export function ContactForm() {
                 name="firstName"
                 placeholder="First Name"
                 value={contactFormData.firstName}
+                onChange={handleInputChange}
                 required
               />
             </label>
@@ -142,6 +154,7 @@ export function ContactForm() {
                 name="lastName"
                 placeholder="Last Name"
                 value={contactFormData.lastName}
+                onChange={handleInputChange}
                 required
               />
             </label>
@@ -163,6 +176,7 @@ export function ContactForm() {
                 name="companyName"
                 placeholder="Company Name"
                 value={contactFormData?.companyName ?? ""}
+                onChange={handleInputChange}
               />
             </label>
             {errors.companyName && (
@@ -182,6 +196,7 @@ export function ContactForm() {
                 name="message"
                 placeholder="What are you looking for?"
                 value={contactFormData.message}
+                onChange={handleTextAreaChange}
               ></textarea>
             </label>
             {errors.message && (
@@ -196,6 +211,7 @@ export function ContactForm() {
               id="policyAgreed"
               name="policyAgreed"
               checked={contactFormData.policyAgreed}
+              onChange={handleInputChange}
             />
             <label className="label">
               <span className="label-text">
