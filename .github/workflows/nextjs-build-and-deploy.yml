@@ -67,10 +67,10 @@ jobs:
           cd web/volo-accendo-website
           pnpm build:$ENV
 
-      - name: Archive lambdas directory
-        run: |
-          cd web/volo-accendo-website
-          pnpm zip:lambdas:$ENV
+      # - name: Archive lambdas directory
+      #   run: |
+      #     cd web/volo-accendo-website
+      #     pnpm zip:lambdas:$ENV
 
       # Comment/Uncomment for debugging
       - name: List directory contents II
@@ -90,5 +90,7 @@ jobs:
         run: |
           cd web/volo-accendo-website 
           aws s3 sync out/$ENV/next/standalone/out/dev/next/server/app s3://$S3_BUCKET_NAME --delete
-          aws s3 cp out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
+          
+          
+        # aws s3 cp out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
 
