@@ -7,7 +7,8 @@ const nextConfig = {
   // output: "export",
   output: "standalone",
   trailingSlash: true,
-  distDir: process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
+  distDir:
+    process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
   images: {
     unoptimized: true,
   },
@@ -20,14 +21,14 @@ const nextConfig = {
   //     },
   //   ];
   // },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/contact/verification/:path*", // Proxy dynamic API requests to the Lambda@Edge function
-  //       destination: "/api/:path*",
-  //     },
-  //   ];
-  // },
+  async rewrites() {
+    return [
+      {
+        source: "/about/",
+        destination: "/about.html",
+      },
+    ];
+  },
 
   // async headers() {
   //   return [

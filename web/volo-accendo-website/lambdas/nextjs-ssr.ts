@@ -4,7 +4,7 @@ import { CloudFrontRequestEvent, CloudFrontRequest, CloudFrontResultResponse } f
 
 // Load routes manifest
 const routesManifest: RoutesManifest = JSON.parse(
-  fs.readFileSync('./.next/routes-manifest.json', 'utf-8')
+  fs.readFileSync('./out/dev/next/routes-manifest.json', 'utf-8')
 );
 
 export const handler = async (event: CloudFrontRequestEvent): Promise<CloudFrontResultResponse> => {
@@ -41,7 +41,7 @@ function getParamsFromRegex(uri: string, namedRegex: string): Record<string, str
 
 // Render dynamic page
 async function renderDynamicPage(page: string, params: Record<string, string>): Promise<string> {
-  const pagePath = path.join('.next/server/pages', page);
+  const pagePath = path.join('out/dev/next/server/app', page);
   const renderPage = require(pagePath);
   return renderPage.render(params);
 }
