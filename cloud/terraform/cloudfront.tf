@@ -2,6 +2,11 @@ resource "aws_cloudfront_origin_access_identity" "web_app_oai" {
   comment = "Volo Accendo's aws_cloudfront_origin_access_identity"
 }
 
+resource "aws_s3_bucket" "cloudfront_logs" {
+  bucket = "cloudfront-logs-example"
+  acl    = "log-delivery-write"
+}
+
 resource "aws_cloudfront_distribution" "web_app_distribution" {
   origin {
     # domain_name = "${var.environment == "prod" ? "" : "dev."}${aws_s3_bucket.web_app_bucket.bucket_regional_domain_name}"
@@ -104,6 +109,11 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     error_code         = 404
     response_page_path = "/404.html"
     response_code      = 404
+  }
+
+  logging_config {
+    bucket = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    prefix = "cloudfront-logs/"
   }
 
   viewer_certificate {
