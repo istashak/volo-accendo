@@ -2,21 +2,21 @@ resource "aws_cloudfront_origin_access_identity" "web_app_oai" {
   comment = "Volo Accendo's aws_cloudfront_origin_access_identity"
 }
 
-resource "aws_s3_bucket" "cloudfront_logs" {
+resource "aws_s3_bucket" "webapp_cloudfront_logs" {
   bucket = "cloudfront-logs-${var.environment}"
 }
 
-resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
-  bucket = aws_s3_bucket.cloudfront_logs.id
+resource "aws_s3_bucket_ownership_controls" "webapp_cloudfront_logs" {
+  bucket = aws_s3_bucket.webapp_cloudfront_logs.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_acl" "cloudfront_logs" {
-  depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
+resource "aws_s3_bucket_acl" "webapp_cloudfront_logs" {
+  depends_on = [aws_s3_bucket_ownership_controls.webapp_cloudfront_logs]
 
-  bucket = aws_s3_bucket.cloudfront_logs.id
+  bucket = aws_s3_bucket.webapp_cloudfront_logs.id
   acl    = "log-delivery-write"
 }
 
@@ -125,7 +125,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   logging_config {
-    bucket = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    bucket = aws_s3_bucket.webapp_cloudfront_logs.bucket_domain_name
     prefix = "cloudfront-logs/"
   }
 
