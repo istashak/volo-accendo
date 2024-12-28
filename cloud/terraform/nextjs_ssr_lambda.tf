@@ -1,16 +1,16 @@
-resource "aws_lambda_function" "nextjs_ssr" {
-  function_name = "${local.naming_prefix}-nextjs-ssr"
-  handler       = "lambdas/nextjs-ssr.handler"
-  runtime       = "nodejs20.x"
-  role          = aws_iam_role.lambda_edge_role.arn
-  timeout       = 30
-  publish       = true
+# resource "aws_lambda_function" "nextjs_ssr" {
+#   function_name = "${local.naming_prefix}-nextjs-ssr"
+#   handler       = "lambdas/nextjs-ssr.handler"
+#   runtime       = "nodejs20.x"
+#   role          = aws_iam_role.lambda_edge_role.arn
+#   timeout       = 30
+#   publish       = true
 
-  # S3 bucket and object info
-  s3_bucket         = aws_s3_bucket.web_app_bucket.id
-  s3_key            = aws_s3_object.web_app_lambda_edge.key
-  s3_object_version = aws_s3_object.web_app_lambda_edge.version_id
-}
+#   # S3 bucket and object info
+#   s3_bucket         = aws_s3_bucket.web_app_bucket.id
+#   s3_key            = aws_s3_object.web_app_lambda_edge.key
+#   s3_object_version = aws_s3_object.web_app_lambda_edge.version_id
+# }
 
 resource "aws_iam_role" "lambda_edge_role" {
   name = "${local.naming_prefix}-lambda-edge-role"
