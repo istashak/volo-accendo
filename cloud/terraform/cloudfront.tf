@@ -3,7 +3,7 @@ resource "aws_cloudfront_origin_access_identity" "web_app_oai" {
 }
 
 resource "aws_s3_bucket" "webapp_cloudfront_logs" {
-  bucket = "cloudfront-logs-${var.environment}"
+  bucket = "webapp-cloudfront-logs-${var.environment}"
 }
 
 resource "aws_s3_bucket_ownership_controls" "webapp_cloudfront_logs" {
