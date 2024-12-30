@@ -69,9 +69,9 @@ const nextConfig = {
     return config;
   },
 
-  // experimental: {
-  //   outputFileTracing: true, // For including dependencies in the Lambda package
-  // },
+  experimental: {
+    outputFileTracing: true, // For including dependencies in the Lambda package
+  },
 };
 
 export default nextConfig;

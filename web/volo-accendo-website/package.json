@@ -16,7 +16,7 @@
     "build:lambdas:dev": "pnpm clean:lambdas:dev && pnpm compile:lambdas && pnpm copy:lambdas:dev",
     "build:lambdas:prod": "pnpm compile:lambdas && mkdir -p ./out/prod/lambdas && mv ./.tmpBuildLambdas/* ./out/prod/lambdas && rm -rf ./.tmpBuildLambdas",
     "build:lambdas": "pnpm clean:lambdas && pnpm build:lambdas:prod",
-    "copy:lambdas:dev": "mkdir ./out/dev/lambdas && mv ./.tmpBuildLambdas/* ./out/dev/lambdas && rm -rf ./.tmpBuildLambdas && cp -r ./out/dev/next/standalone ./out/dev/lambdas",
+    "copy:lambdas:dev": "mkdir ./out/dev/lambdas && mv ./.tmpBuildLambdas/* ./out/dev/lambdas && rm -rf ./.tmpBuildLambdas && cp -r ./out/dev/next/standalone/* ./out/dev/lambdas",
     "copy:public:dev": "cp -r ./public/* ./out/dev/next/standalone/out/dev/next/server/app/",
     "zip:lambdas:dev": "cd out/dev/lambdas && zip -r ../nextjs-lambda-edge.zip .",
     "zip:lambdas:prod": "cd out/prod/lambdas && zip -r ../nextjs-lambda-edge.zip .",
