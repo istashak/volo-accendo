@@ -105,11 +105,11 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       }
     }
 
-    # lambda_function_association {
-    #   event_type   = "origin-request"
-    #   lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
-    #   include_body = true
-    # }
+    lambda_function_association {
+      event_type   = "origin-request"
+      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+      include_body = true
+    }
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
