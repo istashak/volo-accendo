@@ -18,7 +18,7 @@ export const handler: CloudFrontRequestHandler = async (event) => {
     await app.prepare();
 
     // Check if the request is for a static file in the public directory
-    const filePath = path.join(__dirname, ".next/static", uri);
+    const filePath = path.join(__dirname, "_next/static", uri);
     if (fs.existsSync(filePath)) {
       const fileContent = fs.readFileSync(filePath);
       return {

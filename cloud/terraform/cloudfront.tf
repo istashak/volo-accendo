@@ -105,11 +105,17 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       }
     }
 
-    lambda_function_association {
-      event_type   = "origin-request"
-      lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
-      include_body = true
+    # Attach CloudFront Function for path rewrite
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.path_rewrite.arn
     }
+
+    # lambda_function_association {
+    #   event_type   = "origin-request"
+    #   lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
+    #   include_body = true
+    # }
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
@@ -144,6 +150,13 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   tags = merge(local.common_tags, {
     resource_name = "${local.naming_prefix}-cloud-front-distribution"
   })
+}
+
+resource "aws_cloudfront_function" "path_rewrite" {
+  name    = "path-rewrite-function"
+  runtime = "cloudfront-js-1.0"
+
+  code = file("${path.module}/path-rewrite-function.js")
 }
 
 # Creates the zone record that enables the domain name root (i.e. voloaccendo.com) to be an alias for the
