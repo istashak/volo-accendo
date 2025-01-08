@@ -1,5 +1,5 @@
 function handler(event) {
-  var routes = ["/about/", "/resume/", "/contact/"];
+  var routes = ["/about/", "/resume/", "/contact/", "/contact/confirm/", "/contact/success/"];
   var request = event.request;
   var uri = request.uri;
 
