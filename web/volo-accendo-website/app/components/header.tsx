@@ -34,7 +34,7 @@ export function Header({ headerItems }: HeaderProps) {
       />
       <div className="p-4">
         <Image
-          src="volo_logo.png"
+          src="/volo_logo.png"
           width={400}
           height={80}
           alt="Volo Accendo logo full text."
