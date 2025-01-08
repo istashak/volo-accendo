@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 const routes: HeaderItem[] = [
   { title: "Home", route: "/" },
-  { title: "About", route: "/about" },
-  { title: "Resume", route: "/resume" },
-  { title: "Contact", route: "/contact" },
+  { title: "About", route: "/about/" },
+  { title: "Resume", route: "/resume/" },
+  { title: "Contact", route: "/contact/" },
 ];
 
 export default function RootLayout({
