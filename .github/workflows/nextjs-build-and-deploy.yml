@@ -25,7 +25,7 @@ jobs:
       # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       # Step 2: Install pnpm
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -79,8 +79,10 @@ jobs:
 
       - name: Install AWS CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          aws --version
 
       - name: Upload to S3
         env:
@@ -91,4 +93,3 @@ jobs:
           cd web/volo-accendo-website 
           aws s3 sync out/$ENV/next/standalone/out/dev/next/server/app s3://$S3_BUCKET_NAME --delete
           aws s3 cp out/$ENV/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip
-
