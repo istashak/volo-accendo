@@ -7,8 +7,8 @@ const nextConfig = {
   // output: "export",
   output: "standalone",
   trailingSlash: true,
-  distDir:
-    process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
+  // distDir:
+  //   process.env.NEXT_ENV === "production" ? "out/prod/next" : "out/dev/next",
   images: {
     unoptimized: true,
   },

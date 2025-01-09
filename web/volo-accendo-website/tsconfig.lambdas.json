@@ -4,8 +4,8 @@
     "target": "es2020",
     "module": "commonjs",
     "noEmit": false,
-    "outDir": "./.tmpBuildLambdas",
-     "tsBuildInfoFile": "./.tmpBuildLambdas/tsconfig.lambdas.tsbuildinfo",
+    "outDir": "./.lambdas",
+     "tsBuildInfoFile": "./.lambdas/tsconfig.lambdas.tsbuildinfo",
     "rootDir": "lambdas"
   },
   "include": ["lambdas/**/*.ts"]
