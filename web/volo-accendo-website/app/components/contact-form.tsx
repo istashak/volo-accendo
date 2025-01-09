@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContactValidationSchema } from "../models/domain/contact";
 import { z } from "zod";
 import { useContactStore } from "../stores/contact-store";
@@ -22,6 +22,7 @@ export function ContactForm() {
   const setContactFormData = useContactStore(
     (state) => state.setContactFormData
   );
+  const newContact = useContactStore((state) => state.newContact);
   const setNewContact = useContactStore((state) => state.setNewContact);
 
   // const [contactFormData, setContactFormData, setNewContact] = useContactStore(
@@ -65,7 +66,7 @@ export function ContactForm() {
           verificationStatus: "pending",
         })
       );
-      router.push("/contact/confirm");
+      // router.push("/contact/confirm");
     } catch (e) {
       if (e instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
@@ -78,6 +79,14 @@ export function ContactForm() {
       }
     }
   };
+
+  useEffect(() => {
+    // Optionally log the error to an error reporting service
+    console.error("newContact", newContact);
+    if(newContact) {
+      router.push("/contact/confirm");
+    }
+  }, [newContact]);
 
   return (
     <form className="space-y-3 flex-1">
