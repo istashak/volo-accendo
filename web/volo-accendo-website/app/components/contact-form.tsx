@@ -58,6 +58,7 @@ export function ContactForm() {
     event.preventDefault();
 
     try {
+      console.log("contactFormData: ", contactFormData);
       setNewContact(
         ContactValidationSchema.parse({
           ...contactFormData,

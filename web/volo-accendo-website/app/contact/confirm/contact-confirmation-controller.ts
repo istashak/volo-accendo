@@ -21,8 +21,12 @@ const useContactConfirmationController = () => {
   const router = useRouter();
   const newContact = useContactStore((state) => state.newContact);
   const clearNewContact = useContactStore((state) => state.clearNewContact);
-  const resetContactFormData = useContactStore((state) => state.resetContactFormData);
+  const resetContactFormData = useContactStore(
+    (state) => state.resetContactFormData
+  );
   const setFocusedContact = useContactStore((state) => state.setFocusedContact);
+
+  console.log("useContactConfirmationController newContact:", newContact);
 
   // const [newContact, clearNewContact, resetContactFormData, setFocusedContact] = useContactStore(
   //   useShallow((state) => [state.newContact, state.clearNewContact, state.resetContactFormData, state.setFocusedContact])
