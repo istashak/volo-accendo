@@ -1,6 +1,6 @@
 "use client";
 import { Contact } from "@/app/models/domain/contact";
-import { useContactStore } from "@/app/stores/contact-store";
+import { useContactStore } from "../../stores/contact-store";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useShallow } from "zustand/shallow";
@@ -30,7 +30,7 @@ const useContactConfirmationController = () => {
 
   console.log("useContactConfirmationController newContact:", newContact);
   console.log(
-    "useContactConfirmationController contactFormData:",
+    "useContactConfirmationController contactFormData 7:",
     contactFormData
   );
 
