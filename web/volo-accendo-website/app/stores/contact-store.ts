@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Contact } from "../models/domain/contact";
 import { ContactFormData } from "../components/contact-form";
 
@@ -25,16 +26,21 @@ const initialState: ContactFormData = {
   policyAgreed: false,
 };
 
-export const useContactStore = create<ContactStore>((set) => ({
-  contactFormData: initialState,
-  setContactFormData: (contactFormData) => set({ contactFormData }),
-  resetContactFormData: () => set({ contactFormData: initialState }),
-  newContact: null,
-  setNewContact: (newContact) => {
-    console.log("useContactStore setNewContact to newContact", newContact);
-    set({ newContact });
-  },
-  clearNewContact: () => set({ newContact: null }),
-  focusedContact: null,
-  setFocusedContact: (focusedContact) => set({ focusedContact }),
-}));
+export const useContactStore = create(
+  persist<ContactStore>(
+    (set) => ({
+      contactFormData: initialState,
+      setContactFormData: (contactFormData) => set({ contactFormData }),
+      resetContactFormData: () => set({ contactFormData: initialState }),
+      newContact: null,
+      setNewContact: (newContact) => {
+        console.log("useContactStore setNewContact to newContact", newContact);
+        set({ newContact });
+      },
+      clearNewContact: () => set({ newContact: null }),
+      focusedContact: null,
+      setFocusedContact: (focusedContact) => set({ focusedContact }),
+    }),
+    { name: "contact-store" }
+  )
+);

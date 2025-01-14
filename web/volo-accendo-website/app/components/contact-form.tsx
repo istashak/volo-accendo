@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { ContactValidationSchema } from "../models/domain/contact";
 import { z } from "zod";
-import { useContactStore } from "../stores/contact-store";
+import { useContactStore } from "@/app/stores/contact-store";
 import { useRouter } from "next/navigation";
 import { useShallow } from "zustand/react/shallow";
 
