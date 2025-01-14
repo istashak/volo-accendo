@@ -1,3 +1,5 @@
+"use client";
+
 import { create } from "zustand";
 import { Contact } from "../models/domain/contact";
 import { ContactFormData } from "../components/contact-form";
