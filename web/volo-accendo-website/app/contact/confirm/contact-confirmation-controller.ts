@@ -1,3 +1,4 @@
+"use client";
 import { Contact } from "@/app/models/domain/contact";
 import { useContactStore } from "@/app/stores/contact-store";
 import { useCallback, useEffect, useState } from "react";
