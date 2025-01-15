@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ContactValidationSchema } from "../models/domain/contact";
 import { z } from "zod";
 import { useContactStore } from "@/app/stores/contact-store";
@@ -18,20 +16,20 @@ export type ContactFormData = {
 };
 
 export function ContactForm() {
-  const contactFormData = useContactStore((state) => state.contactFormData);
-  const setContactFormData = useContactStore(
-    (state) => state.setContactFormData
-  );
-  const newContact = useContactStore((state) => state.newContact);
-  const setNewContact = useContactStore((state) => state.setNewContact);
-
-  // const [contactFormData, setContactFormData, setNewContact] = useContactStore(
-  //   useShallow((state) => [
-  //     state.contactFormData,
-  //     state.setContactFormData,
-  //     state.setNewContact,
-  //   ])
+  // const contactFormData = useContactStore((state) => state.contactFormData);
+  // const setContactFormData = useContactStore(
+  //   (state) => state.setContactFormData
   // );
+  // const newContact = useContactStore((state) => state.newContact);
+  // const setNewContact = useContactStore((state) => state.setNewContact);
+
+  const [contactFormData, setContactFormData, setNewContact] = useContactStore(
+    useShallow((state) => [
+      state.contactFormData,
+      state.setContactFormData,
+      state.setNewContact,
+    ])
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
@@ -66,7 +64,7 @@ export function ContactForm() {
           verificationStatus: "pending",
         })
       );
-      // router.push("/contact/confirm");
+      router.push("/contact/confirm");
     } catch (e) {
       if (e instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
@@ -80,13 +78,13 @@ export function ContactForm() {
     }
   };
 
-  useEffect(() => {
-    // Optionally log the error to an error reporting service
-    console.error("newContact", newContact);
-    if(newContact) {
-      router.push("/contact/confirm");
-    }
-  }, [newContact]);
+  // useEffect(() => {
+  //   // Optionally log the error to an error reporting service
+  //   console.error("newContact", newContact);
+  //   if(newContact) {
+  //     router.push("/contact/confirm");
+  //   }
+  // }, [newContact]);
 
   return (
     <form className="space-y-3 flex-1">

@@ -1,4 +1,3 @@
-"use client";
 import { Contact } from "@/app/models/domain/contact";
 import { useContactStore } from "@/app/stores/contact-store";
 import { useCallback, useEffect, useState } from "react";
@@ -20,23 +19,18 @@ const useContactConfirmationController = () => {
   const [contactCreationState, setContactCreationState] =
     useState<ContactCreationState>({ status: "pending", message: "" });
   const router = useRouter();
-  const newContact = useContactStore((state) => state.newContact);
-  const clearNewContact = useContactStore((state) => state.clearNewContact);
-  const contactFormData = useContactStore((state) => state.contactFormData);
-  const resetContactFormData = useContactStore(
-    (state) => state.resetContactFormData
-  );
-  const setFocusedContact = useContactStore((state) => state.setFocusedContact);
-
-  console.log("useContactConfirmationController newContact:", newContact);
-  console.log(
-    "useContactConfirmationController contactFormData 7:",
-    contactFormData
-  );
-
-  // const [newContact, clearNewContact, resetContactFormData, setFocusedContact] = useContactStore(
-  //   useShallow((state) => [state.newContact, state.clearNewContact, state.resetContactFormData, state.setFocusedContact])
+  // const newContact = useContactStore((state) => state.newContact);
+  // const clearNewContact = useContactStore((state) => state.clearNewContact);
+  // const resetContactFormData = useContactStore(
+  //   (state) => state.resetContactFormData
   // );
+  // const setFocusedContact = useContactStore((state) => state.setFocusedContact);
+
+  const [newContact, clearNewContact, resetContactFormData, setFocusedContact] = useContactStore(
+    useShallow((state) => [state.newContact, state.clearNewContact, state.resetContactFormData, state.setFocusedContact])
+  );
+
+  console.log("useContactConfirmationController newContact 9:", newContact);
 
   const onContactCreateConfirm = useCallback(async (newContact: Contact) => {
     setContactCreationState({ status: "creating", message: "Processing..." });
