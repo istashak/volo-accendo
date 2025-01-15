@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd web/volo-accendo-website
-          pnpm install --prod
+          pnpm install
 
       # Comment/Uncomment for debugging
       - name: List directory contents I
@@ -66,6 +66,9 @@ jobs:
         run: |
           cd web/volo-accendo-website
           pnpm build:$ENV
+
+      - name: Prune devDependencies
+        run: pnpm install --prod --no-optional
 
       - name: Archive lambdas directory
         run: |
