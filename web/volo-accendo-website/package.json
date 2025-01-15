@@ -19,6 +19,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/aws-lambda": "^8.10.146",
+    "@types/node": "^20.14.13",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "clsx": "^2.1.1",
     "daisyui": "^4.12.14",
     "next": "15.1.2",
@@ -29,10 +33,6 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.146",
-    "@types/node": "^20.14.13",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
     "dotenv-cli": "^7.4.2",
     "env-cmd": "^10.1.0",
     "eslint": "^8.57.0",
