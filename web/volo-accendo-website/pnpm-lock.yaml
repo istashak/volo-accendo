@@ -11,6 +11,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      daisyui:
+        specifier: ^4.12.14
+        version: 4.12.14(postcss@8.4.40)
       next:
         specifier: 15.1.2
         version: 15.1.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -20,6 +23,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      tailwindcss:
+        specifier: ^3.4.7
+        version: 3.4.7
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -39,9 +45,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
-      daisyui:
-        specifier: ^4.12.14
-        version: 4.12.14(postcss@8.4.40)
       dotenv-cli:
         specifier: ^7.4.2
         version: 7.4.2
@@ -57,9 +60,6 @@ importers:
       postcss:
         specifier: ^8.4.40
         version: 8.4.40
-      tailwindcss:
-        specifier: ^3.4.7
-        version: 3.4.7
       typescript:
         specifier: ^5.5.4
         version: 5.5.4

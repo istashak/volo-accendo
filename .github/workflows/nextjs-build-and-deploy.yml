@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd web/volo-accendo-website
-          pnpm install
+          pnpm install --prod
 
       # Comment/Uncomment for debugging
       - name: List directory contents I
