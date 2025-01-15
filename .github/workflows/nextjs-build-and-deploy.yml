@@ -68,7 +68,9 @@ jobs:
           pnpm build:$ENV
 
       - name: Prune devDependencies
-        run: pnpm install --prod --no-optional
+        run: |
+          cd web/volo-accendo-website
+          pnpm install --prod --no-optional
 
       - name: Archive lambdas directory
         run: |
