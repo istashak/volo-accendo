@@ -13,22 +13,24 @@ export const handler: CloudFrontRequestHandler = async (event) => {
   const request = event.Records[0].cf.request;
   const { uri, headers } = request;
 
+  console.log("uri and headers", { uri, headers });
+
   try {
     // Ensure the app is ready
     await app.prepare();
 
     // Check if the request is for a static file in the public directory
-    const filePath = path.join(__dirname, "_next/static", uri);
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath);
-      return {
-        status: "200",
-        headers: {
-          "content-type": [{ key: "Content-Type", value: "text/plain" }],
-        },
-        body: fileContent.toString(),
-      };
-    }
+    // const filePath = path.join(__dirname, "_next/static", uri);
+    // if (fs.existsSync(filePath)) {
+    //   const fileContent = fs.readFileSync(filePath);
+    //   return {
+    //     status: "200",
+    //     headers: {
+    //       "content-type": [{ key: "Content-Type", value: "text/plain" }],
+    //     },
+    //     body: fileContent.toString(),
+    //   };
+    // }
 
     // Simulate an HTTP request for the Next.js handler
     const fakeReq = new IncomingMessage(new Readable() as any);
@@ -63,9 +65,7 @@ export const handler: CloudFrontRequestHandler = async (event) => {
       headers: Object.entries(fakeRes.getHeaders()).reduce(
         (acc, [key, value]) => ({
           ...acc,
-          [key.toLowerCase()]: [
-            { key, value: String(value) },
-          ],
+          [key.toLowerCase()]: [{ key, value: String(value) }],
         }),
         {}
       ),
