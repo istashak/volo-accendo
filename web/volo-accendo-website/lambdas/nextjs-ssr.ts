@@ -8,8 +8,8 @@ import next from "next";
 const NODE_ENV = "production";
 const NEXT_ENV = "production";
 
-const appDir = path.join(__dirname, ".next");
-const app = next({ dev: false, dir: appDir });
+// const appDir = path.join(__dirname, ".next");
+const app = next({ dev: false });
 const handle = app.getRequestHandler();
 
 export const handler: CloudFrontRequestHandler = async (event) => {
@@ -17,8 +17,8 @@ export const handler: CloudFrontRequestHandler = async (event) => {
   const { uri, headers } = request;
 
   console.log("uri and headers", { uri, headers });
-  console.log("appDir exists: " + fs.existsSync(appDir));
-  console.log("appDir: " + appDir);
+  // console.log("appDir exists: " + fs.existsSync(appDir));
+  // console.log("appDir: " + appDir);
 
   console.log("process.env.NODE_ENV = " + process.env.NODE_ENV);
   console.log("process.env.NEXT_ENV = " + process.env.NEXT_ENV);
