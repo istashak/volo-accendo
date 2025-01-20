@@ -14,23 +14,16 @@ export const handler: CloudFrontRequestHandler = async (event) => {
   const { uri, headers } = request;
 
   console.log("uri and headers", { uri, headers });
+  console.log("appDir exists: " + fs.existsSync(appDir));
+
+  console.log("process.env.NODE_ENV = " + process.env.NODE_ENV);
+  console.log("process.env.NEXT_ENV = " + process.env.NEXT_ENV);
 
   try {
     // Ensure the app is ready
     await app.prepare();
 
-    // Check if the request is for a static file in the public directory
-    // const filePath = path.join(__dirname, "_next/static", uri);
-    // if (fs.existsSync(filePath)) {
-    //   const fileContent = fs.readFileSync(filePath);
-    //   return {
-    //     status: "200",
-    //     headers: {
-    //       "content-type": [{ key: "Content-Type", value: "text/plain" }],
-    //     },
-    //     body: fileContent.toString(),
-    //   };
-    // }
+    console.log("lambda 0");
 
     // Simulate an HTTP request for the Next.js handler
     const fakeReq = new IncomingMessage(new Readable() as any);
@@ -40,6 +33,8 @@ export const handler: CloudFrontRequestHandler = async (event) => {
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
 
+    console.log("lambda 1");
+
     // Simulate a writable HTTP response
     const fakeRes = new ServerResponse(fakeReq);
     const responseChunks: Buffer[] = [];
@@ -48,12 +43,16 @@ export const handler: CloudFrontRequestHandler = async (event) => {
       return true;
     };
 
+    console.log("lambda 2");
+
     const originalEnd = fakeRes.end;
     fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
       if (chunk) responseChunks.push(Buffer.from(chunk));
       fakeRes.finished = true;
       return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     };
+
+    console.log("lambda 3");
 
     // Process the request using Next.js
     await handle(fakeReq, fakeRes);

@@ -77,7 +77,13 @@ const nextConfig = {
 
   experimental: {
     outputFileTracing: true, // For including dependencies in the Lambda package
+    outputFileTracingIncludes: {
+      "/": ["node_modules/next/dist/compiled/**/*"],
+    },
   },
 };
+
+// "node_modules/next/dist/compiled/webpack/bundle5.js",
+// "node_modules/next/dist/compiled/loader-runner/*",
 
 export default nextConfig;
