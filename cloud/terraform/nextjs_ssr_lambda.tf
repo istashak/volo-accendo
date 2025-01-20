@@ -10,13 +10,6 @@ resource "aws_lambda_function" "nextjs_ssr" {
   s3_bucket         = aws_s3_bucket.web_app_bucket.id
   s3_key            = aws_s3_object.web_app_lambda_edge.key
   s3_object_version = aws_s3_object.web_app_lambda_edge.version_id
-
-  environment {
-    variables = {
-      NODE_ENV               = var.environment
-      NEXT_ENV               = "production"
-    }
-  }
 }
 
 resource "aws_iam_role" "lambda_edge_role" {

@@ -5,8 +5,11 @@ import { Readable } from "stream";
 import { IncomingMessage, ServerResponse } from "http";
 import next from "next";
 
+const NODE_ENV = "production";
+const NEXT_ENV = "production";
+
 const appDir = path.join(__dirname, ".next/server/app");
-const app = next({ dev: false, dir: appDir });
+const app = next({ dev: true, dir: appDir });
 const handle = app.getRequestHandler();
 
 export const handler: CloudFrontRequestHandler = async (event) => {
@@ -18,6 +21,9 @@ export const handler: CloudFrontRequestHandler = async (event) => {
 
   console.log("process.env.NODE_ENV = " + process.env.NODE_ENV);
   console.log("process.env.NEXT_ENV = " + process.env.NEXT_ENV);
+
+  console.log("NODE_ENV = " + NODE_ENV);
+  console.log("NEXT_ENV = " + NEXT_ENV);
 
   try {
     // Ensure the app is ready
