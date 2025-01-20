@@ -9,7 +9,8 @@ const NODE_ENV = "production";
 const NEXT_ENV = "production";
 
 const appDir = path.join(__dirname, ".next");
-const app = next({ dev: false, dir: appDir });
+// const app = next({ dev: false, dir: appDir });
+const app = next({});
 const handle = app.getRequestHandler();
 
 export const handler: CloudFrontRequestHandler = async (event) => {
