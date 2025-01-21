@@ -9,6 +9,10 @@ export default async function Page({
   const email = parts[0];
   const firstName = parts[1];
 
+  console.log("data = " + data);
+  console.log("email = " + email);
+  console.log("firstName = " + firstName);
+
   return (
     <div>
       <p className="mb-4 font-semibold">{`Thank ${firstName}, you've successfully verified your email address. ${email}`}</p>

@@ -1,4 +1,4 @@
-import { CloudFrontRequestHandler } from "aws-lambda";
+import { CloudFrontRequestEvent, CloudFrontRequestHandler } from "aws-lambda";
 import path from "path";
 import fs from "fs";
 import { Readable } from "stream";
@@ -13,10 +13,13 @@ const appDir = path.join(__dirname, ".next");
 const app = next({});
 const handle = app.getRequestHandler();
 
-export const handler: CloudFrontRequestHandler = async (event) => {
+export const handler: CloudFrontRequestHandler = async (
+  event: CloudFrontRequestEvent
+) => {
   const request = event.Records[0].cf.request;
   const { uri, headers } = request;
 
+  console.log("event", event);
   console.log("uri and headers", { uri, headers });
   console.log("appDir exists: " + fs.existsSync(appDir));
   console.log("appDir: " + appDir);
@@ -37,6 +40,12 @@ export const handler: CloudFrontRequestHandler = async (event) => {
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
+
+    console.log("fakeRequest", {
+      url: fakeReq.url,
+      method: fakeReq.method,
+      headers: fakeReq.headers,
+    });
 
     console.log("lambda 1");
 
@@ -65,6 +74,7 @@ export const handler: CloudFrontRequestHandler = async (event) => {
     console.log("fakeResponse", {
       statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
       message: fakeRes.statusMessage || "No fakeRes.statusMessage",
+      headers: fakeRes.getHeaders(),
     });
 
     // Return the response to CloudFront
