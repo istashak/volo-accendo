@@ -10,7 +10,7 @@
     "build:dev": "cp .env.dev .env && next build && pnpm build:lambdas && pnpm copy:public",
     "build:prod": "pnpm build",
     "compile:lambdas": "tsc -p tsconfig.lambdas.json",
-    "copy:static": "cp -r .next/static .next/standalone/.next/",
+    "copy:static": "mkdir -p .next/standalone/.next/server/app/_next/ && cp -r .next/static .next/standalone/.next/ && cp -r .next/static .next/standalone/.next/server/app/_next/",
     "build:lambdas": "pnpm clean:lambdas && pnpm compile:lambdas && pnpm copy:static && pnpm copy:standalone",
     "copy:standalone": "cp -r .next/standalone/. .lambdas",
     "copy:public": "cp -r public/* .next/standalone/.next/server/app/",

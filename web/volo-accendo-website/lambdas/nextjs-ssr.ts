@@ -62,6 +62,11 @@ export const handler: CloudFrontRequestHandler = async (event) => {
     // Process the request using Next.js
     await handle(fakeReq, fakeRes);
 
+    console.log("fakeResponse", {
+      statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
+      message: fakeRes.statusMessage || "No fakeRes.statusMessage",
+    });
+
     // Return the response to CloudFront
     return {
       status: String(fakeRes.statusCode || 200),
