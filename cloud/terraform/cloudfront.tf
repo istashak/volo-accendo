@@ -40,27 +40,33 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   default_root_object = "index.html"
 
   # Priority 0
-  # ordered_cache_behavior {
-  #   path_pattern     = "_next/static/*"
-  #   allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-  #   cached_methods   = ["GET", "HEAD", "OPTIONS"]
-  #   target_origin_id = aws_s3_bucket.web_app_bucket.id
+  ordered_cache_behavior {
+    path_pattern     = "*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
 
-  #   forwarded_values {
-  #     query_string = false
-  #     headers      = ["Origin"]
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
 
-  #     cookies {
-  #       forward = "none"
-  #     }
-  #   }
+      cookies {
+        forward = "none"
+      }
+    }
 
-  #   min_ttl                = 0
-  #   default_ttl            = 86400
-  #   max_ttl                = 31536000
-  #   compress               = true
-  #   viewer_protocol_policy = "redirect-to-https"
-  # }
+    # Attach CloudFront Function for path rewrite
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.path_rewrite.arn
+    }
+
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
 
   # # Priority 1
   # ordered_cache_behavior {
@@ -103,12 +109,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       cookies {
         forward = "all"
       }
-    }
-
-    # Attach CloudFront Function for path rewrite
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.path_rewrite.arn
     }
 
     lambda_function_association {
