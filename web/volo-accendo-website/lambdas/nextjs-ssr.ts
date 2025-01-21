@@ -16,10 +16,16 @@ const handle = app.getRequestHandler();
 export const handler: CloudFrontRequestHandler = async (
   event: CloudFrontRequestEvent
 ) => {
+  const cf = event.Records[0].cf;
   const request = event.Records[0].cf.request;
   const { uri, headers } = request;
 
-  console.log("event", event);
+  console.log("event", {
+    distributionDomainName: cf.config.distributionDomainName,
+    eventType: cf.config.eventType,
+    method: request.method,
+  });
+
   console.log("uri and headers", { uri, headers });
   console.log("appDir exists: " + fs.existsSync(appDir));
   console.log("appDir: " + appDir);
