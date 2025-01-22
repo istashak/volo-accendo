@@ -52,6 +52,7 @@ data "aws_iam_policy_document" "cloudfront_logging" {
   }
 }
 
+
 resource "aws_s3_bucket_policy" "webapp_cloudfront_logs" {
   bucket = aws_s3_bucket.webapp_cloudfront_logs.id
   policy = data.aws_iam_policy_document.cloudfront_logging.json
@@ -111,7 +112,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
@@ -139,7 +140,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     target_origin_id = aws_s3_bucket.web_app_bucket.id
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
@@ -174,10 +175,10 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     response_code      = 404
   }
 
-  logging_config {
-    bucket = "${aws_s3_bucket.webapp_cloudfront_logs.bucket}.s3.amazonaws.com"
-    prefix = "cloudfront-logs/"
-  }
+  # logging_config {
+  #   bucket = "${aws_s3_bucket.webapp_cloudfront_logs.bucket}.s3.amazonaws.com"
+  #   prefix = "cloudfront-logs/"
+  # }
 
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate_validation.cert_validation.certificate_arn

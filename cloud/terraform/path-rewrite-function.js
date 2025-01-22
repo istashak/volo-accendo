@@ -1,7 +1,15 @@
 function handler(event) {
-  var routes = ["/about/", "/resume/", "/contact/", "/contact/confirm/", "/contact/success/"];
+  var routes = [
+    "/about/",
+    "/resume/",
+    "/contact/",
+    "/contact/confirm/",
+    "/contact/success/",
+  ];
   var request = event.request;
   var uri = request.uri;
+
+  console.log("request", request);
 
   routes.forEach((route) => {
     if (uri.endsWith(route)) {
