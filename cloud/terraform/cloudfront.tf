@@ -20,6 +20,37 @@ resource "aws_s3_bucket_acl" "webapp_cloudfront_logs" {
   acl    = "log-delivery-write"
 }
 
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "cloudfront_logging" {
+  statement {
+    sid = "AllowCloudFrontAccess"
+
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = ["s3:PutObject"]
+
+    resources = [
+      "${aws_s3_bucket.webapp_cloudfront_logs.arn}/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "webapp_cloudfront_logs" {
+  bucket = aws_s3_bucket.webapp_cloudfront_logs.id
+  policy = data.aws_iam_policy_document.cloudfront_logging.json
+}
+
 resource "aws_cloudfront_distribution" "web_app_distribution" {
   origin {
     # domain_name = "${var.environment == "prod" ? "" : "dev."}${aws_s3_bucket.web_app_bucket.bucket_regional_domain_name}"
@@ -70,11 +101,11 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 
   # # Priority 1
   ordered_cache_behavior {
-    path_pattern            = "/contact/verification/*"
-    allowed_methods         = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods          = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id        = aws_s3_bucket.web_app_bucket.id
-    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    path_pattern     = "/contact/verification/*"
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
@@ -99,10 +130,10 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   default_cache_behavior {
-    target_origin_id        = aws_s3_bucket.web_app_bucket.id
-    allowed_methods         = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods          = ["GET", "HEAD", "OPTIONS"]
-    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
