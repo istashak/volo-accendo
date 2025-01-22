@@ -81,6 +81,7 @@ export const handler: CloudFrontRequestHandler = async (
       statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
       message: fakeRes.statusMessage || "No fakeRes.statusMessage",
       headers: fakeRes.getHeaders(),
+      body: Buffer.concat(responseChunks).toString(),
     });
 
     // Return the response to CloudFront

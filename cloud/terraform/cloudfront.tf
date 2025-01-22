@@ -70,7 +70,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 
   # # Priority 1
   ordered_cache_behavior {
-    path_pattern     = "/contact/verification*"
+    path_pattern     = "/contact/verification/*"
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
