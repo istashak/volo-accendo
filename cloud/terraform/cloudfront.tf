@@ -61,19 +61,20 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   #     function_arn = aws_cloudfront_function.path_rewrite.arn
   #   }
 
-    # min_ttl                = 0
-    # default_ttl            = 86400
-    # max_ttl                = 31536000
-    # compress               = true
-    # viewer_protocol_policy = "redirect-to-https"
+  # min_ttl                = 0
+  # default_ttl            = 86400
+  # max_ttl                = 31536000
+  # compress               = true
+  # viewer_protocol_policy = "redirect-to-https"
   # }
 
   # # Priority 1
   ordered_cache_behavior {
-    path_pattern     = "/contact/verification/*"
-    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = aws_s3_bucket.web_app_bucket.id
+    path_pattern            = "/contact/verification/*"
+    allowed_methods         = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods          = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id        = aws_s3_bucket.web_app_bucket.id
+    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
@@ -98,9 +99,10 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   default_cache_behavior {
-    target_origin_id = aws_s3_bucket.web_app_bucket.id
-    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id        = aws_s3_bucket.web_app_bucket.id
+    allowed_methods         = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods          = ["GET", "HEAD", "OPTIONS"]
+    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
