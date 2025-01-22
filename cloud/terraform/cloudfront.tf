@@ -43,6 +43,12 @@ data "aws_iam_policy_document" "cloudfront_logging" {
       variable = "AWS:SourceAccount"
       values   = [data.aws_caller_identity.current.account_id]
     }
+
+    condition {
+      test     = "ArnLike"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.web_app_distribution.id}"]
+    }
   }
 }
 
@@ -169,7 +175,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   }
 
   logging_config {
-    bucket = aws_s3_bucket.webapp_cloudfront_logs.bucket_domain_name
+    bucket = "${aws_s3_bucket.webapp_cloudfront_logs.bucket}.s3.amazonaws.com"
     prefix = "cloudfront-logs/"
   }
 
