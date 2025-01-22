@@ -34,80 +34,80 @@ export const handler: CloudFrontRequestHandler = async (
   console.log("NEXT_ENV = " + NEXT_ENV);
 
   try {
-    const response = {
-      status: "200",
-      statusDescription: "OK",
-      headers: {
-        "content-type": [{ key: "Content-Type", value: "text/html" }],
-      },
-      body: "<html><body>Hello From Volo Accendo</body></html>",
+    // const response = {
+    //   status: "200",
+    //   statusDescription: "OK",
+    //   headers: {
+    //     "content-type": [{ key: "Content-Type", value: "text/html" }],
+    //   },
+    //   body: "<html><body>Hello From Volo Accendo</body></html>",
+    // };
+    // console.log("Response:", JSON.stringify(response, null, 2));
+    // return response;
+    // Ensure the app is ready
+    await app.prepare();
+
+    console.log("lambda 0");
+
+    // Simulate an HTTP request for the Next.js handler
+    const fakeReq = new IncomingMessage(new Readable() as any);
+    fakeReq.url = uri;
+    fakeReq.method = request.method || "GET";
+    fakeReq.headers = Object.fromEntries(
+      Object.entries(headers).map(([key, values]) => [key, values[0].value])
+    );
+
+    console.log("fakeRequest", {
+      url: fakeReq.url,
+      method: fakeReq.method,
+      headers: fakeReq.headers,
+    });
+
+    console.log("lambda 1");
+
+    // Simulate a writable HTTP response
+    const fakeRes = new ServerResponse(fakeReq);
+    const responseChunks: Buffer[] = [];
+    fakeRes.write = (chunk: any) => {
+      responseChunks.push(Buffer.from(chunk));
+      return true;
     };
-    console.log("Response:", JSON.stringify(response, null, 2));
-    return response;
-    // // Ensure the app is ready
-    // await app.prepare();
 
-    // console.log("lambda 0");
+    console.log("lambda 2");
 
-    // // Simulate an HTTP request for the Next.js handler
-    // const fakeReq = new IncomingMessage(new Readable() as any);
-    // fakeReq.url = uri;
-    // fakeReq.method = request.method || "GET";
-    // fakeReq.headers = Object.fromEntries(
-    //   Object.entries(headers).map(([key, values]) => [key, values[0].value])
-    // );
+    const originalEnd = fakeRes.end;
+    fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
+      if (chunk) responseChunks.push(Buffer.from(chunk));
+      fakeRes.finished = true;
+      return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
+    };
 
-    // console.log("fakeRequest", {
-    //   url: fakeReq.url,
-    //   method: fakeReq.method,
-    //   headers: fakeReq.headers,
-    // });
+    console.log("lambda 3");
 
-    // console.log("lambda 1");
+    // Process the request using Next.js
+    await handle(fakeReq, fakeRes);
 
-    // // Simulate a writable HTTP response
-    // const fakeRes = new ServerResponse(fakeReq);
-    // const responseChunks: Buffer[] = [];
-    // fakeRes.write = (chunk: any) => {
-    //   responseChunks.push(Buffer.from(chunk));
-    //   return true;
-    // };
+    console.log("fakeResponse", {
+      statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
+      message: fakeRes.statusMessage || "No fakeRes.statusMessage",
+      headers: fakeRes.getHeaders(),
+      body: Buffer.concat(responseChunks).toString(),
+    });
 
-    // console.log("lambda 2");
-
-    // const originalEnd = fakeRes.end;
-    // fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
-    //   if (chunk) responseChunks.push(Buffer.from(chunk));
-    //   fakeRes.finished = true;
-    //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
-    // };
-
-    // console.log("lambda 3");
-
-    // // Process the request using Next.js
-    // await handle(fakeReq, fakeRes);
-
-    // console.log("fakeResponse", {
-    //   statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
-    //   message: fakeRes.statusMessage || "No fakeRes.statusMessage",
-    //   headers: fakeRes.getHeaders(),
-    //   body: Buffer.concat(responseChunks).toString(),
-    // });
-
-    // // Return the response to CloudFront
-    // return {
-    //   status: String(fakeRes.statusCode || 200),
-    //   statusDescription: fakeRes.statusMessage || "OK",
-    //   headers: Object.entries(fakeRes.getHeaders()).reduce(
-    //     (acc, [key, value]) => ({
-    //       ...acc,
-    //       [key.toLowerCase()]: [{ key, value: String(value) }],
-    //     }),
-    //     {}
-    //   ),
-    //   body: Buffer.concat(responseChunks).toString(),
-    //   bodyEncoding: "text",
-    // };
+    // Return the response to CloudFront
+    return {
+      status: String(fakeRes.statusCode || 200),
+      statusDescription: fakeRes.statusMessage || "OK",
+      headers: Object.entries(fakeRes.getHeaders()).reduce(
+        (acc, [key, value]) => ({
+          ...acc,
+          [key.toLowerCase()]: [{ key, value: String(value) }],
+        }),
+        {}
+      ),
+      body: Buffer.concat(responseChunks).toString(),
+      bodyEncoding: "text",
+    };
   } catch (error) {
     console.error("Error processing request:", error);
     return {
