@@ -69,8 +69,9 @@ export const handler: CloudFrontRequestHandler = async (
     const fakeRes = new ServerResponse(fakeReq);
     const responseChunks: Buffer[] = [];
     fakeRes.write = (chunk: any) => {
-      console.log("write chunk", chunk);
-      responseChunks.push(Buffer.from(chunk));
+      const bufferChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, "utf-8");
+      console.log("write chunk", bufferChunk);
+      responseChunks.push(bufferChunk);
       return true;
     };
 
@@ -78,9 +79,11 @@ export const handler: CloudFrontRequestHandler = async (
 
     const originalEnd = fakeRes.end;
     fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
-      if (chunk) responseChunks.push(Buffer.from(chunk));
-      console.log("end chunk", Buffer.concat(responseChunks).toString());
-      fakeRes.finished = true;
+      if (chunk) {
+        const bufferChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, "utf-8");
+        responseChunks.push(bufferChunk);
+      }
+      console.log("Final response body:", Buffer.concat(responseChunks).toString("utf-8"));
       return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     };
 
@@ -92,7 +95,7 @@ export const handler: CloudFrontRequestHandler = async (
     console.log("lambda 4");
 
     console.log("fakeResponse", {
-      statusCode: fakeRes.statusCode || "No fakeRes.statusCode",
+      status: fakeRes.statusCode || "No fakeRes.statusCode",
       message: fakeRes.statusMessage || "No fakeRes.statusMessage",
       headers: Object.entries(fakeRes.getHeaders()).reduce(
         (acc, [key, value]) => ({
@@ -101,7 +104,7 @@ export const handler: CloudFrontRequestHandler = async (
         }),
         {}
       ),
-      body: Buffer.concat(responseChunks).toString(),
+      body: Buffer.concat(responseChunks).toString("utf-8"),
     });
 
     // Return the response to CloudFront
@@ -115,7 +118,7 @@ export const handler: CloudFrontRequestHandler = async (
         }),
         {}
       ),
-      body: Buffer.concat(responseChunks).toString(),
+      body: Buffer.concat(responseChunks).toString("utf-8"),
     };
   } catch (error) {
     console.error("Error processing request:", error);
