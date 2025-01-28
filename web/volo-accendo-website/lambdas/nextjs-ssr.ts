@@ -105,7 +105,7 @@ export const handler: CloudFrontRequestHandler = async (
         "Final response body:",
         Buffer.concat(responseChunks).toString("utf-8")
       );
-      fakeRes.end(undefined)
+      // fakeRes.end(undefined)
       return fakeRes;
     };
 
