@@ -105,13 +105,18 @@ export const handler: CloudFrontRequestHandler = async (
         "Final response body:",
         Buffer.concat(responseChunks).toString("utf-8")
       );
+      fakeRes.end(undefined)
       return fakeRes;
     };
 
     console.log("lambda 3");
 
     // Process the request using Next.js
-    await handle(fakeReq, fakeRes);
+    await handle(fakeReq, fakeRes).then(() => {
+      console.log("Handle completed");
+    }).catch((error) => {
+      console.error("Error in handle:", error);
+    });
 
     console.log("lambda 4");
 
