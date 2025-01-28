@@ -73,15 +73,28 @@ export const handler: CloudFrontRequestHandler = async (
       const bufferChunk = Buffer.isBuffer(chunk)
         ? chunk
         : Buffer.from(chunk, "utf-8");
-      console.log("write chunk", bufferChunk);
       responseChunks.push(bufferChunk);
       return true;
     };
 
     console.log("lambda 2");
 
-    const originalEnd = fakeRes.end;
-    fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
+    // const originalEnd = fakeRes.end;
+    // fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
+    //   if (chunk) {
+    //     const bufferChunk = Buffer.isBuffer(chunk)
+    //       ? chunk
+    //       : Buffer.from(chunk, "utf-8");
+    //     responseChunks.push(bufferChunk);
+    //   }
+    //   console.log(
+    //     "Final response body:",
+    //     Buffer.concat(responseChunks).toString("utf-8")
+    //   );
+    //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
+    // };
+
+    fakeRes.end = (chunk: any) => {
       if (chunk) {
         const bufferChunk = Buffer.isBuffer(chunk)
           ? chunk
@@ -92,7 +105,7 @@ export const handler: CloudFrontRequestHandler = async (
         "Final response body:",
         Buffer.concat(responseChunks).toString("utf-8")
       );
-      return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
+      return fakeRes;
     };
 
     console.log("lambda 3");
