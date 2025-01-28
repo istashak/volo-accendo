@@ -56,6 +56,7 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
+    fakeReq.push(null);
 
     console.log("fakeRequest", {
       url: fakeReq.url,
@@ -69,7 +70,9 @@ export const handler: CloudFrontRequestHandler = async (
     const fakeRes = new ServerResponse(fakeReq);
     const responseChunks: Buffer[] = [];
     fakeRes.write = (chunk: any) => {
-      const bufferChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, "utf-8");
+      const bufferChunk = Buffer.isBuffer(chunk)
+        ? chunk
+        : Buffer.from(chunk, "utf-8");
       console.log("write chunk", bufferChunk);
       responseChunks.push(bufferChunk);
       return true;
@@ -80,10 +83,15 @@ export const handler: CloudFrontRequestHandler = async (
     const originalEnd = fakeRes.end;
     fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
       if (chunk) {
-        const bufferChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, "utf-8");
+        const bufferChunk = Buffer.isBuffer(chunk)
+          ? chunk
+          : Buffer.from(chunk, "utf-8");
         responseChunks.push(bufferChunk);
       }
-      console.log("Final response body:", Buffer.concat(responseChunks).toString("utf-8"));
+      console.log(
+        "Final response body:",
+        Buffer.concat(responseChunks).toString("utf-8")
+      );
       return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     };
 
