@@ -7,7 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   compress: false,
   reactStrictMode: true,
-  // swcMinify: true,
   // output: "export",
   output: "standalone",
   trailingSlash: true,

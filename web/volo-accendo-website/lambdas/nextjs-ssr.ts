@@ -3,6 +3,8 @@ import path from "path";
 import fs from "fs";
 import { Readable } from "stream";
 import { IncomingMessage, ServerResponse } from "http";
+import { NextUrlWithParsedQuery } from "next/dist/server/request-meta";
+import { ParsedUrlQuery } from "querystring";
 import next from "next";
 
 const NODE_ENV = "production";
@@ -18,15 +20,15 @@ export const handler: CloudFrontRequestHandler = async (
 ) => {
   const cf = event.Records[0].cf;
   const request = event.Records[0].cf.request;
-  const { uri, headers } = request;
+  const { uri, headers, method, querystring } = request;
 
   console.log("event", {
     distributionDomainName: cf.config.distributionDomainName,
     eventType: cf.config.eventType,
-    method: request.method,
+    method,
   });
 
-  console.log("uri and headers", { uri, headers });
+  console.log("uri, headers, method, queryString", { uri, headers, method, querystring });
   console.log("appDir exists: " + fs.existsSync(appDir));
   console.log("appDir: " + appDir);
 
@@ -52,7 +54,7 @@ export const handler: CloudFrontRequestHandler = async (
     // Simulate an HTTP request for the Next.js handler
     const fakeReq = new IncomingMessage(new Readable() as any);
     fakeReq.url = uri;
-    fakeReq.method = request.method || "GET";
+    fakeReq.method = method || "GET";
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
@@ -131,8 +133,29 @@ export const handler: CloudFrontRequestHandler = async (
 
     console.log("lambda 3");
 
+    const requestUrl = new URL(fakeReq.url);
+
+    // Convert searchParams to ParsedUrlQuery format
+  const query: ParsedUrlQuery = Object.fromEntries(requestUrl.searchParams.entries());
+
+    // Construct NextUrlWithParsedQuery
+    const parsedUrl: NextUrlWithParsedQuery = {
+      auth: null,
+      hash: requestUrl.hash || null,
+      host: requestUrl.host || null,
+      hostname: requestUrl.hostname || null,
+      href: requestUrl.href,
+      path: requestUrl.pathname + requestUrl.search,
+      pathname: requestUrl.pathname,
+      protocol: requestUrl.protocol || null,
+      search: requestUrl.search || null,
+      slashes: requestUrl.href.includes("//") ? true : null,
+      port: requestUrl.port || null,
+      query, // Ensure this follows ParsedUrlQuery format
+    };
+
     // Process the request using Next.js
-    await handle(fakeReq, fakeRes);
+    await handle(fakeReq, fakeRes, parsedUrl);
 
     console.log("lambda 4");
 
