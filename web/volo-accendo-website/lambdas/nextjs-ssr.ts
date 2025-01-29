@@ -107,7 +107,8 @@ export const handler: CloudFrontRequestHandler = async (
           : Buffer.from(chunk, "utf-8");
         responseChunks.push(bufferChunk);
       } else {
-        console.log("fakeRes.end has NO last chunk");
+        console.log("fakeRes.end has NO last chunk", chunk);
+        responseChunks.push(Buffer.from("", "utf-8"));
       }
       console.log(
         "Final response body:",
