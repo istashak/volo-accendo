@@ -94,7 +94,12 @@ export const handler: CloudFrontRequestHandler = async (
     //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     // };
 
-    fakeRes.end = (chunk: any) => {
+    const originalEnd = fakeRes.end;
+    fakeRes.end = (
+      chunk?: any,
+      encodingOrCb?: BufferEncoding | (() => void),
+      cb?: () => void
+    ) => {
       if (chunk) {
         console.log("fakeRes.end has a last chunk", chunk);
         const bufferChunk = Buffer.isBuffer(chunk)
@@ -108,8 +113,19 @@ export const handler: CloudFrontRequestHandler = async (
         "Final response body:",
         Buffer.concat(responseChunks).toString("utf-8")
       );
-      // fakeRes.end(undefined)
-      return fakeRes;
+      if (typeof encodingOrCb === "function") {
+        console.log("encodingOrCb is a callback function");
+        // Handle case: end(chunk, cb)
+        cb = encodingOrCb;
+        encodingOrCb = undefined;
+      }
+
+      return originalEnd.call(
+        fakeRes,
+        chunk,
+        encodingOrCb as BufferEncoding,
+        cb
+      );
     };
 
     console.log("lambda 3");
