@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   compress: false,
   reactStrictMode: true,
-  swcMinify: true,
+  // swcMinify: true,
   // output: "export",
   output: "standalone",
   trailingSlash: true,
@@ -76,11 +76,11 @@ const nextConfig = {
     return config;
   },
 
-  experimental: {
-    outputFileTracing: true, // For including dependencies in the Lambda package
-    outputFileTracingIncludes: {
-      "/": ["node_modules/next/dist/compiled/**/*"],
-    },
+  // experimental: {
+  //   outputFileTracing: true, // For including dependencies in the Lambda package
+  // },
+  outputFileTracingIncludes: {
+    "/": ["node_modules/next/dist/compiled/**/*"],
   },
 };
 

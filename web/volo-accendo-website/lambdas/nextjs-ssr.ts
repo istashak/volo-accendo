@@ -96,6 +96,7 @@ export const handler: CloudFrontRequestHandler = async (
 
     fakeRes.end = (chunk: any) => {
       if (chunk) {
+        console.log("fakeRes.end has a last chunk", chunk);
         const bufferChunk = Buffer.isBuffer(chunk)
           ? chunk
           : Buffer.from(chunk, "utf-8");
@@ -112,11 +113,7 @@ export const handler: CloudFrontRequestHandler = async (
     console.log("lambda 3");
 
     // Process the request using Next.js
-    await handle(fakeReq, fakeRes).then(() => {
-      console.log("Handle completed");
-    }).catch((error) => {
-      console.error("Error in handle:", error);
-    });
+    await handle(fakeReq, fakeRes);
 
     console.log("lambda 4");
 
