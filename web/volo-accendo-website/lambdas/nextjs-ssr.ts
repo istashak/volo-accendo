@@ -138,27 +138,42 @@ export const handler: CloudFrontRequestHandler = async (
 
     console.log("lambda 3");
 
-    const requestUrl = new URL(fakeReq.url, "http://localhost:3000");
+    // const requestUrl = new URL(fakeReq.url, "http://localhost:3000");
 
-    // Convert searchParams to ParsedUrlQuery format
-    const query: ParsedUrlQuery = Object.fromEntries(
-      requestUrl.searchParams.entries()
-    );
+    // // Convert searchParams to ParsedUrlQuery format
+    // const query: ParsedUrlQuery = Object.fromEntries(
+    //   requestUrl.searchParams.entries()
+    // );
 
     // Construct NextUrlWithParsedQuery
+    // const parsedUrl: NextUrlWithParsedQuery = {
+    //   auth: null,
+    //   hash: requestUrl.hash || null,
+    //   host: requestUrl.host || null,
+    //   hostname: requestUrl.hostname || null,
+    //   href: requestUrl.href,
+    //   path: requestUrl.pathname + requestUrl.search,
+    //   pathname: requestUrl.pathname,
+    //   protocol: requestUrl.protocol || null,
+    //   search: requestUrl.search || null,
+    //   slashes: requestUrl.href.includes("//") ? true : null,
+    //   port: requestUrl.port || null,
+    //   query, // Ensure this follows ParsedUrlQuery format
+    // };
+
     const parsedUrl: NextUrlWithParsedQuery = {
       auth: null,
-      hash: requestUrl.hash || null,
-      host: requestUrl.host || null,
-      hostname: requestUrl.hostname || null,
-      href: requestUrl.href,
-      path: requestUrl.pathname + requestUrl.search,
-      pathname: requestUrl.pathname,
-      protocol: requestUrl.protocol || null,
-      search: requestUrl.search || null,
-      slashes: requestUrl.href.includes("//") ? true : null,
-      port: requestUrl.port || null,
-      query, // Ensure this follows ParsedUrlQuery format
+      hash: null,
+      host: null,
+      hostname: null,
+      href: fakeReq.url,
+      path: fakeReq.url,
+      pathname: fakeReq.url,
+      protocol: "https:",
+      search: null,
+      slashes: null,
+      port: null,
+      query: {}, // Ensure this follows ParsedUrlQuery format
     };
 
     console.log("parsedUrl", parsedUrl);
