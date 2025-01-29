@@ -28,7 +28,12 @@ export const handler: CloudFrontRequestHandler = async (
     method,
   });
 
-  console.log("uri, headers, method, queryString", { uri, headers, method, querystring });
+  console.log("uri, headers, method, queryString", {
+    uri,
+    headers,
+    method,
+    querystring,
+  });
   console.log("appDir exists: " + fs.existsSync(appDir));
   console.log("appDir: " + appDir);
 
@@ -136,7 +141,9 @@ export const handler: CloudFrontRequestHandler = async (
     const requestUrl = new URL(fakeReq.url, "http://localhost");
 
     // Convert searchParams to ParsedUrlQuery format
-  const query: ParsedUrlQuery = Object.fromEntries(requestUrl.searchParams.entries());
+    const query: ParsedUrlQuery = Object.fromEntries(
+      requestUrl.searchParams.entries()
+    );
 
     // Construct NextUrlWithParsedQuery
     const parsedUrl: NextUrlWithParsedQuery = {
@@ -153,6 +160,8 @@ export const handler: CloudFrontRequestHandler = async (
       port: requestUrl.port || null,
       query, // Ensure this follows ParsedUrlQuery format
     };
+
+    console.log("parsedUrl", parsedUrl);
 
     // Process the request using Next.js
     await handle(fakeReq, fakeRes, parsedUrl);
