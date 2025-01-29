@@ -138,7 +138,7 @@ export const handler: CloudFrontRequestHandler = async (
 
     console.log("lambda 3");
 
-    const requestUrl = new URL(fakeReq.url, "http://localhost");
+    const requestUrl = new URL(fakeReq.url, "http://localhost:3000");
 
     // Convert searchParams to ParsedUrlQuery format
     const query: ParsedUrlQuery = Object.fromEntries(
