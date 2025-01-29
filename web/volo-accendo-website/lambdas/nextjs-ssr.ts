@@ -81,6 +81,10 @@ export const handler: CloudFrontRequestHandler = async (
         ? chunk
         : Buffer.from(chunk, "utf-8");
       responseChunks.push(bufferChunk);
+      console.log(
+            "Response body so far:",
+            Buffer.concat(responseChunks).toString("utf-8")
+          );
       return true;
     };
 
