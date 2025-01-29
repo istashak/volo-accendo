@@ -94,40 +94,40 @@ export const handler: CloudFrontRequestHandler = async (
     //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     // };
 
-    const originalEnd = fakeRes.end;
-    fakeRes.end = (
-      chunk?: any,
-      encodingOrCb?: BufferEncoding | (() => void),
-      cb?: () => void
-    ) => {
-      if (chunk) {
-        console.log("fakeRes.end has a last chunk", chunk);
-        const bufferChunk = Buffer.isBuffer(chunk)
-          ? chunk
-          : Buffer.from(chunk, "utf-8");
-        responseChunks.push(bufferChunk);
-      } else {
-        console.log("fakeRes.end has NO last chunk", chunk);
-        responseChunks.push(Buffer.from("", "utf-8"));
-      }
-      console.log(
-        "Final response body:",
-        Buffer.concat(responseChunks).toString("utf-8")
-      );
-      if (typeof encodingOrCb === "function") {
-        console.log("encodingOrCb is a callback function");
-        // Handle case: end(chunk, cb)
-        cb = encodingOrCb;
-        encodingOrCb = undefined;
-      }
+    // const originalEnd = fakeRes.end;
+    // fakeRes.end = (
+    //   chunk?: any,
+    //   encodingOrCb?: BufferEncoding | (() => void),
+    //   cb?: () => void
+    // ) => {
+    //   if (chunk) {
+    //     console.log("fakeRes.end has a last chunk", chunk);
+    //     const bufferChunk = Buffer.isBuffer(chunk)
+    //       ? chunk
+    //       : Buffer.from(chunk, "utf-8");
+    //     responseChunks.push(bufferChunk);
+    //   } else {
+    //     console.log("fakeRes.end has NO last chunk", chunk);
+    //     responseChunks.push(Buffer.from("", "utf-8"));
+    //   }
+    //   console.log(
+    //     "Final response body:",
+    //     Buffer.concat(responseChunks).toString("utf-8")
+    //   );
+    //   if (typeof encodingOrCb === "function") {
+    //     console.log("encodingOrCb is a callback function");
+    //     // Handle case: end(chunk, cb)
+    //     cb = encodingOrCb;
+    //     encodingOrCb = undefined;
+    //   }
 
-      return originalEnd.call(
-        fakeRes,
-        chunk,
-        encodingOrCb as BufferEncoding,
-        cb
-      );
-    };
+    //   return originalEnd.call(
+    //     fakeRes,
+    //     chunk,
+    //     encodingOrCb as BufferEncoding,
+    //     cb
+    //   );
+    // };
 
     console.log("lambda 3");
 
