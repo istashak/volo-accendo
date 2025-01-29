@@ -16,7 +16,7 @@
     "copy:standalone": "cp -r .next/standalone/. .lambdas",
     "copy:static": "mkdir -p .next/standalone/.next/server/app/_next/ && cp -r .next/static .next/standalone/.next/ && cp -r .next/static .next/standalone/.next/server/app/_next/",
     "zip:lambdas": "cd .lambdas && zip -r nextjs-lambda-edge.zip .",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
