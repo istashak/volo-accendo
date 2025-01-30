@@ -77,7 +77,14 @@ export const handler: CloudFrontRequestHandler = async (
     // Simulate a writable HTTP response
     const fakeRes = new ServerResponse(fakeReq);
     const responseChunks: Buffer[] = [];
-    fakeRes.write = (chunk: any) => {
+    const originalWrite = fakeRes.write;
+    fakeRes.write = (
+      chunk: any,
+      encodingOrCb?:
+        | BufferEncoding
+        | ((error: Error | null | undefined) => void),
+      callback?: (error: Error | null | undefined) => void
+    ) => {
       const bufferChunk = Buffer.isBuffer(chunk)
         ? chunk
         : Buffer.from(chunk, "utf-8");
@@ -86,7 +93,20 @@ export const handler: CloudFrontRequestHandler = async (
         "Response body so far:",
         Buffer.concat(responseChunks).toString("utf-8")
       );
-      return true;
+      if (typeof encodingOrCb === "function") {
+        console.log("encodingOrCb is a callback function");
+        // Handle case: end(chunk, cb)
+        callback = encodingOrCb;
+        encodingOrCb = undefined;
+      }
+
+      //return true;
+      return originalWrite.call(
+        fakeRes,
+        chunk,
+        encodingOrCb as BufferEncoding,
+        callback
+      );
     };
 
     console.log("lambda 2");
@@ -180,12 +200,12 @@ export const handler: CloudFrontRequestHandler = async (
       hash: null,
       host: null,
       hostname: null,
-      href: `http://localhost/${fakeReq.url}`,
+      href: `https://dev.voloaccendo.com/${fakeReq.url}`,
       path: fakeReq.url,
       pathname: fakeReq.url,
-      protocol: "http:",
+      protocol: "https:",
       search: null,
-      slashes: true,
+      slashes: null,
       port: null,
       query: {}, // Ensure this follows ParsedUrlQuery format
     };
@@ -193,8 +213,8 @@ export const handler: CloudFrontRequestHandler = async (
     console.log("parsedUrl", parsedUrl);
 
     // Process the request using Next.js
-    await handle(fakeReq, fakeRes, parsedUrl);
-    // await handle(fakeReq, fakeRes);
+    // await handle(fakeReq, fakeRes, parsedUrl);
+    await handle(fakeReq, fakeRes);
 
     console.log("lambda 4");
 
