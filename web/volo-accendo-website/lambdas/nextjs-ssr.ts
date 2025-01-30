@@ -63,7 +63,7 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
-    // fakeReq.complete = true;
+    fakeReq.complete = true;
     fakeReq.push(null);
 
     console.log("fakeRequest", {
@@ -160,7 +160,10 @@ export const handler: CloudFrontRequestHandler = async (
         fakeReq.complete = true;
       }
 
-      fakeRes.finished = true;
+      // fakeRes.finished = true;
+
+       // Manually emit 'finish' to let Next.js know the response is complete
+      process.nextTick(() => fakeRes.emit("finish"));
 
       return originalEnd.call(
         fakeRes,
