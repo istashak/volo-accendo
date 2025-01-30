@@ -180,12 +180,12 @@ export const handler: CloudFrontRequestHandler = async (
       hash: null,
       host: null,
       hostname: null,
-      href: `https://dev.voloaccendo.com/${fakeReq.url}`,
+      href: `http://localhost/${fakeReq.url}`,
       path: fakeReq.url,
       pathname: fakeReq.url,
-      protocol: "https:",
+      protocol: "http:",
       search: null,
-      slashes: null,
+      slashes: true,
       port: null,
       query: {}, // Ensure this follows ParsedUrlQuery format
     };
@@ -193,8 +193,8 @@ export const handler: CloudFrontRequestHandler = async (
     console.log("parsedUrl", parsedUrl);
 
     // Process the request using Next.js
-    // await handle(fakeReq, fakeRes, parsedUrl);
-    await handle(fakeReq, fakeRes);
+    await handle(fakeReq, fakeRes, parsedUrl);
+    // await handle(fakeReq, fakeRes);
 
     console.log("lambda 4");
 
