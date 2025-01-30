@@ -170,7 +170,7 @@ export const handler: CloudFrontRequestHandler = async (
       hash: null,
       host: null,
       hostname: null,
-      href: fakeReq.url,
+      href: `https://dev.voloaccendo.com/${fakeReq.url}`,
       path: fakeReq.url,
       pathname: fakeReq.url,
       protocol: "https:",
@@ -184,6 +184,7 @@ export const handler: CloudFrontRequestHandler = async (
 
     // Process the request using Next.js
     await handle(fakeReq, fakeRes, parsedUrl);
+    // await handle(fakeReq, fakeRes);
 
     console.log("lambda 4");
 
