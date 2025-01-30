@@ -63,7 +63,7 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
-    fakeReq.complete = true;
+    // fakeReq.complete = true;
     fakeReq.push(null);
 
     console.log("fakeRequest", {
@@ -83,9 +83,9 @@ export const handler: CloudFrontRequestHandler = async (
         : Buffer.from(chunk, "utf-8");
       responseChunks.push(bufferChunk);
       console.log(
-            "Response body so far:",
-            Buffer.concat(responseChunks).toString("utf-8")
-          );
+        "Response body so far:",
+        Buffer.concat(responseChunks).toString("utf-8")
+      );
       return true;
     };
 
@@ -106,40 +106,49 @@ export const handler: CloudFrontRequestHandler = async (
     //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
     // };
 
-    // const originalEnd = fakeRes.end;
-    // fakeRes.end = (
-    //   chunk?: any,
-    //   encodingOrCb?: BufferEncoding | (() => void),
-    //   cb?: () => void
-    // ) => {
-    //   if (chunk) {
-    //     console.log("fakeRes.end has a last chunk", chunk);
-    //     const bufferChunk = Buffer.isBuffer(chunk)
-    //       ? chunk
-    //       : Buffer.from(chunk, "utf-8");
-    //     responseChunks.push(bufferChunk);
-    //   } else {
-    //     console.log("fakeRes.end has NO last chunk", chunk);
-    //     responseChunks.push(Buffer.from("", "utf-8"));
-    //   }
-    //   console.log(
-    //     "Final response body:",
-    //     Buffer.concat(responseChunks).toString("utf-8")
-    //   );
-    //   if (typeof encodingOrCb === "function") {
-    //     console.log("encodingOrCb is a callback function");
-    //     // Handle case: end(chunk, cb)
-    //     cb = encodingOrCb;
-    //     encodingOrCb = undefined;
-    //   }
+    const originalEnd = fakeRes.end;
+    fakeRes.end = (
+      chunk?: any,
+      encodingOrCb?: BufferEncoding | (() => void),
+      cb?: () => void
+    ) => {
+      if (chunk) {
+        console.log("fakeRes.end has a last chunk", chunk);
+        const bufferChunk = Buffer.isBuffer(chunk)
+          ? chunk
+          : Buffer.from(chunk, "utf-8");
+        responseChunks.push(bufferChunk);
+      } else {
+        console.log("fakeRes.end has NO last chunk", chunk);
+        responseChunks.push(Buffer.from("", "utf-8"));
+      }
+      console.log(
+        "Final response body:",
+        Buffer.concat(responseChunks).toString("utf-8")
+      );
+      if (typeof encodingOrCb === "function") {
+        console.log("encodingOrCb is a callback function");
+        // Handle case: end(chunk, cb)
+        cb = encodingOrCb;
+        encodingOrCb = undefined;
+      }
 
-    //   return originalEnd.call(
-    //     fakeRes,
-    //     chunk,
-    //     encodingOrCb as BufferEncoding,
-    //     cb
-    //   );
-    // };
+      if (fakeReq.complete) {
+        console.log("fakeReq is complete");
+      } else {
+        console.log("fakeReq is NOT complete");
+        fakeReq.complete = true;
+      }
+
+      fakeRes.finished = true;
+
+      return originalEnd.call(
+        fakeRes,
+        chunk,
+        encodingOrCb as BufferEncoding,
+        cb
+      );
+    };
 
     console.log("lambda 3");
 
