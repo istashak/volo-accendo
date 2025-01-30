@@ -63,6 +63,7 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
+    fakeReq.complete = true;
     fakeReq.push(null);
 
     console.log("fakeRequest", {
@@ -183,8 +184,8 @@ export const handler: CloudFrontRequestHandler = async (
     console.log("parsedUrl", parsedUrl);
 
     // Process the request using Next.js
-    await handle(fakeReq, fakeRes, parsedUrl);
-    // await handle(fakeReq, fakeRes);
+    // await handle(fakeReq, fakeRes, parsedUrl);
+    await handle(fakeReq, fakeRes);
 
     console.log("lambda 4");
 
