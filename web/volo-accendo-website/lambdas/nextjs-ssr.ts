@@ -4,7 +4,6 @@ import fs from "fs";
 import { Readable } from "stream";
 import { IncomingMessage, ServerResponse } from "http";
 import { NextUrlWithParsedQuery } from "next/dist/server/request-meta";
-import { ParsedUrlQuery } from "querystring";
 import next from "next";
 
 const NODE_ENV = "production";
@@ -63,7 +62,9 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
-    fakeReq.complete = true;
+    fakeReq.complete = true;  
+    (fakeReq as any).socket = {};  // Provide a dummy socket object
+    (fakeReq as any).connection = {}; // Simulate a connection object
     fakeReq.push(null);
 
     console.log("fakeRequest", {
@@ -111,21 +112,6 @@ export const handler: CloudFrontRequestHandler = async (
 
     console.log("lambda 2");
 
-    // const originalEnd = fakeRes.end;
-    // fakeRes.end = (chunk?: any, encodingOrCb?: any, cb?: any) => {
-    //   if (chunk) {
-    //     const bufferChunk = Buffer.isBuffer(chunk)
-    //       ? chunk
-    //       : Buffer.from(chunk, "utf-8");
-    //     responseChunks.push(bufferChunk);
-    //   }
-    //   console.log(
-    //     "Final response body:",
-    //     Buffer.concat(responseChunks).toString("utf-8")
-    //   );
-    //   return originalEnd.call(fakeRes, chunk, encodingOrCb, cb);
-    // };
-
     const originalEnd = fakeRes.end;
     fakeRes.end = (
       chunk?: any,
@@ -160,10 +146,8 @@ export const handler: CloudFrontRequestHandler = async (
         fakeReq.complete = true;
       }
 
-      // fakeRes.finished = true;
-
        // Manually emit 'finish' to let Next.js know the response is complete
-      process.nextTick(() => fakeRes.emit("finish"));
+      // process.nextTick(() => fakeRes.emit("finish"));
 
       return originalEnd.call(
         fakeRes,
@@ -172,6 +156,10 @@ export const handler: CloudFrontRequestHandler = async (
         cb
       );
     };
+
+    fakeRes.on('finish', () => {
+      console.log('Finished writing to fakeRes');
+    });
 
     console.log("lambda 3");
 
