@@ -40,16 +40,6 @@ export const handler: CloudFrontRequestHandler = async (
   console.log("NEXT_ENV = " + NEXT_ENV);
 
   try {
-    // const response = {
-    //   status: "200",
-    //   statusDescription: "OK",
-    //   headers: {
-    //     "content-type": [{ key: "Content-Type", value: "text/html" }],
-    //   },
-    //   body: "<html><body>Hello From Volo Accendo</body></html>",
-    // };
-    // console.log("Response:", JSON.stringify(response, null, 2));
-    // return response;
     // Ensure the app is ready
     await app.prepare();
 
@@ -62,9 +52,10 @@ export const handler: CloudFrontRequestHandler = async (
     fakeReq.headers = Object.fromEntries(
       Object.entries(headers).map(([key, values]) => [key, values[0].value])
     );
-    fakeReq.complete = true;  
-    (fakeReq as any).socket = {};  // Provide a dummy socket object
-    (fakeReq as any).connection = {}; // Simulate a connection object
+    fakeReq.complete = true;
+    
+    // (fakeReq as any).socket = {};  // Provide a dummy socket object
+    // (fakeReq as any).connection = {}; // Simulate a connection object
     fakeReq.push(null);
 
     console.log("fakeRequest", {
@@ -147,7 +138,7 @@ export const handler: CloudFrontRequestHandler = async (
       }
 
        // Manually emit 'finish' to let Next.js know the response is complete
-      // process.nextTick(() => fakeRes.emit("finish"));
+      process.nextTick(() => fakeRes.emit("finish"));
 
       return originalEnd.call(
         fakeRes,
