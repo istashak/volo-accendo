@@ -53,9 +53,10 @@ const useContactConfirmationController = () => {
 
       const data = await res.json();
       console.log("Contact submitted successfully:", data);
-      router.replace("/contact/success");
+      
       resetContactFormData();
       setFocusedContact(newContact);
+      router.replace("/contact/success");
       clearNewContact();
       setContactCreationState({
         status: "success",

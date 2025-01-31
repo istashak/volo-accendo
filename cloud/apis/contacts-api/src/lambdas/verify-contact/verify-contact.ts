@@ -15,16 +15,9 @@ export const handler: APIGatewayProxyHandler = async (
   const firstName = event.queryStringParameters?.firstName;
   console.log("received params", { email, firstName });
 
-  const base64Data = Buffer.from(`${email}|${firstName}`).toString('base64');
+  const base64Data = Buffer.from(`${email}|${firstName}`).toString("base64");
 
-  console.log(`base64 encoding of "email|firstName" = ${base64Data}`)
-
-  if (!email) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Email is required." }),
-    };
-  }
+  console.log(`base64 encoding of "email|firstName" = ${base64Data}`);
 
   const contact = new ContactsDao({
     email,
@@ -45,10 +38,12 @@ export const handler: APIGatewayProxyHandler = async (
     console.log("verification response", response);
 
     if (response?.$metadata.httpStatusCode == 200) {
+      const verificationUrl = `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification/${base64Data}`;
+      console.log("Verification URL = " + verificationUrl);
       return {
         statusCode: 302,
         headers: {
-          Location: `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification/${base64Data}`,
+          Location: verificationUrl,
         },
         body: JSON.stringify({}),
       };
