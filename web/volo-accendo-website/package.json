@@ -6,7 +6,7 @@
     "clean": "rm -rf .next node_modules .lambdas",
     "clean:lambdas": "rm -rf .lambdas",
     "dev": "NODE_OPTIONS='--inspect' next dev",
-    "build": "cp .env.prod .env && next build && pnpm build:lambdas && pnpm copy:public",
+    "build": "cp .env.prod .env && next build && pnpm copy:public && pnpm build:lambdas",
     "build:dev": "cp .env.dev .env && next build && pnpm copy:public && pnpm build:lambdas",
     "build:lambdas": "pnpm clean:lambdas && pnpm compile:lambdas && pnpm copy:config && pnpm copy:static && pnpm copy:standalone",
     "build:prod": "pnpm build",
