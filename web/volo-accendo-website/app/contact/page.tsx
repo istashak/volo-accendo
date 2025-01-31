@@ -1,12 +1,11 @@
-import { Button, ContactForm } from "../ui";
+"use client";
 
-export default async function ContactPage() {
+import { ContactForm } from "../components/contact-form";
+
+export default function ContactPage() {
   return (
-    <div className="">
-      <p className="">
-        Hello from the Contact page
-      </p>
-
+    <div>
+      <p className="mb-4 font-semibold">{`If you're interested in hearing more about our services, let's connect...`}</p>
       <ContactForm />
     </div>
   );

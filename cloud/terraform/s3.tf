@@ -8,7 +8,19 @@ resource "aws_s3_bucket" "web_app_bucket" {
   })
 }
 
-data "aws_caller_identity" "current" {}
+resource "aws_s3_bucket_versioning" "web_app_bucket_versioning" {
+  bucket = aws_s3_bucket.web_app_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_object" "web_app_lambda_edge" {
+  bucket = aws_s3_bucket.web_app_bucket.id
+  key    = local.lambda_edge_zip_key
+}
+
+# data "aws_caller_identity" "current" {}
 
 # resource "aws_s3_bucket_public_access_block" "web_app_s3_access_block" {
 #   bucket = aws_s3_bucket.web_app_bucket.id

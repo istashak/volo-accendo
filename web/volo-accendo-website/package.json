@@ -3,21 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "clean": "rm -rf .next node_modules out",
-    "dev": "next dev",
-    "build": "cp .env.production .env.local && next build",
-    "build:dev": "cp .env.dev .env.local && next build",
+    "clean": "rm -rf .next node_modules .lambdas",
+    "clean:lambdas": "rm -rf .lambdas",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "build": "cp .env.prod .env && next build && pnpm build:lambdas && pnpm copy:public",
+    "build:dev": "cp .env.dev .env && next build && pnpm copy:public && pnpm build:lambdas",
+    "build:lambdas": "pnpm clean:lambdas && pnpm compile:lambdas && pnpm copy:config && pnpm copy:static && pnpm copy:standalone",
     "build:prod": "pnpm build",
-    "start": "next start",
+    "compile:lambdas": "tsc -p tsconfig.lambdas.json",
+    "copy:config": "cp next.config.mjs .lambdas",
+    "copy:public": "cp -r public .next/standalone/ && cp -r public/* .next/standalone/.next/server/app/",
+    "copy:standalone": "cp -r .next/standalone/. .lambdas",
+    "copy:static": "mkdir -p .next/standalone/.next/server/app/_next/ && cp -r .next/static .next/standalone/.next/ && cp -r .next/static .next/standalone/.next/server/app/_next/",
+    "zip:lambdas": "cd .lambdas && zip -r nextjs-lambda-edge.zip .",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "next": "14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "daisyui": "^4.12.14",
+    "next": "15.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.7",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
     "@types/node": "^20.14.13",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -26,7 +39,6 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "postcss": "^8.4.40",
-    "tailwindcss": "^3.4.7",
     "typescript": "^5.5.4"
   },
   "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"

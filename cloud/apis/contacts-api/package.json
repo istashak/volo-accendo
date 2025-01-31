@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm build-put-contact && pnpm build-verify-contact",
+    "build-put-contact": "tsc -p src/lambdas/put-contact/tsconfig.json",
+    "build-verify-contact": "tsc -p src/lambdas/verify-contact/tsconfig.json",
     "clean": "rm -rf node_modules",
-    "test": "pnpm exec jest"
+    "test": "pnpm exec jest",
+    "zip": "pnpm zip-put-contact && pnpm zip-verify-contact",
+    "zip-put-contact": "cd dist/put-contact && zip -r ../../put-contact-lambda.zip .",
+    "zip-verify-contact": "cd dist/verify-contact && zip -r ../../verify-contact-lambda.zip ."
   },
   "keywords": [],
   "author": "",
@@ -20,14 +25,18 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
-  "include": [
-    "src/**/*.ts"
+  "files": [
+    "dist"
   ],
   "exclude": [
-    "node_modules"
+    "src",
+    "node_modules",
+    "tests",
+    "terraform"
   ],
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.620.1"
+    "@aws-sdk/client-dynamodb": "^3.620.1",
+    "@aws-sdk/client-ses": "^3.709.0"
   },
   "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
 }

@@ -21,28 +21,18 @@ jobs:
     # Use the latest version of Ubuntu
     runs-on: ubuntu-latest
 
-    # Define the Node.js versions to use in the matrix
-    # strategy:
-    #   matrix:
-    #     node-version: [20.x]
-
     steps:
       # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # # Step 2: Set up Node.js environment
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: ${{ matrix.node-version }}  # Use the version defined in the matrix
-      #     cache: 'pnpm'  # Cache pnpm dependencies
-
+      # Step 2: Install pnpm
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 9.5.0
 
+      # Step 3: Set up Node.js environment
       - uses: actions/setup-node@v4
         name: Set up Node.js
         with:
@@ -59,12 +49,6 @@ jobs:
               echo "ENV=dev" >> $GITHUB_ENV
               echo "S3_BUCKET_NAME=volo-accendo-vpc-dev-web-app-bucket" >> $GITHUB_ENV
           fi
-
-      # Step 3: Install pnpm (an alternative package manager)
-      # - name: Install pnpm
-      #   run: |
-      #     cd cloud/web/volo-accendo-website
-      #     npm install -g pnpm
 
       # Step 4: Install project dependencies using pnpm
       - name: Install dependencies
@@ -83,28 +67,27 @@ jobs:
           cd web/volo-accendo-website
           pnpm build:$ENV
 
+      # - name: Prune devDependencies
+      #   run: |
+      #     cd web/volo-accendo-website
+      #     pnpm install --prod --no-optional
+
+      - name: Archive lambdas directory
+        run: |
+          cd web/volo-accendo-website
+          pnpm zip:lambdas
+
       # Comment/Uncomment for debugging
       - name: List directory contents II
         run: |
           ls -R
 
-      # - name: Archive dist directory
-      #   run: |
-      #     cd cloud/web/volo-accendo-website/
-      #     zip -r build.zip .next
-
-      # Step 6: Upload build artifacts (for example, to use in a deployment step)
-      # - name: Upload build artifacts
-      #   if: success()  # Only run this step if the previous steps were successful
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: build  # Name of the artifact
-      #     path: .next  # Path to the build artifacts
-
       - name: Install AWS CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y awscli
+          sudo apt-get install -y python3-pip
+          pip3 install --upgrade awscli
+          aws --version
 
       - name: Upload to S3
         env:
@@ -112,7 +95,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1" # Adjust if necessary
         run: |
-          cd web/volo-accendo-website
-          aws s3 sync out/$ENV s3://$S3_BUCKET_NAME --delete
-
-  # Additional jobs for deployment can be added here
+          cd web/volo-accendo-website 
+          aws s3 sync .next/standalone/.next/server/app s3://$S3_BUCKET_NAME --delete
+          aws s3 cp .lambdas/nextjs-lambda-edge.zip s3://$S3_BUCKET_NAME/nextjs-lambda-edge.zip

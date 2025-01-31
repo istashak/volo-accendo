@@ -1,5 +1,5 @@
-import { Contact } from "../../../src/models";
-import { ContactsDao } from "../../../src/models/dao";
+import { Contact } from "../../../src/shared/models";
+import { ContactsDao } from "../../../src/shared/models/dao";
 
 describe("ContactDao", () => {
   test("Returning a Contacts object from the toJson function.", () => {
@@ -10,6 +10,7 @@ describe("ContactDao", () => {
       lastName: "Somegal",
       companyName: "Acme Inc.",
       message: "Jannie don't you lose that number!",
+      verificationStatus: "pending",
     };
     const contactsDao = new ContactsDao(contact);
     expect(contactsDao.toJson()).toStrictEqual(contact);
