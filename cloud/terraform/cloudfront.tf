@@ -122,10 +122,10 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       }
     }
 
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.path_rewrite.arn
-    }
+    # function_association {
+    #   event_type   = "viewer-request"
+    #   function_arn = aws_cloudfront_function.path_rewrite.arn
+    # }
 
     # lambda_function_association {
     #   event_type   = "origin-request"
@@ -169,7 +169,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 }
 
 resource "aws_cloudfront_function" "path_rewrite" {
-  name    = "path-rewrite-function-${var.environment}"
+  name    = "path-rewrite-function"
   runtime = "cloudfront-js-1.0"
 
   code = file("${path.module}/path-rewrite-function.js")
