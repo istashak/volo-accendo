@@ -1,4 +1,4 @@
 data "tfe_outputs" "networking" {
   organization = var.tfe_organization
-  workspace    = "volo-accendo-cloud-prod"
+  workspace    = var.tfe_networking_workspace
 }
