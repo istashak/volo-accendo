@@ -169,7 +169,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
 }
 
 resource "aws_cloudfront_function" "path_rewrite" {
-  name    = "path-rewrite-function"
+  name    = "path-rewrite-function-${var.environment}"
   runtime = "cloudfront-js-1.0"
 
   code = file("${path.module}/path-rewrite-function.js")
