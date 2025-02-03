@@ -122,10 +122,10 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       }
     }
 
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.path_rewrite.arn
-    }
+    # function_association {
+    #   event_type   = "viewer-request"
+    #   function_arn = aws_cloudfront_function.path_rewrite.arn
+    # }
 
     # lambda_function_association {
     #   event_type   = "origin-request"
