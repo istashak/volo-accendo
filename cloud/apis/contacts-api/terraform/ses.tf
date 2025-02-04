@@ -30,4 +30,5 @@ resource "aws_route53_record" "dkim" {
   type     = "CNAME"
   ttl      = 300
   records  = ["${each.value}.dkim.amazonses.com"]
+  depends_on = [ aws_ses_domain_dkim.contact_verification_dkim ]
 }
