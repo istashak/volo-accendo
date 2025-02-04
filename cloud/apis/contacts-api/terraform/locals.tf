@@ -11,7 +11,6 @@ locals {
   }
 
   domain_name                    = data.tfe_outputs.networking.nonsensitive_values.domain_name
-  environment_and_domain_name    = "${var.environment}.${data.tfe_outputs.networking.nonsensitive_values.domain_name}"
   s3_lambda_function_bucket_name = "${lower(local.naming_prefix)}-lambda-function-bucket"
 
   naming_prefix = "${var.naming_prefix}-${var.environment}"

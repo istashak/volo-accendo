@@ -96,8 +96,7 @@ resource "aws_lambda_function" "contacts_api_lambda_functions" {
       NODE_ENV               = var.environment
       CONTACTS_TABLE_NAME    = aws_dynamodb_table.contacts_table.name
       DOMAIN                 = local.domain_name
-      ENVIRONMENT_AND_DOMAIN = local.environment_and_domain_name
-      SES_EMAIL_SOURCE       = var.environment == "prod" ? "no-reply@${local.domain_name}" : "no-reply@${local.environment_and_domain_name}"
+      SES_EMAIL_SOURCE       = "no-reply@${local.domain_name}"
     }
   }
 
@@ -248,7 +247,7 @@ resource "aws_lambda_permission" "contacts" {
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "api.${local.environment_and_domain_name}"
+  domain_name = "api.${local.domain_name}"
 
   domain_name_configuration {
     certificate_arn = data.tfe_outputs.networking.nonsensitive_values.aws_acm_certificate_arn

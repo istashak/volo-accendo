@@ -3,7 +3,7 @@ resource "aws_ses_email_identity" "contact_verification_email" {
 }
 
 resource "aws_ses_domain_identity" "contact_verification_domain" {
-  domain = var.environment == "prod" ? local.domain_name : local.environment_and_domain_name
+  domain = local.domain_name
 }
 
 resource "aws_route53_record" "ses_contact_verification" {
@@ -26,7 +26,7 @@ resource "aws_ses_domain_dkim" "contact_verification_dkim" {
 resource "aws_route53_record" "dkim" {
   for_each = toset(try(aws_ses_domain_dkim.contact_verification_dkim.dkim_tokens, []))
   zone_id  = data.tfe_outputs.networking.nonsensitive_values.domain_zone_id
-  name     = var.environment == "prod" ? "${each.value}.${local.domain_name}._domainkey" : "${each.value}.${local.environment_and_domain_name}._domainkey"
+  name     = "${each.value}.${local.domain_name}._domainkey"
   type     = "CNAME"
   ttl      = 300
   records  = ["${each.value}.dkim.amazonses.com"]

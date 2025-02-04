@@ -38,7 +38,7 @@ export const handler: APIGatewayProxyHandler = async (
     console.log("verification response", response);
 
     if (response?.$metadata.httpStatusCode == 200) {
-      const verificationUrl = `https://${process.env.ENVIRONMENT_AND_DOMAIN}/contact/verification/${base64Data}`;
+      const verificationUrl = `https://${process.env.DOMAIN}/contact/verification/${base64Data}`;
       console.log("Verification URL = " + verificationUrl);
       return {
         statusCode: 302,
