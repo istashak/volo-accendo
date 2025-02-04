@@ -77,6 +77,8 @@ export const handler: APIGatewayProxyHandler = async (
     }
   }
 
+  console.log("The domain name is: " + process.env.DOMAIN);
+
   if (databaseResponse?.$metadata.httpStatusCode == 200) {
     // Send an email via SES
     try {
