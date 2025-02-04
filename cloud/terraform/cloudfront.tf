@@ -128,8 +128,8 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     }
 
     min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
+    default_ttl            = 0
+    max_ttl                = 0
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -160,11 +160,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   tags = merge(local.common_tags, {
     resource_name = "${local.naming_prefix}-cloud-front-distribution"
   })
-}
-
-resource "aws_cloudfront_invalidation" "web_app_invalidation" {
-  distribution_id = aws_cloudfront_distribution.web_app_distribution.id
-  paths          = ["/*"]
 }
 
 resource "aws_cloudfront_function" "path_rewrite" {
