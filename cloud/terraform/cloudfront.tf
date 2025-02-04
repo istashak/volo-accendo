@@ -127,12 +127,6 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
       function_arn = aws_cloudfront_function.path_rewrite.arn
     }
 
-    # lambda_function_association {
-    #   event_type   = "origin-request"
-    #   lambda_arn   = aws_lambda_function.nextjs_ssr.qualified_arn
-    #   include_body = true
-    # }
-
     min_ttl                = 0
     default_ttl            = 86400
     max_ttl                = 31536000
@@ -166,6 +160,11 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   tags = merge(local.common_tags, {
     resource_name = "${local.naming_prefix}-cloud-front-distribution"
   })
+}
+
+resource "aws_cloudfront_invalidation" "web_app_invalidation" {
+  distribution_id = aws_cloudfront_distribution.web_app_distribution.id
+  paths          = ["/*"]
 }
 
 resource "aws_cloudfront_function" "path_rewrite" {
