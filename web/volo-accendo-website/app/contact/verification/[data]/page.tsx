@@ -15,7 +15,7 @@ export default async function Page({
 
   return (
     <div>
-      <p className="mb-4 font-semibold">{`Thank ${firstName}, you've successfully verified your email address. ${email}`}</p>
+      <p className="mb-4 font-semibold">{`Thank you ${firstName}, you've successfully verified your email address. ${email}`}</p>
     </div>
   );
 }
