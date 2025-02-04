@@ -63,8 +63,8 @@ resource "aws_s3_bucket_ownership_controls" "contacts_api_lambda_bucket" {
 
 resource "aws_s3_bucket_acl" "contacts_api_lambda_bucket" {
   depends_on = [aws_s3_bucket_ownership_controls.contacts_api_lambda_bucket]
-  bucket = local.s3_lambda_function_bucket_name
-  acl    = "private"
+  bucket     = local.s3_lambda_function_bucket_name
+  acl        = "private"
 }
 
 resource "aws_s3_object" "contacts_api_lambda_source" {
@@ -97,7 +97,7 @@ resource "aws_lambda_function" "contacts_api_lambda_functions" {
       CONTACTS_TABLE_NAME    = aws_dynamodb_table.contacts_table.name
       DOMAIN                 = local.domain_name
       ENVIRONMENT_AND_DOMAIN = local.environment_and_domain_name
-      SES_EMAIL_SOURCE       = "no-reply@${local.environment_and_domain_name}"
+      SES_EMAIL_SOURCE       = var.environment == "prod" ? "no-reply@${local.domain_name}" : "no-reply@${local.environment_and_domain_name}"
     }
   }
 

@@ -3,7 +3,7 @@ resource "aws_ses_email_identity" "contact_verification_email" {
 }
 
 resource "aws_ses_domain_identity" "contact_verification_domain" {
-  domain = local.domain_name
+  domain = var.environment == "prod" ? local.domain_name : local.environment_and_domain_name
 }
 
 resource "aws_route53_record" "ses_contact_verification" {
