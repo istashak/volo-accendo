@@ -28,16 +28,18 @@ Next, note that the files .env.development and .env.production were purposefully
 
 ...
 ```
+
 ```
 # .env.dev file
 
 VOLO_ACCENDO_API="api.dev.voloaccendo.com"
 NEXT_ENV="development"
 ```
+
 ```
 # .env.prod file
 
-VOLO_ACCENDO_API="api.prod.voloaccendo.com"
+VOLO_ACCENDO_API="api.voloaccendo.com"
 NEXT_ENV="production"
 ```
 
@@ -57,7 +59,7 @@ Inspecting .env we see that is has the following content:
 ```
 # copied .env.prod file contents
 
-VOLO_ACCENDO_API="api.prod.voloaccendo.com"
+VOLO_ACCENDO_API="api.voloaccendo.com"
 NEXT_ENV="production"
 ```
 
@@ -75,5 +77,3 @@ Note, the same thing could have been done in vice versa fashion if, **"pnpm buil
 ### Conclusion
 
 By using a combination of build scripts and .env files we are able to create a flexible work around for building and running the next app, such that the app can be run in either development or production mode while also pointing to any backend we'd like.
-
-
