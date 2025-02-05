@@ -97,6 +97,7 @@ resource "aws_lambda_function" "contacts_api_lambda_functions" {
       CONTACTS_TABLE_NAME    = aws_dynamodb_table.contacts_table.name
       DOMAIN                 = local.domain_name
       SES_EMAIL_SOURCE       = "no-reply@${local.domain_name}"
+      ALERT_EMAIL_ADDRESS    = var.alert_email_address
     }
   }
 
