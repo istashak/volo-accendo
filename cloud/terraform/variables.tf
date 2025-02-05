@@ -53,3 +53,9 @@ variable "domain_name" {
   type        = string
   description = "The domain name"
 }
+
+variable "zone_id" {
+  type        = string
+  description = "(Required) The main zone domain name."
+  default     = "voloaccendo.com"
+}

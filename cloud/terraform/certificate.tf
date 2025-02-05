@@ -17,7 +17,7 @@ resource "aws_acm_certificate" "cert" {
 
 # References the existing zone specified by var.domain_name 
 data "aws_route53_zone" "volo_accendo_domain" {
-  name         = var.domain_name
+  name         = var.zone_id
   private_zone = false
 }
 

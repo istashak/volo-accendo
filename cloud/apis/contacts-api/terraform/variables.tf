@@ -4,7 +4,7 @@ variable "company_name" {
 }
 
 variable "alert_email_address" {
-  type = string
+  type        = string
   description = "The email address to alert when a contact has been verified."
 }
 
