@@ -1,4 +1,4 @@
-var routesManifest = ${routes_manifest};
+var routesManifest = JSON.parse(JSON.stringify(${routes_manifest}));
 
 function handler(event) {    
     var request = event.request;

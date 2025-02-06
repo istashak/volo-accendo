@@ -167,7 +167,7 @@ resource "aws_cloudfront_function" "path_rewrite" {
   runtime = "cloudfront-js-1.0"
 
   code = templatefile("${path.module}/path-rewrite-function.js", {
-    routes_manifest = local.routes_manifest
+    routes_manifest = jsonencode(local.routes_manifest)
   })
 }
 
