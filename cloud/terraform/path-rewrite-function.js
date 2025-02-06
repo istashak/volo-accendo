@@ -12,6 +12,12 @@ function handler(event) {
     for (var i = 0; i < staticRoutes.length; i++) {
         var route = staticRoutes[i];
         console.log("looking at route", route);
+        // Special case for "/"
+        if (route === "/" && uri === route) {
+            request.uri = "/index.html";
+            return request;
+        }
+
         if (uri === route || uri === route + "/") {
             request.uri = route + ".html";
             return request;
