@@ -1,6 +1,5 @@
-var routesManifest = ${routes_manifest};
-
 function handler(event) {
+    var routesManifest = ${routes_manifest};
     var request = event.request;
     var uri = request.uri;
 
