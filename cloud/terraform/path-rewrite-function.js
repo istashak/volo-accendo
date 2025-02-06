@@ -7,7 +7,7 @@ function handler(event) {
   console.log("request", request);
 
   // Load static routes from the routesManifest
-  const staticRoutes = routesManifest.staticRoutes.map(route => route.page);
+  var staticRoutes = routesManifest.staticRoutes.map(route => route.page);
 
   staticRoutes.forEach((route) => {
       if (uri === route || uri === route + "/") {
