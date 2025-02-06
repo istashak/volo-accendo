@@ -1,22 +1,19 @@
+var routesManifest = ${routes_manifest};
+
 function handler(event) {
-  var routes = [
-    "/about/",
-    "/resume/",
-    "/contact/",
-    "/contact/confirm/",
-    "/contact/success/",
-  ];
   var request = event.request;
   var uri = request.uri;
 
   console.log("request", request);
 
-  routes.forEach((route) => {
-    if (uri.endsWith(route)) {
-      request.uri = uri.substring(0, uri.length - 1) + ".html";
-    }
+  // Load static routes from the routesManifest
+  const staticRoutes = routesManifest.staticRoutes.map(route => route.page);
 
-    return request;
+  staticRoutes.forEach((route) => {
+      if (uri === route || uri === route + "/") {
+          request.uri = route + ".html";
+          return request;
+      }
   });
 
   return request;

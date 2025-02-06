@@ -7,6 +7,7 @@ locals {
 
   s3_web_app_bucket_name = "${lower(local.naming_prefix)}-web-app-bucket"
   lambda_edge_zip_key    = "nextjs-lambda-edge.zip"
+  routes_manifest = jsondecode(file("${path.module}/routes-manifest.json"))
 
   naming_prefix = "${var.naming_prefix}-${var.environment}"
   deploy_id     = random_id.deploy_id.hex

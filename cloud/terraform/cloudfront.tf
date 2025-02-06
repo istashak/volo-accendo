@@ -166,7 +166,9 @@ resource "aws_cloudfront_function" "path_rewrite" {
   name    = "path-rewrite-function-${var.environment}"
   runtime = "cloudfront-js-1.0"
 
-  code = file("${path.module}/path-rewrite-function.js")
+  code = templatefile("${path.module}/path-rewrite-function.js", {
+    routes_manifest = jsonencode(local.routes_manifest)
+  })
 }
 
 # Creates the zone record that enables the domain name root (i.e. voloaccendo.com) to be an alias for the
