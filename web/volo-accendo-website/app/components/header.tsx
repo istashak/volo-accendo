@@ -25,7 +25,7 @@ export function Header({ headerItems }: HeaderProps) {
   };
 
   return (
-    <header className="flex items-center p-4 bg-white shadow-md">
+    <header className="flex min-w-header items-center p-4 bg-white shadow-md">
       <Image
         src="/volo_logo_100x100.png"
         width={100}
@@ -45,8 +45,10 @@ export function Header({ headerItems }: HeaderProps) {
             return (
               <Link
                 key={item.route}
-                className={`btn ${active ? "btn-active" : "btn-ghost"}`}
-                href={active? "#" : item.route}
+                className={`btn ${
+                  active ? "bg-btn-active text-white" : "btn-ghost"
+                } hover:bg-link-hover`}
+                href={active ? "#" : item.route}
               >
                 {item.title}
               </Link>

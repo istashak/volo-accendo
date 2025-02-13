@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import createMDX from "@next/mdx";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -13,6 +14,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   // async redirects() {
   //   return [
   //     {
@@ -55,6 +57,11 @@ const nextConfig = {
       config.devtool = "hidden-source-map";
     }
 
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+
     config.resolve.alias = {
       ...config.resolve.alias,
       "@": path.resolve(__dirname),
@@ -83,7 +90,9 @@ const nextConfig = {
   },
 };
 
+const withMDX = createMDX({});
+
 // "node_modules/next/dist/compiled/webpack/bundle5.js",
 // "node_modules/next/dist/compiled/loader-runner/*",
 
-export default nextConfig;
+export default withMDX(nextConfig);

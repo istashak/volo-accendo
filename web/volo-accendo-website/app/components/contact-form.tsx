@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { ContactValidationSchema } from "../models/domain/contact";
 import { z } from "zod";

@@ -2,10 +2,10 @@
 
 import { ContactForm } from "../components/contact-form";
 
-export default function ContactPage() {
+export default function Page() {
   return (
     <div>
-      <p className="mb-4 font-semibold">{`If you're interested in hearing more about our services, let's connect...`}</p>
+      <p className="mb-4 text-center text-2xl">{`If you're interested in hearing more about Volo Accendo's services, and how we may meet your technological needs, let's connect.`}</p>
       <ContactForm />
     </div>
   );
