@@ -25,7 +25,7 @@ export function Header({ headerItems }: HeaderProps) {
   };
 
   return (
-    <header className="flex min-w-header items-center p-4 bg-white shadow-md">
+    <header className="flex min-w-header items-center p-4 bg-white shadow-lg mb-6">
       <Image
         src="/volo_logo_100x100.png"
         width={100}

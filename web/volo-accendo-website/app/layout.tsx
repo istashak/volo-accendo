@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${inter.className} antialiased mx-auto w-4/5 min-w-body`}
       >
         <Header headerItems={routes} />
-        <main className="p-4">{children}</main>
+        <main className="p-0">{children}</main>
         <Footer />
       </body>
     </html>
