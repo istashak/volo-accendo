@@ -113,7 +113,7 @@ export default function Page() {
         <p className={textClass}>
           {`Authored the React code that powers `}
           <a className={linkClass} href="https://www.cyberdata.net/">
-            CyberData.Net's
+            {`CyberData.Net's`}
           </a>
           {` multi-tenant partner platform for enabling various audio hardware tools.`}
         </p>
