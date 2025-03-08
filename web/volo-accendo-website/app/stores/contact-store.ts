@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Contact } from "../models/domain/contact";
-import { ContactFormData } from "../components/contact-form";
+import { Contact } from "@/models/domain";
+import { ContactFormData } from "@/ui/components";
 
 interface ContactStore {
   contactFormData: ContactFormData;

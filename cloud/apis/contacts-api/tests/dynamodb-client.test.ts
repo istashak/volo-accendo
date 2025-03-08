@@ -1,4 +1,4 @@
-import { getDynamoDBClient } from "../src/shared";
+import { getDynamoDBClient } from "@/shared";
 
 describe("getDynamoDBClient", () => {
   test("Creates valid DynamoDB Client", () => {

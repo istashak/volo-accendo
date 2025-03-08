@@ -4,7 +4,7 @@ import {
   ProvisionedThroughputExceededException,
   ResourceNotFoundException,
 } from "@aws-sdk/client-dynamodb";
-import { LambdaDynamoDBError } from "../errors";
+import { LambdaDynamoDBError } from "@/shared/models/errors";
 
 export abstract class BaseDao {
   protected handleDynamoDBException(
@@ -21,6 +21,9 @@ export abstract class BaseDao {
       statusCode = exception.$response?.statusCode ?? 503;
       message = exception.message;
     } else if (exception instanceof ResourceNotFoundException) {
+      statusCode = exception.$response?.statusCode ?? 404;
+      message = exception.message;
+    } else if (exception instanceof DynamoDBServiceException) {
       statusCode = exception.$response?.statusCode ?? 404;
       message = exception.message;
     } else {

@@ -5,10 +5,10 @@ import {
   UpdateItemCommandInput,
   UpdateItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
-import { getDynamoDBClient } from "../..";
-import { Contact, ContactVerificationStatus } from "..";
+import { getDynamoDBClient } from "@/shared";
+import { Contact, ContactVerificationStatus } from "@/shared/models";
 import { BaseDao } from "./base-dao";
-import { LambdaDynamoDBError } from "../errors";
+import { LambdaDynamoDBError } from "@/shared/models/errors";
 
 export class ContactsDao extends BaseDao {
   readonly email: string;

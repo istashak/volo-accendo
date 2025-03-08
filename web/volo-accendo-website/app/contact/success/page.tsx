@@ -1,6 +1,6 @@
 "use client";
 
-import { useContactStore } from "@/app/stores/contact-store";
+import { useContactStore } from "@/stores/contact-store";
 
 export default function Page() {
   const focusedContact = useContactStore((state) => state.focusedContact);

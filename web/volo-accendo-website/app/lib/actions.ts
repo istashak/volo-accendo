@@ -1,6 +1,6 @@
 "use server";
 
-import { Contact, ContactValidationSchema } from "../models/domain/contact";
+import { Contact, ContactValidationSchema } from "@/models/domain/contact";
 
 // export async function createContact(prevState: any, formData: FormData) {
 //   const apiUrl = process.env.VOLO_ACCENDO_API || "";

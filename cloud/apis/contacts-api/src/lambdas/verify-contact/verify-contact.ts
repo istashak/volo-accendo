@@ -4,7 +4,7 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
-import { ContactsDao } from "../../shared/models/dao";
+import { ContactsDao } from "@/shared/models/dao";
 import { UpdateItemCommandOutput } from "@aws-sdk/client-dynamodb";
 import {
   SESClient,

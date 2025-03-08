@@ -1,7 +1,6 @@
 import React from "react";
-import { getSizedImage } from "../utils";
+import { getSizedImage } from "@/utils";
 import BoseLogo from "@/public/bose-logo.svg";
-import FujitsuLogo from "@/public/fujitsu-logo.svg";
 import NuSkinLogo from "@/public/nu-skin-logo.svg";
 import WhoopLogo from "@/public/whoop-logo.svg";
 import WinnebagoLogo from "@/public/winnebago-logo.svg";

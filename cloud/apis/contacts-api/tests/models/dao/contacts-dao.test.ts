@@ -1,5 +1,5 @@
-import { Contact } from "../../../src/shared/models";
-import { ContactsDao } from "../../../src/shared/models/dao";
+import { Contact } from "@/shared/models";
+import { ContactsDao } from "@/shared/models/dao";
 
 describe("ContactDao", () => {
   test("Returning a Contacts object from the toJson function.", () => {

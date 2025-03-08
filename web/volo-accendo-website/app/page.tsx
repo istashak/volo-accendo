@@ -14,7 +14,7 @@ export default function Page() {
           specializes in building custom software solutions. Our expertise is
           wide ranging in the areas of mobile, web and cloud. Below is a quick
           peak at some of our more high profile clients that have relied on us
-          to deliver robust technology solutions.
+          to deliver robust technological solutions.
         </p>
         <div className="flex items-center justify-evenly pt-4">
           {getSizedImage({

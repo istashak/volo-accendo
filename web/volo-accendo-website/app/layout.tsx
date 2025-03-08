@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { inter } from "./ui/fonts";
 import "./ui/globals.css";
-import { Footer, Header, HeaderItem } from "./components";
+import { Footer, Header, HeaderItem } from "@/ui/components";
 
 export const metadata: Metadata = {
   title: "Volo Accendo Inc",

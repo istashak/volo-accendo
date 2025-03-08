@@ -1,17 +1,17 @@
 import React from "react";
-import { getSizedImage } from "../utils";
+import { getSizedImage } from "@/utils";
 
 const pClassName = "mb-4 text-left text-xl";
 export default function Page() {
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-4 gap-4">
       <div>
         {getSizedImage({
           src: "/me.jpg",
           alt: "Ivan Stashak",
-          containerWidth: 200,
-          imageWidth: 200,
-          imageHeight: 200,
+          containerWidth: 300,
+          imageWidth: 300,
+          imageHeight: 300,
         })}
       </div>
       <div className="col-span-3">

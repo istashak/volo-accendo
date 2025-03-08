@@ -15,8 +15,11 @@ const jestConfig: JestConfigWithTsJest = {
     global: {},
   },
   coverageReporters: ["cobertura", "json", "html"],
-  rootDir: "./tests",
+  rootDir: ".",
   testMatch: ["**/?(*.)+(spec|test).ts?(x)"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
 };
 
 export default jestConfig;

@@ -5,8 +5,8 @@ import {
   Context,
 } from "aws-lambda";
 import { PutItemCommandOutput } from "@aws-sdk/client-dynamodb";
-import { ContactsDao } from "../../shared/models/dao";
-import { LambdaDynamoDBError } from "../../shared/models/errors";
+import { ContactsDao } from "@/shared/models/dao";
+import { LambdaDynamoDBError } from "@/shared/models/errors";
 import {
   SESClient,
   SendBounceCommandOutput,
