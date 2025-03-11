@@ -5,11 +5,14 @@ import WhoopLogo from "@/public/whoop-logo.svg";
 import WinnebagoLogo from "@/public/winnebago-logo.svg";
 import { getSizedImage } from "./utils";
 
+const divClassName = "p-6 rounded-lg shadow-lg";
+const pClassName = "text-center text-2xl";
+
 export default function Page() {
   return (
     <div>
-      <div className="p-6 rounded-lg shadow-lg">
-        <p className="text-center text-2xl">
+      <div className={divClassName}>
+        <p className={pClassName}>
           Introducing Volo Accendo, a software development company that
           specializes in building custom software solutions. Our expertise is
           wide ranging in the areas of mobile, web and cloud. Below is a quick
@@ -69,6 +72,22 @@ export default function Page() {
           })}
           <FujitsuLogo width={200} height={200} />
         </div>
+      </div>
+      <div className={divClassName}>
+        <p className={pClassName}>{`Areas of Expertise`}</p>
+        <p className="text-center text-xl mt-5">{`Mobile`}</p>
+        <p className="text-center text-lg mt-3">{`Cross Platform Mobile Development -> React Native / Turbo Modules 
+        -> JavaScript / TypeScript -> Native Code -> Android / iOS -> Java / Kotlin / Objective-C / Swift -> MVVM Architectures 
+        -> JetPack / SwiftUI / RetroFit / SwiftData -> Dependency Injection -> Dagger / Koin / Resolver / Swinject`}</p>
+        <p className="text-center text-xl mt-5">{`Web`}</p>
+        <p className="text-center text-lg mt-3">{`React -> JavaScript / TypeScript -> Next.js / React Navigation 
+        -> UI / UX -> Tailwind / React Bootstrap / Daisy -> Data Stores -> Zustand / Redux / MobX`}</p>
+        <p className="text-center text-xl mt-5">{`Cloud`}</p>
+        <p className="text-center text-lg mt-3">{`AWS / Azure / Google Cloud -> Terraform / Serverless
+        -> Lambda / S3 / Cognito / EC2 / DynamoDB / PostgreSQL / AppSync / CloudFront / CloudWatch / Active Directory`}</p>
+        <p className="text-center text-xl mt-5">{`Testing`}</p>
+        <p className="text-center text-lg mt-3">{`Unit Testing / Instrumentation Testing / Integration Testing / E2E Testing 
+        -> Jest / React Testing Library / JUnit / Mockk / XCTest / KoinTest / React Test Renderer / Detox / Cypress / Postman`}</p>
       </div>
     </div>
   );
