@@ -1,0 +1,21 @@
+---
+description: Author TypeScript Code
+globs: *.tsx , *.ts
+alwaysApply: false
+---
+## TypeScript Rules
+- All code must be written in **TypeScript (`.ts` / `.tsx`)**.
+- Use strict TypeScript configuration
+- Prefer explicit type annotations over implicit ones
+- Use interfaces for object types
+- Use proper TypeScript features like:
+  - Generics where appropriate
+  - Union and intersection types
+  - Type guards
+  - Readonly properties when needed
+  - Enums for fixed sets of values
+- Follow TypeScript best practices:
+  - Avoid `any` type unless absolutely necessary
+  - Use `unknown` instead of `any` for values of unknown type
+  - Enable strict null checks
+  - Use optional chaining (`?.`) and nullish coalescing (`??`)
