@@ -56,12 +56,18 @@ jobs:
           cd web/volo-accendo-website
           pnpm install
 
+      # Step 5: Run tests
+      - name: Run tests
+        run: |
+          cd web/volo-accendo-website
+          pnpm test
+
       # Comment/Uncomment for debugging
       - name: List directory contents I
         run: |
           ls -R
 
-      # Step 5: Build the project
+      # Step 6: Build the project
       - name: Build project
         run: |
           cd web/volo-accendo-website
