@@ -16,9 +16,11 @@
     "copy:routes": "cp .next/routes-manifest.json ../../cloud/terraform/",
     "copy:standalone": "cp -r .next/standalone/. .lambdas",
     "copy:static": "mkdir -p .next/standalone/.next/server/app/_next/ && cp -r .next/static .next/standalone/.next/ && cp -r .next/static .next/standalone/.next/server/app/_next/",
+    "lint": "next lint",
     "zip:lambdas": "cd .lambdas && zip -r nextjs-lambda-edge.zip .",
     "start": "node server.js",
-    "lint": "next lint"
+    "test": "pnpm jest",
+    "test:watch": "pnpm jest --watch"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
@@ -36,6 +38,8 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/aws-lambda": "^8.10.146",
     "@types/node": "^20.14.13",
     "@types/react": "^18.3.3",
@@ -44,7 +48,10 @@
     "env-cmd": "^10.1.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.40",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
