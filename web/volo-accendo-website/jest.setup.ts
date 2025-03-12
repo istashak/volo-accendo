@@ -1,10 +1,6 @@
 import "@testing-library/jest-dom";
 import React from "react";
-import type { jest } from "@jest/globals";
-
-declare global {
-  var jest: typeof jest;
-}
+import { jest } from "@jest/globals";
 
 // Mock next/navigation
 const mockRouter = {
