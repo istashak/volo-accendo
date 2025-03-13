@@ -4,8 +4,8 @@ import { getSizedImage } from "@/utils";
 const pClassName = "mb-4 text-left text-xl";
 export default function Page() {
   return (
-    <div className="grid grid-cols-4 gap-4 p-6">
-      <div>
+    <div className="flex gap-4 p-6 overflow-hidden">
+      <div className="flex-shrink-0">
         {getSizedImage({
           src: "/me.jpg",
           alt: "Ivan Stashak",
@@ -14,7 +14,7 @@ export default function Page() {
           imageHeight: 300,
         })}
       </div>
-      <div className="col-span-3">
+      <div>
         <p className={pClassName}>
           {`Hi, I'm Ivan Stashak the founder and sole proprietor of Volo Accendo Inc. I started my software development 
         career in 2004 creating mobile apps for a small startup, 9 Squared, out of Denver CO. In the old days, 
