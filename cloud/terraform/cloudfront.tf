@@ -78,22 +78,22 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
   default_root_object = "index.html"
 
   # # Priority 0
-  # ordered_cache_behavior {
-  #   path_pattern     = "/contact/verification/*"
-  #   allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-  #   cached_methods   = ["GET", "HEAD", "OPTIONS"]
-  #   target_origin_id = aws_s3_bucket.web_app_bucket.id
-  #   # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
-  #   realtime_log_config_arn = null
+  ordered_cache_behavior {
+    path_pattern     = "/contact/verification/*"
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    realtime_log_config_arn = null
 
-  #   forwarded_values {
-  #     query_string = true
-  #     headers      = ["Origin"]
+    forwarded_values {
+      query_string = true
+      headers      = ["Origin"]
 
-  #     cookies {
-  #       forward = "all"
-  #     }
-  #   }
+      cookies {
+        forward = "all"
+      }
+    }
 
     lambda_function_association {
       event_type   = "origin-request"
@@ -108,21 +108,21 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     max_ttl                = 0
   }
 
-  # default_cache_behavior {
-  #   target_origin_id = aws_s3_bucket.web_app_bucket.id
-  #   allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-  #   cached_methods   = ["GET", "HEAD", "OPTIONS"]
-  #   # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
-  #   realtime_log_config_arn = null
+  default_cache_behavior {
+    target_origin_id = aws_s3_bucket.web_app_bucket.id
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    realtime_log_config_arn = null
 
-  #   forwarded_values {
-  #     query_string = true
-  #     headers      = ["Origin"]
+    forwarded_values {
+      query_string = true
+      headers      = ["Origin"]
 
-  #     cookies {
-  #       forward = "all"
-  #     }
-  #   }
+      cookies {
+        forward = "all"
+      }
+    }
 
     function_association {
       event_type   = "viewer-request"
