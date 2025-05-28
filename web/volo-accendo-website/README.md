@@ -1,32 +1,91 @@
-Volo Accendo Inc.
+# Volo Accendo Website
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+A Next.js application with Lambda@Edge server-side rendering for cost-effective hosting.
 
-## Getting Started
+## Project Structure
 
-First, run the development server:
-
-```bash
-pnpm dev
+```
+volo-accendo-website/
+├── app/                 # Next.js app directory (pages and components)
+├── public/             # Static assets
+├── lambdas/            # Lambda@Edge functions
+├── .lambdas/           # Compiled Lambda functions
+├── __mocks__/          # Jest test mocks
+├── doc/                # Documentation
+└── [config files]      # Various configuration files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 15.1.2
+- React 19
+- TypeScript
+- TailwindCSS + DaisyUI
+- Jest for testing
+- MDX for content
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Environment Setup
 
-## Learn More
+The project uses different environment configurations for development and production:
 
-To learn more about Next.js, take a look at the following resources:
+- `.env.dev` - Development environment variables
+- `.env.prod` - Production environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Environment variables are loaded in the following order:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. `.env.development.local` or `.env.production.local`
+2. `.env.local`
+3. `.env.development` or `.env.production`
+4. `.env`
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Install dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```bash
+   pnpm install
+   ```
+
+2. Start development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. Run tests:
+   ```bash
+   pnpm test
+   ```
+
+## Building
+
+### Development Build
+
+```bash
+pnpm build:dev
+```
+
+### Production Build
+
+```bash
+pnpm build:prod
+```
+
+The build process:
+
+1. Copies the appropriate environment file (`.env.dev` or `.env.prod`) to `.env`
+2. Builds the Next.js application
+3. Compiles Lambda@Edge functions
+4. Copies necessary files for deployment
+
+## Deployment
+
+The application is deployed using GitHub Actions workflows. The build process creates:
+
+- A standalone Next.js application
+- Lambda@Edge functions for server-side rendering
+- Required static assets and configurations
+
+## Additional Documentation
+
+For more detailed build and deployment information, see [BUILD.md](./BUILD.md).
