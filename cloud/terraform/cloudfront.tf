@@ -83,7 +83,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.web_app_bucket.id
-    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
@@ -111,7 +111,7 @@ resource "aws_cloudfront_distribution" "web_app_distribution" {
     target_origin_id = aws_s3_bucket.web_app_bucket.id
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
+    # realtime_log_config_arn = aws_cloudfront_realtime_log_config.kinesis.arn
 
     forwarded_values {
       query_string = true
